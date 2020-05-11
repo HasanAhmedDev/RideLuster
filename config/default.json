@@ -1,3 +1,3 @@
 {
-    "mongoURI": "mongodb+srv://hasan:hasan1234@rideluster-6lbyg.mongodb.net/test?retryWrites=true&w=majority"
+    "mongoURI": "mongodb://hasan:1234@rideluster-shard-00-00-6lbyg.mongodb.net:27017,rideluster-shard-00-01-6lbyg.mongodb.net:27017,rideluster-shard-00-02-6lbyg.mongodb.net:27017/rideluster?ssl=true&replicaSet=rideluster-shard-0&authSource=admin&retryWrites=true&w=majority"
 }
