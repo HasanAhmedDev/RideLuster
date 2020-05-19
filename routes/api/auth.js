@@ -9,7 +9,7 @@ const AuthController = require('../../controllers/AuthController')
 
 //@route GET api/auth/user
 //@desc Get auth user
-//@access Public
+//@access Private
 router.get('/user', auth('user'), AuthController.getAuthUser)
 
 
@@ -23,7 +23,7 @@ router.post('/user', [
 
 //@route GET api/auth/admin
 //@desc Get auth admin
-//@access Public
+//@access Private
 router.get('/admin', auth('admin'), AuthController.getAuthAdmin)
 
 
@@ -35,5 +35,20 @@ router.post('/admin', [
     check('password', 'Password is required').exists()
 ], AuthController.authenticateAdmin)
 
+//@route PUT api/auth/user/updatedetails
+//@desc Update user details
+//@access Private
+router.put('/user/updatedetails', [
+    check('firstname', 'FirstName is required').not().isEmpty(),
+    check('lastname', 'LastName is required').not().isEmpty(),
+    check('email', 'Please enter a valid email').isEmail()
+], auth('user'), AuthController.updateUserDetails)
+
+//@route PUT api/auth/user/updatepassword
+//@desc Update user password
+//@access Private
+router.put('/user/updatepassword', [check('currentPassword', 'Current Password is required').exists(), check('newPassword', 'Please enter a password with 8 or more characters').isLength({
+    min: 8
+})], auth('user'), AuthController.updateUserPassword)
 
 module.exports = router

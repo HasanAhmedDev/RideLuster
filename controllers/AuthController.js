@@ -164,7 +164,67 @@ const authenticateAdmin = async (req, res) => {
 
 }
 
+const updateUserDetails = async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        })
+    }
+    const fieldstoupdate = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email
+    }
+    const user = await User.findByIdAndUpdate(req.user.id, fieldstoupdate, {
+        new: true,
+        runValidators: true
+    }).select('-password')
+    res.status(200).json({
+        success: true,
+        user
+    })
+}
+
+const updateUserPassword = async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        })
+    }
+    if (req.body.currentPassword == req.body.newPassword) {
+        return res.status(400).json({
+            success: false,
+            errors: [{
+                msg: 'Current and New Password cannot be same!'
+            }]
+        })
+    }
+    const user = await User.findById(req.user.id)
+    const passcheck = await bcrypt.compare(req.body.currentPassword, user.password)
+    if (!passcheck) {
+        return res.status(400).json({
+            success: false,
+            errors: [{
+                msg: 'Invalid Credentials'
+            }]
+        })
+    }
+    const salt = await bcrypt.genSalt(10)
+    user.password = await bcrypt.hash(req.body.newPassword, salt)
+    await user.save()
+    const newuser = await User.findById(user._id).select('-password')
+    res.status(200).json({
+        success: true,
+        user: newuser
+    })
+}
 exports.getAuthUser = getAuthUser
 exports.authenticateUser = authenticateUser
 exports.getAuthAdmin = getAuthAdmin
 exports.authenticateAdmin = authenticateAdmin
+exports.updateUserDetails = updateUserDetails
+exports.updateUserPassword = updateUserPassword
