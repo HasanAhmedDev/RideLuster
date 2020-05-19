@@ -2,14 +2,12 @@ const {
     check,
     validationResult
 } = require('express-validator')
-const User = require('../models/User')
-const gravatar = require('gravatar')
+const Admin = require('../models/Admin')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const config = require('config')
 
-
-const registerUser = async (req, res) => {
+const registerAdmin = async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({
@@ -18,41 +16,33 @@ const registerUser = async (req, res) => {
         })
     }
     const {
-        firstname,
-        lastname,
+        name,
         email,
         password
     } = req.body
     try {
-        let user = await User.findOne({
+        let admin = await Admin.findOne({
             email
         })
-        if (user) {
+        if (admin) {
             return res.status(400).json({
                 success: false,
                 errors: [{
-                    msg: 'User already exists'
+                    msg: 'Admin already exists'
                 }]
             })
         }
-        const photo = gravatar.url(email, {
-            s: '200',
-            r: 'pg',
-            d: 'mm'
-        })
-        user = new User({
-            firstname,
-            lastname,
+        admin = new Admin({
+            name,
             email,
-            password,
-            photo
+            password
         })
         const salt = await bcrypt.genSalt(10)
-        user.password = await bcrypt.hash(password, salt)
-        await user.save()
+        admin.password = await bcrypt.hash(password, salt)
+        await admin.save()
         const payload = {
-            user: {
-                id: user.id
+            admin: {
+                id: admin.id
             }
         }
         jwt.sign(payload, config.get('jwtSecret'), {
@@ -75,5 +65,4 @@ const registerUser = async (req, res) => {
     }
 
 }
-
-exports.registerUser = registerUser
+exports.registerAdmin = registerAdmin
