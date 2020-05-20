@@ -14,6 +14,9 @@ const {
 const path = require('path');
 const fs = require('fs');
 
+
+// User Routes Functions
+
 const getAuthUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -68,86 +71,6 @@ const authenticateUser = async (req, res) => {
     const payload = {
       user: {
         id: user.id,
-      },
-    };
-    jwt.sign(
-      payload,
-      config.get('jwtSecret'), {
-        expiresIn: 360000,
-      },
-      (err, token) => {
-        if (err) throw err;
-        res.json({
-          success: true,
-          token,
-        });
-      }
-    );
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({
-      success: false,
-      errors: [{
-        msg: 'Server Error',
-      }, ],
-    });
-  }
-};
-
-const getAuthAdmin = async (req, res) => {
-  try {
-    const admin = await Admin.findById(req.admin.id).select('-password');
-    res.json({
-      success: true,
-      admin,
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({
-      success: false,
-      errors: [{
-        msg: 'Server Error',
-      }, ],
-    });
-  }
-};
-
-const authenticateAdmin = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      errors: errors.array(),
-    });
-  }
-  const {
-    email,
-    password
-  } = req.body;
-  try {
-    let admin = await Admin.findOne({
-      email,
-    });
-    if (!admin) {
-      return res.status(400).json({
-        success: false,
-        errors: [{
-          msg: 'Invalid Credentials',
-        }, ],
-      });
-    }
-    const passcheck = await bcrypt.compare(password, admin.password);
-    if (!passcheck) {
-      return res.status(400).json({
-        success: false,
-        errors: [{
-          msg: 'Invalid Credentials',
-        }, ],
-      });
-    }
-    const payload = {
-      admin: {
-        id: admin.id,
       },
     };
     jwt.sign(
@@ -295,6 +218,119 @@ const uploadUserPhoto = async (req, res) => {
   });
 };
 
+
+
+// Admin Routes Funtions
+
+const getAuthAdmin = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.admin.id).select('-password');
+    res.json({
+      success: true,
+      admin,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+};
+
+const authenticateAdmin = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
+  }
+  const {
+    email,
+    password
+  } = req.body;
+  try {
+    let admin = await Admin.findOne({
+      email,
+    });
+    if (!admin) {
+      return res.status(400).json({
+        success: false,
+        errors: [{
+          msg: 'Invalid Credentials',
+        }, ],
+      });
+    }
+    const passcheck = await bcrypt.compare(password, admin.password);
+    if (!passcheck) {
+      return res.status(400).json({
+        success: false,
+        errors: [{
+          msg: 'Invalid Credentials',
+        }, ],
+      });
+    }
+    const payload = {
+      admin: {
+        id: admin.id,
+      },
+    };
+    jwt.sign(
+      payload,
+      config.get('jwtSecret'), {
+        expiresIn: 360000,
+      },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          success: true,
+          token,
+        });
+      }
+    );
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('-password')
+    if (users.length == 0) {
+      return res.status(400).json({
+        success: false,
+        errors: [{
+          msg: 'No users registered.',
+        }, ],
+      });
+    }
+    res.status(200).json({
+      success: true,
+      users
+    })
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
+
+// Vendor Routes Functions
+
 const getAuthVendor = async (req, res) => {
   try {
     const vendor = await Vendor.findById(req.vendor.id).select('-password');
@@ -439,11 +475,12 @@ const updateVendorPassword = async (req, res) => {
 
 exports.getAuthUser = getAuthUser;
 exports.authenticateUser = authenticateUser;
-exports.getAuthAdmin = getAuthAdmin;
-exports.authenticateAdmin = authenticateAdmin;
 exports.updateUserDetails = updateUserDetails;
 exports.updateUserPassword = updateUserPassword;
 exports.uploadUserPhoto = uploadUserPhoto;
+exports.getAuthAdmin = getAuthAdmin;
+exports.authenticateAdmin = authenticateAdmin;
+exports.getAllUsers = getAllUsers
 exports.getAuthVendor = getAuthVendor
 exports.authenticateVendor = authenticateVendor
 exports.updateVendorDetails = updateVendorDetails

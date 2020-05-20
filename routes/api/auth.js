@@ -7,6 +7,8 @@ const {
 } = require('express-validator')
 const AuthController = require('../../controllers/AuthController')
 
+// User Routes
+
 //@route GET api/auth/user
 //@desc Get auth user
 //@access Private
@@ -20,20 +22,6 @@ router.post('/user', [
     check('email', 'Please enter a valid email').isEmail(),
     check('password', 'Password is required').exists()
 ], AuthController.authenticateUser)
-
-//@route GET api/auth/admin
-//@desc Get auth admin
-//@access Private
-router.get('/admin', auth('admin'), AuthController.getAuthAdmin)
-
-
-//@route POST api/auth/admin
-//@desc Authenticate and get token
-//@access Public
-router.post('/admin', [
-    check('email', 'Please enter a valid email').isEmail(),
-    check('password', 'Password is required').exists()
-], AuthController.authenticateAdmin)
 
 //@route PUT api/auth/user/updatedetails
 //@desc Update user details
@@ -55,6 +43,33 @@ router.put('/user/updatepassword', [check('currentPassword', 'Current Password i
 //@desc Update user password
 //@access Private
 router.put('/user/uploadphoto', auth('user'), AuthController.uploadUserPhoto)
+
+
+
+// Admin Routes
+
+//@route GET api/auth/admin
+//@desc Get auth admin
+//@access Private
+router.get('/admin', auth('admin'), AuthController.getAuthAdmin)
+
+
+//@route POST api/auth/admin
+//@desc Authenticate and get token
+//@access Public
+router.post('/admin', [
+    check('email', 'Please enter a valid email').isEmail(),
+    check('password', 'Password is required').exists()
+], AuthController.authenticateAdmin)
+
+//@route GET api/auth/admin/getusers
+//@desc Get all registred users
+//@access Private
+router.get('/admin/getusers', auth('admin'), AuthController.getAllUsers)
+
+
+
+// Vendor Routes
 
 //@route GET api/auth/vendor
 //@desc Get auth vendor
