@@ -51,4 +51,9 @@ router.put('/user/updatepassword', [check('currentPassword', 'Current Password i
     min: 8
 })], auth('user'), AuthController.updateUserPassword)
 
+//@route PUT api/auth/user/updatepassword
+//@desc Update user password
+//@access Private
+router.put('/user/uploadphoto', auth('user'), AuthController.uploadUserPhoto)
+
 module.exports = router

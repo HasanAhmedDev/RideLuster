@@ -1,23 +1,33 @@
-const express = require('express')
-const connectDB = require('./config/db')
+const express = require('express');
+const connectDB = require('./config/db');
+const fileupload = require('express-fileupload');
+const path = require('path');
 
-const app = express()
+const app = express();
 
 //Connecting Database
-connectDB()
+connectDB();
 
 //Middleware
-app.use(express.json({
-    extended: false
-}))
+app.use(
+  express.json({
+    extended: false,
+  })
+);
 
-app.get('/', (req, res) => res.send('API running'))
+//File uploading
+app.use(fileupload());
+
+//Static folder
+app.use(express.static(path.join(__dirname, 'public/uploads')));
+
+app.get('/', (req, res) => res.send('API running'));
 
 //Defining Routes
-app.use('/api/users', require('./routes/api/users'))
-app.use('/api/auth', require('./routes/api/auth'))
-app.use('/api/admins', require('./routes/api/admins'))
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/auth', require('./routes/api/auth'));
+app.use('/api/admins', require('./routes/api/admins'));
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`))
+app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));

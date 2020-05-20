@@ -1,4 +1,6 @@
 {
     "mongoURI": "mongodb://hasan:1234@rideluster-shard-00-00-6lbyg.mongodb.net:27017,rideluster-shard-00-01-6lbyg.mongodb.net:27017,rideluster-shard-00-02-6lbyg.mongodb.net:27017/rideluster?ssl=true&replicaSet=rideluster-shard-0&authSource=admin&retryWrites=true&w=majority",
-    "jwtSecret": "Secret1234"
+    "jwtSecret": "Secret1234",
+    "fileUploadUser": "./public/uploads/users_photos",
+    "maxPhotoSize": "1000000"
 }
