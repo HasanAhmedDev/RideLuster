@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken')
 const config = require('config')
+const User = require('../models/User')
+const Admin = require('../models/Admin')
+const Vendor = require('../models/Vendor')
 
 module.exports = function (type) {
-    return (req, res, next) => {
+    return async (req, res, next) => {
         const token = req.header('x-auth-token')
         if (!token) {
             return res.status(401).json({
@@ -23,6 +26,15 @@ module.exports = function (type) {
                         }]
                     })
                 }
+                const user = await User.findById(decoded.user.id)
+                if (!user) {
+                    res.status(401).json({
+                        success: false,
+                        errors: [{
+                            msg: "Token not valid"
+                        }]
+                    })
+                }
                 req.user = decoded.user
             }
             if (type === 'admin') {
@@ -35,7 +47,37 @@ module.exports = function (type) {
                         }]
                     })
                 }
+                const admin = await Admin.findById(decoded.admin.id)
+                if (!admin) {
+                    res.status(401).json({
+                        success: false,
+                        errors: [{
+                            msg: "Token not valid"
+                        }]
+                    })
+                }
                 req.admin = decoded.admin
+            }
+            if (type === 'vendor') {
+                const decoded = jwt.verify(token, config.get('jwtSecret'))
+                if (!decoded.vendor) {
+                    return res.status(403).json({
+                        success: "false",
+                        errors: [{
+                            msg: 'Route not accessible.'
+                        }]
+                    })
+                }
+                const vendor = await Vendor.findById(decoded.vendor.id)
+                if (!vendor) {
+                    res.status(401).json({
+                        success: false,
+                        errors: [{
+                            msg: "Token not valid"
+                        }]
+                    })
+                }
+                req.vendor = decoded.vendor
             }
             next()
         } catch (error) {

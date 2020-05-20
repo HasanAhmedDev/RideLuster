@@ -56,4 +56,32 @@ router.put('/user/updatepassword', [check('currentPassword', 'Current Password i
 //@access Private
 router.put('/user/uploadphoto', auth('user'), AuthController.uploadUserPhoto)
 
+//@route GET api/auth/vendor
+//@desc Get auth vendor
+//@access Private
+router.get('/vendor', auth('vendor'), AuthController.getAuthVendor)
+
+//@route POST api/auth/vendor
+//@desc Authenticate and get token
+//@access Public
+router.post('/vendor', [
+    check('email', 'Please enter a valid email').isEmail(),
+    check('password', 'Password is required').exists()
+], AuthController.authenticateVendor)
+
+//@route PUT api/auth/vendor/updatedetails
+//@desc Update vendor details
+//@access Private
+router.put('/vendor/updatedetails', [
+    check('name', 'Name is required').not().isEmpty(),
+    check('email', 'Please enter a valid email').isEmail()
+], auth('vendor'), AuthController.updateVendorDetails)
+
+//@route PUT api/auth/vendor/updatepassword
+//@desc Update user password
+//@access Private
+router.put('/vendor/updatepassword', [check('currentPassword', 'Current Password is required').exists(), check('newPassword', 'Please enter a password with 8 or more characters').isLength({
+    min: 8
+})], auth('vendor'), AuthController.updateVendorPassword)
+
 module.exports = router
