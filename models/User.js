@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     photo: {
         type: String
     },
-    date: {
+    createdAt: {
         type: Date,
         default: Date.now
     }

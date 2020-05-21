@@ -104,4 +104,9 @@ router.put('/vendor/updatepassword', [check('currentPassword', 'Current Password
     min: 8
 })], auth('vendor'), AuthController.updateVendorPassword)
 
+//@route POST api/auth/vendor/addservicestation
+//@desc Add service station
+//@access Public
+router.post('/vendor/addservicestation', auth('vendor'), AuthController.addServiceStation)
+
 module.exports = router

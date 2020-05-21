@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Vendor = require('../models/Vendor');
+const ServiceStation = require('../models/ServiceStation')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
@@ -509,6 +510,78 @@ const updateVendorPassword = async (req, res) => {
   });
 }
 
+const addServiceStation = async (req, res) => {
+  try {
+    let ss = await ServiceStation.findOne({
+      owner: req.vendor.id
+    })
+    if (ss) {
+      return res.status(400).json({
+        success: false,
+        errors: [{
+          msg: "This vendor already has a service station"
+        }]
+      })
+    }
+    const {
+      name,
+      area,
+      vehicles,
+      services,
+      location,
+    } = req.body;
+    ss = new ServiceStation({
+      name,
+      area,
+      vehicles,
+      services,
+      location,
+    })
+    ss.owner = req.vendor.id
+    let validate = Array()
+    let empty = false
+    if (!vehicles) {
+      validate.push({
+        msg: "Types of vehicles served are required"
+      })
+      empty = true
+    }
+    if (!services) {
+      validate.push({
+        msg: "Types of services provided are required"
+      })
+      empty = true
+    }
+    if (empty) {
+      return res.status(400).json({
+        success: false,
+        errors: validate
+      })
+    }
+    await ss.save()
+    return res.status(200).json({
+      success: true,
+      ServiceStation: ss
+    })
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      const msg = Object.values(error.errors).map(val => JSON.parse(`{ "msg":"${val.message}"}`))
+      return res.status(400).json({
+        success: false,
+        errors: msg
+      })
+    } else {
+      console.log(error.message)
+      res.status(500).json({
+        success: false,
+        errors: [{
+          msg: 'Server Error',
+        }, ],
+      });
+    }
+  }
+}
+
 
 exports.getAuthUser = getAuthUser;
 exports.authenticateUser = authenticateUser;
@@ -525,3 +598,4 @@ exports.getAuthVendor = getAuthVendor
 exports.authenticateVendor = authenticateVendor
 exports.updateVendorDetails = updateVendorDetails
 exports.updateVendorPassword = updateVendorPassword
+exports.addServiceStation = addServiceStation
