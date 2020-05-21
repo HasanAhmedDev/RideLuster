@@ -328,6 +328,43 @@ const getAllUsers = async (req, res) => {
   }
 }
 
+const delUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: 'User not found',
+        }, ],
+      });
+    }
+    if (!user.photo.startsWith('//www')) {
+      const del = `${config.get('fileUploadUser')}/${user.photo}`;
+      fs.unlink(del, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+    }
+    await user.remove()
+    return res.status(200).json({
+      success: true,
+      user: []
+    });
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
 
 // Vendor Routes Functions
 
@@ -478,9 +515,12 @@ exports.authenticateUser = authenticateUser;
 exports.updateUserDetails = updateUserDetails;
 exports.updateUserPassword = updateUserPassword;
 exports.uploadUserPhoto = uploadUserPhoto;
+
 exports.getAuthAdmin = getAuthAdmin;
 exports.authenticateAdmin = authenticateAdmin;
 exports.getAllUsers = getAllUsers
+exports.delUserById = delUserById
+
 exports.getAuthVendor = getAuthVendor
 exports.authenticateVendor = authenticateVendor
 exports.updateVendorDetails = updateVendorDetails

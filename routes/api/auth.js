@@ -67,6 +67,11 @@ router.post('/admin', [
 //@access Private
 router.get('/admin/getusers', auth('admin'), AuthController.getAllUsers)
 
+//@route DELETE api/auth/admin/deleteuser/:id
+//@desc Delete user with id
+//@access Private
+router.delete('/admin/deleteuser/:id', auth('admin'), AuthController.delUserById)
+
 
 
 // Vendor Routes

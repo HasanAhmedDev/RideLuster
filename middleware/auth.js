@@ -28,7 +28,7 @@ module.exports = function (type) {
                 }
                 const user = await User.findById(decoded.user.id)
                 if (!user) {
-                    res.status(401).json({
+                    return res.status(401).json({
                         success: false,
                         errors: [{
                             msg: "Token not valid"
@@ -49,7 +49,7 @@ module.exports = function (type) {
                 }
                 const admin = await Admin.findById(decoded.admin.id)
                 if (!admin) {
-                    res.status(401).json({
+                    return res.status(401).json({
                         success: false,
                         errors: [{
                             msg: "Token not valid"
@@ -70,7 +70,7 @@ module.exports = function (type) {
                 }
                 const vendor = await Vendor.findById(decoded.vendor.id)
                 if (!vendor) {
-                    res.status(401).json({
+                    return res.status(401).json({
                         success: false,
                         errors: [{
                             msg: "Token not valid"
