@@ -29,7 +29,7 @@ const ServiceStationSchema = new mongoose.Schema({
     services: {
         type: [String],
         required: [true, 'Types of services provided are required'],
-        enum: ['Wash', 'Polish', 'Oil Change'],   
+        enum: ['Wash', 'Polish', 'Oil Change'],
     },
     location: {
         type: {
