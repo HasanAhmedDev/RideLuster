@@ -4,8 +4,7 @@ const slugify = require('slugify')
 const ServiceStationSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Name is required'],
-        unique: true
+        required: [true, 'Name is required']
     },
     slug: String,
     area: {

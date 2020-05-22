@@ -314,13 +314,13 @@ const getAllUsers = async (req, res) => {
         }, ],
       });
     }
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       users
     })
   } catch (error) {
     console.error(error.message);
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       errors: [{
         msg: 'Server Error',
@@ -366,6 +366,137 @@ const delUserById = async (req, res) => {
   }
 }
 
+const getAllServiceStations = async (req, res) => {
+  try {
+    const allss = await ServiceStation.find({
+      "approved": "true"
+    }).populate({
+      path: 'owner',
+      select: 'name email'
+    })
+    if (allss.length == 0) {
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: 'No service station registered.',
+        }, ],
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      servicestations: allss
+    })
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
+const approveServiceStationById = async (req, res) => {
+  try {
+    const fieldstoupdate = {
+      approved: true
+    }
+    const ss = await ServiceStation.findByIdAndUpdate(req.params.id, fieldstoupdate, {
+      new: true,
+      runValidators: true
+    })
+    if (!ss) {
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: 'Service Station not found',
+        }, ],
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      servicestation: ss
+    });
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
+const getAllRequests = async (req, res) => {
+  try {
+    const allss = await ServiceStation.find({
+      "approved": "false"
+    }).populate({
+      path: 'owner',
+      select: 'name email'
+    })
+    if (allss.length == 0) {
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: 'No request registered.',
+        }, ],
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      servicestations: allss
+    })
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
+const delServiceStationById = async (req, res) => {
+  try {
+    const ss = await ServiceStation.findById(req.params.id)
+    if (!ss) {
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: 'Service Station not found',
+        }, ],
+      });
+    }
+    if (!ss.photo.startsWith('no')) {
+      const del = `${config.get('fileUploadServiceStation')}/${ss.photo}`;
+      fs.unlink(del, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+    }
+    await ss.remove()
+    return res.status(200).json({
+      success: true,
+      servicestation: []
+    });
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
 
 // Vendor Routes Functions
 
@@ -425,6 +556,14 @@ const authenticateVendor = async (req, res) => {
         id: vendor.id,
       },
     };
+    const ss = await ServiceStation.findOne({
+      owner: vendor.id,
+      approved: true
+    })
+    if (ss) {
+      ss.status = 'Open'
+      await ss.save()
+    }
     jwt.sign(
       payload,
       config.get('jwtSecret'), {
@@ -561,7 +700,7 @@ const addServiceStation = async (req, res) => {
     await ss.save()
     return res.status(200).json({
       success: true,
-      ServiceStation: ss
+      servicestation: ss
     })
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -582,6 +721,94 @@ const addServiceStation = async (req, res) => {
   }
 }
 
+const closeServiceStation = async (req, res) => {
+  try {
+    const ss = await ServiceStation.findOne({
+      owner: req.vendor.id,
+      approved: true
+    })
+    if (ss) {
+      ss.status = 'Closed'
+      await ss.save()
+      return res.status(200).json({
+        success: true,
+        servicestation: ss
+      })
+    }
+    return res.status(200).json({
+      success: true
+    })
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
+const uploadServiceStationPhoto = async (req, res) => {
+  if (!req.files) {
+    return res.status(400).json({
+      success: false,
+      errors: [{
+        msg: 'Please upload an image.',
+      }, ],
+    });
+  }
+  const file = req.files.file;
+  if (!file.mimetype.startsWith('image')) {
+    return res.status(400).json({
+      success: false,
+      errors: [{
+        msg: 'Please upload an image file.',
+      }, ],
+    });
+  }
+  if (file.size > config.get('maxPhotoSize')) {
+    return res.status(400).json({
+      success: false,
+      errors: [{
+        msg: `Please upload an image less than ${
+            config.get('maxPhotoSize') / 1000000
+          } mb`,
+      }, ],
+    });
+  }
+  file.name = `photo_${uuidv4()}${path.parse(file.name).ext}`;
+  file.mv(`${config.get('fileUploadServiceStation')}/${file.name}`, async (err) => {
+    if (err) {
+      console.log(err.message);
+      return res.status(500).json({
+        success: false,
+        errors: [{
+          msg: 'Problem with image upload',
+        }, ],
+      });
+    }
+  });
+  const ss = await ServiceStation.findOne({
+    owner: req.vendor.id
+  })
+  if (!ss.photo.startsWith('no')) {
+    const del = `${config.get('fileUploadServiceStation')}/${ss.photo}`;
+    fs.unlink(del, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
+
+  ss.photo = file.name;
+  await ss.save();
+  res.status(200).json({
+    success: true,
+    servicestation: ss
+  });
+}
 
 exports.getAuthUser = getAuthUser;
 exports.authenticateUser = authenticateUser;
@@ -593,9 +820,15 @@ exports.getAuthAdmin = getAuthAdmin;
 exports.authenticateAdmin = authenticateAdmin;
 exports.getAllUsers = getAllUsers
 exports.delUserById = delUserById
+exports.getAllServiceStations = getAllServiceStations
+exports.approveServiceStationById = approveServiceStationById
+exports.getAllRequests = getAllRequests
+exports.delServiceStationById = delServiceStationById
 
 exports.getAuthVendor = getAuthVendor
 exports.authenticateVendor = authenticateVendor
 exports.updateVendorDetails = updateVendorDetails
 exports.updateVendorPassword = updateVendorPassword
 exports.addServiceStation = addServiceStation
+exports.closeServiceStation = closeServiceStation
+exports.uploadServiceStationPhoto=uploadServiceStationPhoto

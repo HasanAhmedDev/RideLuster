@@ -39,8 +39,8 @@ router.put('/user/updatepassword', [check('currentPassword', 'Current Password i
     min: 8
 })], auth('user'), AuthController.updateUserPassword)
 
-//@route PUT api/auth/user/updatepassword
-//@desc Update user password
+//@route PUT api/auth/user/uploadphoto
+//@desc Upload user photo
 //@access Private
 router.put('/user/uploadphoto', auth('user'), AuthController.uploadUserPhoto)
 
@@ -72,7 +72,25 @@ router.get('/admin/getusers', auth('admin'), AuthController.getAllUsers)
 //@access Private
 router.delete('/admin/deleteuser/:id', auth('admin'), AuthController.delUserById)
 
+//@route GET api/auth/admin/getservicestations
+//@desc Get all approved registred service stations
+//@access Private
+router.get('/admin/getservicestations', auth('admin'), AuthController.getAllServiceStations)
 
+//@route PUT api/auth/admin/approveservicestation/:id
+//@desc Approve a service station by id
+//@access Private
+router.put('/admin/approveservicestation/:id', auth('admin'), AuthController.approveServiceStationById)
+
+//@route GET api/auth/admin/getallrequest
+//@desc Get all requests of service station
+//@access Private
+router.get('/admin/getallrequests', auth('admin'), AuthController.getAllRequests)
+
+//@route DELETE api/auth/admin/deleteservicestation/:id
+//@desc Delete service station with id
+//@access Private
+router.delete('/admin/deleteservicestation/:id', auth('admin'), AuthController.delServiceStationById)
 
 // Vendor Routes
 
@@ -108,5 +126,15 @@ router.put('/vendor/updatepassword', [check('currentPassword', 'Current Password
 //@desc Add service station
 //@access Public
 router.post('/vendor/addservicestation', auth('vendor'), AuthController.addServiceStation)
+
+//@route PUT api/auth/vendor/closeservicestation
+//@desc Update user password
+//@access Private
+router.put('/vendor/closeservicestation', auth('vendor'), AuthController.closeServiceStation)
+
+//@route PUT api/auth/vendor/uploadservicestationphoto
+//@desc Upload service station photo
+//@access Private
+router.put('/vendor/uploadservicestationphoto', auth('vendor'), AuthController.uploadServiceStationPhoto)
 
 module.exports = router
