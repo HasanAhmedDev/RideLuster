@@ -30,6 +30,14 @@ const ServiceStationSchema = new mongoose.Schema({
         required: [true, 'Types of services provided are required'],
         enum: ['Wash', 'Polish', 'Oil Change'],
     },
+    activeProcess:{
+        type: [mongoose.Schema.ObjectId],
+        ref: 'booking',
+    },
+    bookings:{
+        type: [mongoose.Schema.ObjectId],
+        ref: 'booking',
+    },
     location: {
         type: {
             type: String,

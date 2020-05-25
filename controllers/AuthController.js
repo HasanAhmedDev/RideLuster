@@ -1,7 +1,11 @@
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Vendor = require('../models/Vendor');
-const ServiceStation = require('../models/ServiceStation')
+const Booking = require('../models/Booking');
+const ServiceStation = require('../models/ServiceStation');
+const socketio = require('../socket.io/socket');
+const notifications = require('../models/Notifications');
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
@@ -215,11 +219,106 @@ const uploadUserPhoto = async (req, res) => {
   await user.save();
   res.status(200).json({
     success: true,
-    user,
+    user
   });
 };
 
-
+const BookService = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+      return res.status(400).json({
+          success: false,
+          errors: errors.array()
+      });
+  }
+  const {
+      vehicleType,
+      vehicleMake,
+      vehicleModel,
+      vehicleNo,
+      contactNo,
+      serviceType,
+      serviceStationId,
+      createdAt
+  } = req.body;
+  try{
+      let booking = await Booking.findOne({
+          vehicleType,
+          vehicleMake,
+          vehicleModel,
+          vehicleNo,
+          contactNo,
+          serviceType,
+          client: req.user.id,
+          serviceStation: serviceStationId,
+          isApproved: false
+      });
+      if(booking){
+        return res.status(400).json({
+          success: false,
+          msg: "Booking Already Exist"
+        })
+      }
+      let serviceStation = await ServiceStation.findById(serviceStationId);
+      if(!serviceStation){
+        return res.status(400).json({
+          success: false,
+          errors: [{
+            msg: "Service Station does not exist"
+          }]
+        });
+      }
+      if(serviceStation.status === 'Closed'){
+        return res.status(400).json({
+          success: false,
+          errors: [{
+            msg: "Service Station is closed"
+          }]
+        });
+      }
+      let user = await User.findById(req.user.id);
+      if(!user){
+        return res.status(400).json({
+          success: false,
+          errors: [{
+            msg: "User did not recognize, You need to sign in again"
+          }]
+        });
+      }
+      booking = new Booking({
+          vehicleType,
+          vehicleMake,
+          vehicleModel,
+          vehicleNo,
+          serviceType,
+          contactNo,
+          client: req.user.id,
+          serviceStation: serviceStationId,
+          createdAt
+      });
+      await booking.save();
+      await socketio.getIO().emit('BookingRequestedToVendor', {
+        vendor: serviceStation.owner,
+        msg: `Booking from Client ${req.user.id}`, 
+        booking: booking
+      });
+      return res.status(200).json({
+        success: true,
+        bookingRequestAt: booking.createdAt,
+        msg: "Request sent successfully!"
+      });
+  }
+  catch (error)
+  {
+    console.log(error.message)
+    return res.status(500).json({
+        success: false,
+        errors: [{
+            msg: "Server Error"
+        }]
+    });
+  }
+}
 
 // Admin Routes Funtions
 
@@ -810,11 +909,200 @@ const uploadServiceStationPhoto = async (req, res) => {
   });
 }
 
+const getUnhandledBookings = async (req,res, next) => {
+  try
+  {
+    const Bookings = await Booking.find({
+      isApproved: false,
+      isCompleted: false
+    });
+    return res.status(200).json({
+      success: true,
+      bookings: Bookings
+    })
+  }
+  catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }],
+    });
+  }
+}
+
+const handleBookingRequest = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
+  }
+  const {
+    approved,
+    bookingId
+  } = req.body;
+  try
+  {
+    const bookingExist = await Booking.findById(bookingId);
+    if(!bookingExist){
+      return res.status(400).json({
+        success: false,
+        errors: [{ msg: 'Booking does not exist any longer!'}]
+      })
+    }
+    const serviceStation = await ServiceStation.findById(bookingExist.serviceStation);
+    if(!serviceStation){
+      res.status(400).json({
+        success: false,
+        errors: [{
+          msg: "Service Station does not exist"
+        }]
+      })
+    }
+    if(approved === 'false'){
+      await Booking.findByIdAndDelete(bookingId);
+      await socketio.getIO().emit('HandledBookingRequestResponseToClient', {
+        clientId: bookingExist.client,
+        isApproved: approved,
+        booking: bookingExist
+      })
+      return res.status(200).json({
+        success: true,
+        msg: "Request Denied Successfully!"
+      })
+    }
+    await Booking.findByIdAndUpdate(bookingId, { 
+      isApproved: true, 
+      status: 'Waiting'
+    })
+    let allServiceStationBookings = serviceStation.bookings ? serviceStation.bookings : [];
+    allServiceStationBookings.push(bookingId);
+    await ServiceStation.findByIdAndUpdate(serviceStation._id, {
+      bookings: allServiceStationBookings
+    });
+      
+    await socketio.getIO().emit('HandledBookingRequestResponseToClient', {
+      clientId: bookingExist.client,
+      isApproved: approved,
+      booking: bookingExist
+    })
+    return res.status(200).json({
+      success: true,
+      msg: "Request Accepted Successfully!"
+    })
+  }
+  catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }],
+    });
+  }
+}
+
+const updateProcess = async (req, res, next) => {
+  const {
+    bookingId,
+    status,
+  } = req.body;
+  try
+  {
+    let booking = await Booking.findById(bookingId);
+    if(!booking){
+      return res.status(400).json({
+        success: false,
+        errors: [{
+          msg: "Booking expired or dont exist anymore"
+        }]
+      })
+    }
+    let serviceStation =  await ServiceStation.findById(booking.serviceStation);
+    if(!serviceStation){
+      res.status(400).json({
+        success: false,
+        msg: "Service Station does not exist"
+      })
+    }
+    switch(status){
+      case 'Waiting':
+        booking.status = 'Active';
+        let allActiveProcess = serviceStation.activeProcess;
+        let alreadyExist = allActiveProcess.find(id => id == bookingId)
+        if(alreadyExist){
+          return res.status(400).json({
+            success: false,
+            msg: "Already Serving this Process"
+          })
+        }
+        allActiveProcess.push(bookingId);
+        let updatedBookings = serviceStation.bookings.filter((book)=>{
+          return book != bookingId;
+        })
+        await ServiceStation.findByIdAndUpdate((await serviceStation)._id, {
+          activeProcess: allActiveProcess,
+          bookings: updatedBookings
+        })
+        await Booking.findByIdAndUpdate(bookingId, booking);
+        await socketio.getIO().emit('processUpdated', {
+          clientId: booking.client,
+          status: booking.status,
+          booking: booking,
+        })
+        return res.status(200).json({
+          success: true,
+          active: allActiveProcess,
+          bookings: updatedBookings
+        })
+      case 'Active':
+        let filteredActiveProcess = serviceStation.activeProcess.filter((activeBookings) => {
+          return activeBookings != bookingId;
+        })
+        booking.status = 'Completed';
+        booking.isCompleted = true;
+        await ServiceStation.findByIdAndUpdate((await serviceStation)._id, {
+          activeProcess: filteredActiveProcess
+        })
+        await Booking.findByIdAndUpdate(bookingId, booking);
+        await socketio.getIO().emit('processUpdated', {
+          clientId: booking.client,
+          status: booking.status,
+          booking: booking
+        })
+        return res.status(200).json({
+          success: true,
+          active: filteredActiveProcess,
+          bookings: serviceStation.bookings
+        })
+        default:
+          res.status(400).json({
+            success: false,
+            msg: "Unknown status sent by vendor"
+          })
+      }
+  }
+  catch(errors)
+  {
+    console.log(errors);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: errors
+      }]
+    })
+  }
+}
+
 exports.getAuthUser = getAuthUser;
 exports.authenticateUser = authenticateUser;
 exports.updateUserDetails = updateUserDetails;
 exports.updateUserPassword = updateUserPassword;
 exports.uploadUserPhoto = uploadUserPhoto;
+exports.bookService = BookService;
 
 exports.getAuthAdmin = getAuthAdmin;
 exports.authenticateAdmin = authenticateAdmin;
@@ -822,7 +1110,7 @@ exports.getAllUsers = getAllUsers
 exports.delUserById = delUserById
 exports.getAllServiceStations = getAllServiceStations
 exports.approveServiceStationById = approveServiceStationById
-exports.getAllRequests = getAllRequests
+exports.getUnhandledBookings = getUnhandledBookings
 exports.delServiceStationById = delServiceStationById
 
 exports.getAuthVendor = getAuthVendor
@@ -832,3 +1120,6 @@ exports.updateVendorPassword = updateVendorPassword
 exports.addServiceStation = addServiceStation
 exports.closeServiceStation = closeServiceStation
 exports.uploadServiceStationPhoto=uploadServiceStationPhoto
+exports.getAllRequests = getAllRequests
+exports.handleBookingRequest = handleBookingRequest
+exports.updateProcess = updateProcess

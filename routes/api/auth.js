@@ -44,7 +44,16 @@ router.put('/user/updatepassword', [check('currentPassword', 'Current Password i
 //@access Private
 router.put('/user/uploadphoto', auth('user'), AuthController.uploadUserPhoto)
 
-
+//@route POST api/booking/user
+router.post('/user/bookService',   [
+    check('vehicleType', 'Vehicle Type is required').not().isEmpty(),
+    check('vehicleMake', 'Vehicle Make is required').not().isEmpty(),
+    check('vehicleModel', 'Vehicle Model is required').not().isEmpty(),
+    check('vehicleNo', 'Vehicle Number is required').not().isEmpty(),
+    check('serviceType', 'Service Type is required').not().isEmpty(),
+    check('contactNo', 'Contact Number is required').not().isEmpty(),
+    check('serviceStationId', 'Service ID is required').not().isEmpty(),
+], auth('user'), AuthController.bookService);
 
 // Admin Routes
 
@@ -97,15 +106,15 @@ router.delete('/admin/deleteservicestation/:id', auth('admin'), AuthController.d
 //@route GET api/auth/vendor
 //@desc Get auth vendor
 //@access Private
-router.get('/vendor', auth('vendor'), AuthController.getAuthVendor)
+router.get('/vendor', AuthController.getAuthVendor)
 
 //@route POST api/auth/vendor
 //@desc Authenticate and get token
 //@access Public
-router.post('/vendor', [
+router.post('/vendor', auth('vendor'), [
     check('email', 'Please enter a valid email').isEmail(),
     check('password', 'Password is required').exists()
-], AuthController.authenticateVendor)
+],  AuthController.authenticateVendor)
 
 //@route PUT api/auth/vendor/updatedetails
 //@desc Update vendor details
@@ -136,5 +145,16 @@ router.put('/vendor/closeservicestation', auth('vendor'), AuthController.closeSe
 //@desc Upload service station photo
 //@access Private
 router.put('/vendor/uploadservicestationphoto', auth('vendor'), AuthController.uploadServiceStationPhoto)
+
+//@route GET api/auth/vendor/getUnhandledBookings
+router.get('/vendor/getUnhandledBookings' , auth('vendor'),AuthController.getUnhandledBookings);
+
+//@route POST api/auth/vendor/handleBookingRequest
+router.post('/vendor/handleRequest', [
+    check('approved', 'Approval is required').not().isEmpty(),
+    check('bookingId', 'Booking is required').not().isEmpty()
+], auth('vendor'), AuthController.handleBookingRequest);
+
+router.post('/vendor/updateProcess', auth('vendor'), AuthController.updateProcess);
 
 module.exports = router
