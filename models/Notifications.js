@@ -1,25 +1,20 @@
 const mongoose = require('mongoose');
 
-const notification = new mongoose.Schema({
-    allNotifications:{
-        type: Array,
-        default: []
-    },
-    active: {
-        type: Array,
-        default: []
-    },
-})
 
 const NotificationsSchema = new mongoose.Schema({
-    client: {
-        type: notification
+    senderID: {
+        type: mongoose.Schema.ObjectId
     },
-    vendor: {
-        type: notification
+    receiverID: {
+        type: mongoose.Schema.ObjectId
     },
-    admin: {
-        type: notification
+    isRead: {
+        type: Boolean,
+        default: false
+    },
+    payload: {
+        type: Array,
+        default: []
     }
 });
 
