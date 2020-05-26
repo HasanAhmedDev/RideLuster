@@ -226,96 +226,157 @@ const uploadUserPhoto = async (req, res) => {
 const BookService = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-      return res.status(400).json({
-          success: false,
-          errors: errors.array()
-      });
+    return res.status(400).json({
+      success: false,
+      errors: errors.array()
+    });
   }
   const {
+    vehicleType,
+    vehicleMake,
+    vehicleModel,
+    vehicleNo,
+    contactNo,
+    serviceType,
+    serviceStationId,
+    createdAt
+  } = req.body;
+  try {
+    let booking = await Booking.findOne({
       vehicleType,
       vehicleMake,
       vehicleModel,
       vehicleNo,
       contactNo,
       serviceType,
-      serviceStationId,
-      createdAt
-  } = req.body;
-  try{
-      let booking = await Booking.findOne({
-          vehicleType,
-          vehicleMake,
-          vehicleModel,
-          vehicleNo,
-          contactNo,
-          serviceType,
-          client: req.user.id,
-          serviceStation: serviceStationId,
-          isApproved: false
-      });
-      if(booking){
-        return res.status(400).json({
-          success: false,
-          msg: "Booking Already Exist"
-        })
-      }
-      let serviceStation = await ServiceStation.findById(serviceStationId);
-      if(!serviceStation){
-        return res.status(400).json({
-          success: false,
-          errors: [{
-            msg: "Service Station does not exist"
-          }]
-        });
-      }
-      if(serviceStation.status === 'Closed'){
-        return res.status(400).json({
-          success: false,
-          errors: [{
-            msg: "Service Station is closed"
-          }]
-        });
-      }
-      let user = await User.findById(req.user.id);
-      if(!user){
-        return res.status(400).json({
-          success: false,
-          errors: [{
-            msg: "User did not recognize, You need to sign in again"
-          }]
-        });
-      }
-      booking = new Booking({
-          vehicleType,
-          vehicleMake,
-          vehicleModel,
-          vehicleNo,
-          serviceType,
-          contactNo,
-          client: req.user.id,
-          serviceStation: serviceStationId,
-          createdAt
-      });
-      await booking.save();
-      await socketio.getIO().emit('BookingRequestedToVendor', {
-        vendor: serviceStation.owner,
-        msg: `Booking from Client ${req.user.id}`, 
-        booking: booking
-      });
-      return res.status(200).json({
-        success: true,
-        bookingRequestAt: booking.createdAt,
-        msg: "Request sent successfully!"
-      });
-  }
-  catch (error)
-  {
-    console.log(error.message)
-    return res.status(500).json({
+      client: req.user.id,
+      serviceStation: serviceStationId,
+      isApproved: false
+    });
+    if (booking) {
+      return res.status(400).json({
+        success: false,
+        msg: "Booking Already Exist"
+      })
+    }
+    let serviceStation = await ServiceStation.findById(serviceStationId);
+    if (!serviceStation) {
+      return res.status(400).json({
         success: false,
         errors: [{
-            msg: "Server Error"
+          msg: "Service Station does not exist"
         }]
+      });
+    }
+    if (serviceStation.status === 'Closed') {
+      return res.status(400).json({
+        success: false,
+        errors: [{
+          msg: "Service Station is closed"
+        }]
+      });
+    }
+    let user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        errors: [{
+          msg: "User did not recognize, You need to sign in again"
+        }]
+      });
+    }
+    booking = new Booking({
+      vehicleType,
+      vehicleMake,
+      vehicleModel,
+      vehicleNo,
+      serviceType,
+      contactNo,
+      client: req.user.id,
+      serviceStation: serviceStationId,
+      createdAt
+    });
+    await booking.save();
+    await socketio.getIO().emit('BookingRequestedToVendor', {
+      vendor: serviceStation.owner,
+      msg: `Booking from Client ${req.user.id}`,
+      booking: booking
+    });
+    return res.status(200).json({
+      success: true,
+      bookingRequestAt: booking.createdAt,
+      msg: "Request sent successfully!"
+    });
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      errors: [{
+        msg: "Server Error"
+      }]
+    });
+  }
+}
+
+const searchServiceStation = async (req, res) => {
+  try {
+    let query = {
+      area: req.body.area
+    };
+    if (!req.body.area) {
+      return res.status(400).json({
+        success: false,
+        error: [{
+          msg: "Invalid Search"
+        }]
+      })
+    }
+    let pageNo = +req.body.page
+    if (!pageNo || pageNo == 0) {
+      pageNo = 1
+    }
+    var options = {
+      sort: {
+        date: -1
+      },
+      populate: {
+        path: 'owner',
+        select: 'name email createdAt',
+      },
+      page: pageNo,
+      limit: +config.get('perPage')
+    };
+    ServiceStation.paginate(query, options, function (err, result) {
+      if (err) {
+        throw err
+      }
+      if (result.docs.length == 0) {
+        return res.status(404).json({
+          success: false,
+          error: [{
+            msg: "No Service Station Found"
+          }]
+        })
+      }
+      res.status(200).json({
+        success: true,
+        docs: result.docs,
+        totaldocs: result.totalDocs,
+        page: result.page,
+        totalpages: result.totalPages,
+        hasnext: result.hasNextPage,
+        nextpage: result.nextPage,
+        hasprev: result.hasPrevPage,
+        prevpage: result.prevPage,
+      })
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      errors: [{
+        msg: "Server Error"
+      }]
     });
   }
 }
@@ -909,9 +970,8 @@ const uploadServiceStationPhoto = async (req, res) => {
   });
 }
 
-const getUnhandledBookings = async (req,res, next) => {
-  try
-  {
+const getUnhandledBookings = async (req, res, next) => {
+  try {
     const Bookings = await Booking.find({
       isApproved: false,
       isCompleted: false
@@ -920,8 +980,7 @@ const getUnhandledBookings = async (req,res, next) => {
       success: true,
       bookings: Bookings
     })
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error.message)
     return res.status(500).json({
       success: false,
@@ -944,17 +1003,18 @@ const handleBookingRequest = async (req, res, next) => {
     approved,
     bookingId
   } = req.body;
-  try
-  {
+  try {
     const bookingExist = await Booking.findById(bookingId);
-    if(!bookingExist){
+    if (!bookingExist) {
       return res.status(400).json({
         success: false,
-        errors: [{ msg: 'Booking does not exist any longer!'}]
+        errors: [{
+          msg: 'Booking does not exist any longer!'
+        }]
       })
     }
     const serviceStation = await ServiceStation.findById(bookingExist.serviceStation);
-    if(!serviceStation){
+    if (!serviceStation) {
       res.status(400).json({
         success: false,
         errors: [{
@@ -962,7 +1022,7 @@ const handleBookingRequest = async (req, res, next) => {
         }]
       })
     }
-    if(approved === 'false'){
+    if (approved === 'false') {
       await Booking.findByIdAndDelete(bookingId);
       await socketio.getIO().emit('HandledBookingRequestResponseToClient', {
         clientId: bookingExist.client,
@@ -974,8 +1034,8 @@ const handleBookingRequest = async (req, res, next) => {
         msg: "Request Denied Successfully!"
       })
     }
-    await Booking.findByIdAndUpdate(bookingId, { 
-      isApproved: true, 
+    await Booking.findByIdAndUpdate(bookingId, {
+      isApproved: true,
       status: 'Waiting'
     })
     let allServiceStationBookings = serviceStation.bookings ? serviceStation.bookings : [];
@@ -983,7 +1043,7 @@ const handleBookingRequest = async (req, res, next) => {
     await ServiceStation.findByIdAndUpdate(serviceStation._id, {
       bookings: allServiceStationBookings
     });
-      
+
     await socketio.getIO().emit('HandledBookingRequestResponseToClient', {
       clientId: bookingExist.client,
       isApproved: approved,
@@ -993,8 +1053,7 @@ const handleBookingRequest = async (req, res, next) => {
       success: true,
       msg: "Request Accepted Successfully!"
     })
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error.message)
     return res.status(500).json({
       success: false,
@@ -1010,10 +1069,9 @@ const updateProcess = async (req, res, next) => {
     bookingId,
     status,
   } = req.body;
-  try
-  {
+  try {
     let booking = await Booking.findById(bookingId);
-    if(!booking){
+    if (!booking) {
       return res.status(400).json({
         success: false,
         errors: [{
@@ -1021,26 +1079,26 @@ const updateProcess = async (req, res, next) => {
         }]
       })
     }
-    let serviceStation =  await ServiceStation.findById(booking.serviceStation);
-    if(!serviceStation){
+    let serviceStation = await ServiceStation.findById(booking.serviceStation);
+    if (!serviceStation) {
       res.status(400).json({
         success: false,
         msg: "Service Station does not exist"
       })
     }
-    switch(status){
+    switch (status) {
       case 'Waiting':
         booking.status = 'Active';
         let allActiveProcess = serviceStation.activeProcess;
         let alreadyExist = allActiveProcess.find(id => id == bookingId)
-        if(alreadyExist){
+        if (alreadyExist) {
           return res.status(400).json({
             success: false,
             msg: "Already Serving this Process"
           })
         }
         allActiveProcess.push(bookingId);
-        let updatedBookings = serviceStation.bookings.filter((book)=>{
+        let updatedBookings = serviceStation.bookings.filter((book) => {
           return book != bookingId;
         })
         await ServiceStation.findByIdAndUpdate((await serviceStation)._id, {
@@ -1078,15 +1136,13 @@ const updateProcess = async (req, res, next) => {
           active: filteredActiveProcess,
           bookings: serviceStation.bookings
         })
-        default:
-          res.status(400).json({
-            success: false,
-            msg: "Unknown status sent by vendor"
-          })
-      }
-  }
-  catch(errors)
-  {
+      default:
+        res.status(400).json({
+          success: false,
+          msg: "Unknown status sent by vendor"
+        })
+    }
+  } catch (errors) {
     console.log(errors);
     res.status(500).json({
       success: false,
@@ -1103,6 +1159,7 @@ exports.updateUserDetails = updateUserDetails;
 exports.updateUserPassword = updateUserPassword;
 exports.uploadUserPhoto = uploadUserPhoto;
 exports.bookService = BookService;
+exports.searchserviceStation = searchServiceStation
 
 exports.getAuthAdmin = getAuthAdmin;
 exports.authenticateAdmin = authenticateAdmin;
@@ -1119,7 +1176,7 @@ exports.updateVendorDetails = updateVendorDetails
 exports.updateVendorPassword = updateVendorPassword
 exports.addServiceStation = addServiceStation
 exports.closeServiceStation = closeServiceStation
-exports.uploadServiceStationPhoto=uploadServiceStationPhoto
+exports.uploadServiceStationPhoto = uploadServiceStationPhoto
 exports.getAllRequests = getAllRequests
 exports.handleBookingRequest = handleBookingRequest
 exports.updateProcess = updateProcess

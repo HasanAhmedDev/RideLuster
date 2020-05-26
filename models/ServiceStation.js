@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 const slugify = require('slugify')
 
 const ServiceStationSchema = new mongoose.Schema({
@@ -30,11 +31,11 @@ const ServiceStationSchema = new mongoose.Schema({
         required: [true, 'Types of services provided are required'],
         enum: ['Wash', 'Polish', 'Oil Change'],
     },
-    activeProcess:{
+    activeProcess: {
         type: [mongoose.Schema.ObjectId],
         ref: 'booking',
     },
-    bookings:{
+    bookings: {
         type: [mongoose.Schema.ObjectId],
         ref: 'booking',
     },
@@ -70,6 +71,7 @@ const ServiceStationSchema = new mongoose.Schema({
     }
 })
 
+ServiceStationSchema.plugin(mongoosePaginate)
 ServiceStationSchema.pre('save', function (next) {
     this.slug = slugify(this.name, {
         lower: true

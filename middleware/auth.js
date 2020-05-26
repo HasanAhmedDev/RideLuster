@@ -77,7 +77,7 @@ module.exports = function (type) {
                         }]
                     })
                 }
-                req.vendor = 'decoded.vendor'
+                req.vendor = decoded.vendor
             }
             next()
         } catch (error) {
