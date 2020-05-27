@@ -43,14 +43,10 @@ connectDB().then(()=>{
     console.log("Socket.io Connected");
 
     socket.on('vendor', sio => {
-      vendorIO(socket);
+      vendorIO(socket, sio);
     })
     socket.on('client', sio => {
-      clientIO(socket);
-    })
-    
-    socket.on('disconnect', socket => {
-      console.log(`Socket with ID = ${socket.id} Disconnected!!!`);
+      clientIO(socket, sio);
     })
   })
 })

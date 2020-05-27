@@ -4,6 +4,8 @@ const Vendor = require('../models/Vendor');
 const Booking = require('../models/Booking');
 const ServiceStation = require('../models/ServiceStation');
 const socketio = require('../socket.io/socket');
+const userSocket = require('../socket.io/user');
+const vendorSocket = require('../socket.io/vendor');
 const notifications = require('../models/Notifications');
 
 const bcrypt = require('bcryptjs');
@@ -297,11 +299,16 @@ const BookService = async (req, res, next) => {
       createdAt
     });
     await booking.save();
-    await socketio.getIO().emit('BookingRequestedToVendor', {
-      vendor: serviceStation.owner,
-      msg: `Booking from Client ${req.user.id}`,
-      booking: booking
+    let notify = new notifications({
+      senderID: req.user.id,
+      receiverID: serviceStation.owner,
+      payload: [{
+        msg: `Booking from Client`,
+        booking: booking
+      }]
     });
+    await notify.save();
+    vendorSocket.sendNotificationToVendor(notify);
     return res.status(200).json({
       success: true,
       bookingRequestAt: booking.createdAt,
@@ -1024,11 +1031,16 @@ const handleBookingRequest = async (req, res, next) => {
     }
     if (approved === 'false') {
       await Booking.findByIdAndDelete(bookingId);
-      await socketio.getIO().emit('HandledBookingRequestResponseToClient', {
-        clientId: bookingExist.client,
-        isApproved: approved,
-        booking: bookingExist
+      let notify = new notifications({
+        senderID: req.vendor.id,
+        receiverID: bookingExist.client,
+        payload: [{
+            isApproved: approved,
+            booking: bookingExist
+        }]
       })
+      await notify.save();
+      userSocket.sendNotificationToClient(notify)
       return res.status(200).json({
         success: true,
         msg: "Request Denied Successfully!"
@@ -1044,11 +1056,16 @@ const handleBookingRequest = async (req, res, next) => {
       bookings: allServiceStationBookings
     });
 
-    await socketio.getIO().emit('HandledBookingRequestResponseToClient', {
-      clientId: bookingExist.client,
-      isApproved: approved,
-      booking: bookingExist
+    let notify = new notifications({
+      senderID: req.vendor.id,
+      receiverID: bookingExist.client,
+      payload: [{
+          isApproved: approved,
+          booking: bookingExist
+      }]
     })
+    await notify.save();
+    userSocket.sendNotificationToClient(notify)
     return res.status(200).json({
       success: true,
       msg: "Request Accepted Successfully!"
@@ -1086,6 +1103,7 @@ const updateProcess = async (req, res, next) => {
         msg: "Service Station does not exist"
       })
     }
+    let notify;
     switch (status) {
       case 'Waiting':
         booking.status = 'Active';
@@ -1106,11 +1124,16 @@ const updateProcess = async (req, res, next) => {
           bookings: updatedBookings
         })
         await Booking.findByIdAndUpdate(bookingId, booking);
-        await socketio.getIO().emit('processUpdated', {
-          clientId: booking.client,
-          status: booking.status,
-          booking: booking,
+        notify = new notifications({
+          senderID: req.vendor.id,
+          receiverID: booking.client,
+          payload: [{
+            status: booking.status,
+            booking: booking
+          }]
         })
+        await notify.save();
+        userSocket.sendNotificationToClient(notify);
         return res.status(200).json({
           success: true,
           active: allActiveProcess,
@@ -1126,11 +1149,16 @@ const updateProcess = async (req, res, next) => {
           activeProcess: filteredActiveProcess
         })
         await Booking.findByIdAndUpdate(bookingId, booking);
-        await socketio.getIO().emit('processUpdated', {
-          clientId: booking.client,
-          status: booking.status,
-          booking: booking
+        notify = new notifications({
+          senderID: req.vendor.id,
+          receiverID: booking.client,
+          payload: [{
+            status: booking.status,
+            booking: booking
+          }]
         })
+        await notify.save();
+        userSocket.sendNotificationToClient(notify);
         return res.status(200).json({
           success: true,
           active: filteredActiveProcess,
@@ -1144,7 +1172,7 @@ const updateProcess = async (req, res, next) => {
     }
   } catch (errors) {
     console.log(errors);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       errors: [{
         msg: errors
