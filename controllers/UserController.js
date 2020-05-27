@@ -7,6 +7,7 @@ const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const config = require('config')
+const normalize = require('normalize-url')
 
 
 const registerUser = async (req, res) => {
@@ -35,11 +36,15 @@ const registerUser = async (req, res) => {
                 }]
             })
         }
-        const photo = gravatar.url(email, {
-            s: '200',
-            r: 'pg',
-            d: 'mm'
-        })
+        const photo = normalize(
+            gravatar.url(email, {
+                s: '200',
+                r: 'pg',
+                d: 'mm'
+            }), {
+                forceHttps: true
+            }
+        );
         user = new User({
             firstname,
             lastname,
