@@ -1,0 +1,16 @@
+.landing-body{
+    background-color: white;
+}
+.bg-img{
+    width: 100%;
+    height: max-content;
+    background: url('../../assets/toa-heftiba-xAQZ8plN8cM-unsplash.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+}
+.overlay{
+    /* padding-bottom: 180px; */
+    width: 100%;
+    background-color: rgba(128, 128, 128,0.5);
+}

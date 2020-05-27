@@ -1,0 +1,41 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+.mainNavbar{
+    background-color: transparent;
+    width: 100%;
+    display: flex;
+}
+.d{
+    text-decoration: none;
+    color: white;
+}
+.d:hover{
+    text-decoration: none;
+    color: white;
+}
+.img{
+    background: url('../../../assets/logo.png.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 80px;
+    height: 80px;
+    margin-left: 3%;
+}
+.button-containers{
+    margin-left: auto;
+    width: max-content;
+    display: flex;
+    height: max-content;
+    align-self: center;
+    margin-right: 3%;
+}
+.signup{
+    height: max-content;
+    align-self: center;
+}
+.login{
+    height: max-content;
+    align-self: center;
+}

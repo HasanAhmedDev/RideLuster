@@ -1,0 +1,15 @@
+.logo{
+    /* background: url('../../assets/logo.png.png'); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 80px;
+    height: 80px;
+    margin: 0px;
+    padding: 0px;
+    margin-left: 4%;
+    border: none;
+    outline: none;
+}
+.removeOutline{
+    outline: none;
+}

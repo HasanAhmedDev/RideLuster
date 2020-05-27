@@ -1,0 +1,43 @@
+.main-request{
+    width: 100%;
+    height: max-content;
+    padding: 20px;
+    /* text-align: center; */
+}
+.r-head{
+    width: max-content;
+    color: #333;
+    margin: 20px auto !important;
+    padding: 10px;
+}
+.body-request{
+    margin: 20px 10px;
+}
+.r-card{
+    margin-top: 30px !important;
+}
+
+.r-h5{
+    width: max-content;
+    margin: 4px auto;
+    font-weight: 600;
+}
+.r-ul{
+    list-style: none;
+    margin-top: 10px;
+}
+.r-ul li{
+    margin: 5px 0px;
+}
+.right.floated.mini.ui.image{
+    width: 65px !important;
+    height: 65px !important;
+}
+.r-inp{
+    border-radius: 0.25rem;
+    outline: none;
+    border: none;
+    background-color: #c5c5c5;
+    width: 100%;
+    padding: 3px 10px;
+}

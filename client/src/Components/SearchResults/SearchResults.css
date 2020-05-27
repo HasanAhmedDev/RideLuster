@@ -1,0 +1,57 @@
+
+.searchres
+{
+    display: flex;
+    justify-content: center;
+}
+.searchres h3
+{
+    margin: 2% !important;
+}
+.desc
+{
+    font-weight: bold;
+}
+.searchimg{
+    width: 100%;
+    height: 180px;
+}
+.green{
+    color: yellowgreen;
+}
+.red{
+    color: crimson;
+}
+.main{
+    width: 90% !important;
+    margin: 30px auto;
+    margin-top: 10px;
+}
+.segment{
+    height: max-content !important;
+    
+}
+.card{
+    margin: auto !important;
+    height: 100%;
+}
+.card:hover{
+    cursor: pointer;
+    background-color: #e0e1e2;
+}
+.services{
+    height: max-content;
+    list-style: none;
+    font-size: 16px;
+    font-weight: 400;
+}
+.services li{
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+}
+.ic{
+    width: max-content;
+    position: absolute;
+    right: 10%;
+}
