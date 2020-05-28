@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { Button, Form, Input } from 'semantic-ui-react';
 import  { Redirect } from 'react-router-dom'
 
 import Footer from '../Footer/Footer';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { setAlert } from '../../actions/alert';
 import { authenticateUser } from '../../actions/userAuth';
 //import { Link } from 'react-router-dom';
@@ -12,42 +12,39 @@ const divStyle = {
   height: window.screen.height,
 };
 
-const initialState = {
-  email: '',
-  password: '',
-  emailErr: '',
-  passErr: '',
-};
 
-class Login extends Component {
-  constructor(props){
-    super(props)
-    this.state = initialState;
-  }
+const Login = props => {
   
-
-  validate = () => {
+  const [state, setState] = useState({
+      email: '',
+      password: '',
+      emailErr: '',
+      passErr: '',
+  });
+  const userAuth = useSelector(st => st.userAuth);
+  if(userAuth.isAuthenticated)
+    props.history.replace('searchResult');
+  const validate = () => {
     let emailErr = '';
     let passErr = '';
-    if (this.state.email) {
-      if (/^[A-Za-z0-9]\S*@\S+\.\S+$/.test(this.state.email) === false) {
+    if (state.email) {
+      if (/^[A-Za-z0-9]\S*@\S+\.\S+$/.test(state.email) === false) {
         emailErr = '* Email must be in a valid format.';
       }
     } else {
       emailErr = '* This field must be non-empty.';
     }
 
-    this.setState({ emailErr });
 
-    if (this.state.password) {
-      if (this.state.password.length < 8) {
+    if (state.password) {
+      if (state.password.length < 8) {
         passErr = '* Password must contain atleast 8 characters.';
       }
     } else {
       passErr = '* This field must be non-empty.';
     }
 
-    this.setState({ passErr });
+    setState({ ...state, emailErr, passErr });
 
     if (emailErr || passErr) {
       return false;
@@ -55,56 +52,54 @@ class Login extends Component {
     return true;
   };
 
-  handleSubmit = async (evt) => {
+  const handleSubmit = async (evt) => {
     evt.preventDefault();
-    let isvalid = this.validate();
+    let isvalid = validate();
+    console.log(state);
     if (isvalid) {
-      this.setState(initialState);
-      this.props.setAlert('Log in Successfull', 'success');
-      await this.props.authenticateUser('http://localhost:5000/api/auth/user/', {
-        email: this.state.email,
-        password: this.state.password
+      props.setAlert('Log in Successfull', 'success');
+      await props.authenticateUser('http://localhost:5000/api/auth/user/', {
+        email: state.email,
+        password: state.password
       })
-      if(this.props.payload.userAuth.isAuthenticated){
-          this.props.history.push({pathname: 'searchResult'});
-        }
     }
   };
 
-  handleChange = (evt) => {
-    this.setState({
+  const handleChange = (evt) => {
+    setState({
+      ...state,
       [evt.target.name]: evt.target.value,
     });
   };
 
-  render() {
+
     //console.log(window.screen.height);
     return (
       <div className='body' style={divStyle}>
         <div className='overlay'>
           <div className='main-form'>
-            <Form onSubmit={this.handleSubmit} className='inside-form'>
+            <Form onSubmit={handleSubmit} className='inside-form'>
               <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
               <Form.Field style={{ paddingBottom: '6%' }}>
                 <label>Email</label>
                 <Input
                   name='email'
-                  value={this.state.email}
-                  onChange={this.handleChange}
+                  value={state.email}
+                  onChange={handleChange}
                   placeholder='Enter Email'
                 />
-                <div className='valerr'>{this.state.emailErr}</div>
+                <div className='valerr'>{state.emailErr}</div>
               </Form.Field>
               <Form.Field style={{ paddingBottom: '6%' }}>
                 <label>Password</label>
                 <Input
                   name='password'
-                  value={this.state.password}
-                  onChange={this.handleChange}
+                  value={state.password}
+                  onChange={handleChange}
                   type='password'
                   placeholder='Enter Password'
                 />
-                <div className='valerr'>{this.state.passErr}</div>
+                <div className='valerr'>{state.passErr}</div>
               </Form.Field>
               <Form.Field>
                 <Button fluid color='blue' type='submit'>
@@ -117,11 +112,10 @@ class Login extends Component {
         <Footer />
       </div>
     );
-  }
 }
-const mapStateToProps = state => {
-  return {
-    payload: state
-  };
-};
-export default connect(mapStateToProps, { setAlert, authenticateUser })(Login);
+// const mapStateToProps = state => {
+//   return {
+//     payload: state
+//   };
+// };
+export default connect(null, { setAlert, authenticateUser })(Login);

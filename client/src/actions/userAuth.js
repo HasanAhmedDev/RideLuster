@@ -5,19 +5,19 @@ import {
 } from './types';
 import setToken from '../utils/setToken';
 
-export const authenticateUser = ( url, UserData ) => async dispatch => {
+export const authenticateUser = ( url, UserData ) => dispatch => {
+    console.log(UserData);
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
-    try
-    {
-        const res = await axios.post(url, UserData, config);
+    axios.post(url, UserData, config).then((res)=>{
         console.log(res);
+
         if(res.data){
             setToken(res.data.token);
-            dispatch({
+            return dispatch({
                 type: USER_AUTH_SUCCESSFUL,
                 payload: {
                     token: res.data.token,
@@ -25,19 +25,18 @@ export const authenticateUser = ( url, UserData ) => async dispatch => {
                 }
             })
         }
-    }
-    catch(error)
-    {
-        console.log(error)
-        setToken();
-        dispatch({
+    }).catch((err)=>{
+        console.log(err);
+        return dispatch({
             type: USER_AUTH_UNSUCCESSFUL,
             payload: {
                 token: null,
                 isAuthenticated: false,
             }
         })
-    }
+    })
+    
+    
 }
 
 
