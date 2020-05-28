@@ -1,3 +1,6 @@
-export const ActionTypes = {
-    
-}
+export const SET_ALERT = 'SET_ALERT'
+export const REMOVE_ALERT = 'REMOVE_ALERT'
+
+//USER
+export const USER_AUTH_SUCCESSFUL = 'USER_AUTH_SUCCESSFUL'
+export const USER_AUTH_UNSUCCESSFUL = 'USER_AUTH_UNSUCCESSFUL'
