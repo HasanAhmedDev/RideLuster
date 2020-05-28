@@ -14,13 +14,22 @@ app.use(
   })
 );
 
+//Set Headers
+app.use(function (req, res, next) {
+
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  next();
+});
+
 //File uploading
 app.use(fileupload());
 
 //Static folder
 app.use(express.static(path.join(__dirname, 'public/uploads')));
 
-app.get('/', (req, res) => res.send('API running'));
+
 
 //Defining Routes
 app.use('/api/users', require('./routes/api/users'));
@@ -28,6 +37,7 @@ app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/admins', require('./routes/api/admins'));
 app.use('/api/vendors', require('./routes/api/vendors'));
 
+app.get('/', (req, res) => res.send('API running'));
 const PORT = process.env.PORT || 5000;
 
 

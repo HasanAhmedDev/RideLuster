@@ -1,11 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import "./SearchResults.css";
 import { Grid, Segment, Card, Button } from "semantic-ui-react";
+import { connect } from "react-redux";
 import Nav from '../Utility Components/Nav';
 import Footer from '../Footer/Footer';
-import { Link } from 'react-router-dom';
-const SearchResults = () => {
-    
+import { Link, Redirect } from 'react-router-dom';
+const SearchResults = props => {
+    console.log(props.userAuth);
+    if(!props.userAuth.isAuthenticated)
+      return <Redirect to="login" />
     return (
       <div>
         <div className="nav">
@@ -158,4 +161,7 @@ const SearchResults = () => {
       </div>
     );
 }
-export default SearchResults;
+const mapStateToProps = state => ({
+  userAuth: state.userAuth
+});
+export default connect(mapStateToProps)(SearchResults);

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Form, Input } from 'semantic-ui-react';
+import  { Redirect } from 'react-router-dom'
+
 import Footer from '../Footer/Footer';
 import { connect } from 'react-redux';
 import { setAlert } from '../../actions/alert';
+import { authenticateUser } from '../../actions/userAuth';
 //import { Link } from 'react-router-dom';
 import './Login.css';
 const divStyle = {
@@ -17,7 +20,11 @@ const initialState = {
 };
 
 class Login extends Component {
-  state = initialState;
+  constructor(props){
+    super(props)
+    this.state = initialState;
+  }
+  
 
   validate = () => {
     let emailErr = '';
@@ -48,12 +55,19 @@ class Login extends Component {
     return true;
   };
 
-  handleSubmit = (evt) => {
+  handleSubmit = async (evt) => {
     evt.preventDefault();
     let isvalid = this.validate();
     if (isvalid) {
       this.setState(initialState);
       this.props.setAlert('Log in Successfull', 'success');
+      await this.props.authenticateUser('http://localhost:5000/api/auth/user/', {
+        email: this.state.email,
+        password: this.state.password
+      })
+      if(this.props.payload.userAuth.isAuthenticated){
+          this.props.history.push({pathname: 'searchResult'});
+        }
     }
   };
 
@@ -105,4 +119,9 @@ class Login extends Component {
     );
   }
 }
-export default connect(null, { setAlert })(Login);
+const mapStateToProps = state => {
+  return {
+    payload: state
+  };
+};
+export default connect(mapStateToProps, { setAlert, authenticateUser })(Login);
