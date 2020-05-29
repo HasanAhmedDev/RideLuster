@@ -5,29 +5,27 @@ import {
 } from './types';
 import setToken from '../utils/setToken';
 
-export const authenticateUser = ( url, UserData ) => async dispatch => {
+export const authenticateUser = ( url, UserData, userType ) => dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
-    try
-    {
-        const res = await axios.post(url, UserData, config);
-        console.log(res);
-        if(res.data){
-            setToken(res.data.token);
-            dispatch({
-                type: USER_AUTH_SUCCESSFUL,
-                payload: {
-                    token: res.data.token,
-                    isAuthenticated: true,
-                }
-            })
-        }
+    
+    axios.post(url, UserData, config).then((res)=>{
+    console.log(res);
+    if(res.data){
+        setToken(res.data.token);
+        dispatch({
+            type: USER_AUTH_SUCCESSFUL,
+            payload: {
+                token: res.data.token,
+                isAuthenticated: true,
+                type: userType
+            }
+        })
     }
-    catch(error)
-    {
+    }).catch((error)=>{
         console.log(error)
         setToken();
         dispatch({
@@ -35,9 +33,10 @@ export const authenticateUser = ( url, UserData ) => async dispatch => {
             payload: {
                 token: null,
                 isAuthenticated: false,
+                type: userType
             }
         })
-    }
+    })
 }
 
 

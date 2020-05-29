@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Button, Form, Input } from 'semantic-ui-react';
-import { Redirect } from 'react-router-dom';
+
 
 import Footer from '../Footer/Footer';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { setAlert } from '../../actions/alert';
 import { authenticateUser } from '../../actions/userAuth';
 //import { Link } from 'react-router-dom';
@@ -12,41 +12,55 @@ const divStyle = {
   height: window.screen.height,
 };
 
-const initialState = {
-  email: '',
-  password: '',
-  emailErr: '',
-  passErr: '',
-};
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = initialState;
-  }
 
-  validate = () => {
+const Login = props => {
+  
+  const [state, setState] = useState({
+      email: '',
+      password: '',
+      emailErr: '',
+      passErr: '',
+      tab: 'client'
+  });
+  const userAuth = useSelector(st => st.userAuth);
+  if(userAuth.isAuthenticated)
+    switch(userAuth.type){
+      case "client":
+        props.history.replace('searchResult');
+        break;
+      case "vendor":
+        props.history.replace('vendor');
+        break;
+      case "admin":
+        props.history.replace('admin');
+        break;
+      default:
+        setAlert("You Need to Sign In Again", false);
+        break;
+    }
+    
+  const validate = () => {
     let emailErr = '';
     let passErr = '';
-    if (this.state.email) {
-      if (/^[A-Za-z0-9]\S*@\S+\.\S+$/.test(this.state.email) === false) {
+    if (state.email) {
+      if (/^[A-Za-z0-9]\S*@\S+\.\S+$/.test(state.email) === false) {
         emailErr = '* Email must be in a valid format.';
       }
     } else {
       emailErr = '* This field must be non-empty.';
     }
 
-    this.setState({ emailErr });
 
-    if (this.state.password) {
-      if (this.state.password.length < 8) {
+    if (state.password) {
+      if (state.password.length < 8) {
         passErr = '* Password must contain atleast 8 characters.';
       }
     } else {
       passErr = '* This field must be non-empty.';
     }
 
-    this.setState({ passErr });
+    setState({ ...state, emailErr, passErr });
 
     if (emailErr || passErr) {
       return false;
@@ -54,55 +68,83 @@ class Login extends Component {
     return true;
   };
 
-  handleSubmit = async (evt) => {
+  const handleSubmit = async (evt) => {
     evt.preventDefault();
-    let isvalid = this.validate();
+    let isvalid = validate();
+    console.log(state);
+    let url;
+    let payload = {
+      email: state.email,
+      password: state.password
+    }
     if (isvalid) {
-      this.setState(initialState);
-      await this.props.authenticateUser('api/auth/user/', {
-        email: this.state.email,
-        password: this.state.password,
-      });
-      if (this.props.payload.userAuth.isAuthenticated) {
-        this.props.history.push({ pathname: 'searchResult' });
+      await props.setAlert('Log in Successfull', 'success');
+      switch(state.tab){
+        case 'vendor':
+          url = 'http://localhost:5000/api/auth/vendor';
+          break;
+        case 'admin':
+          url = 'http://localhost:5000/api/auth/admin'
+          break;
+        default:
+          url = 'http://localhost:5000/api/auth/user';
+          break;
       }
+      await props.authenticateUser(url, payload, state.tab);
     }
   };
 
-  handleChange = (evt) => {
-    this.setState({
+  const handleChange = (evt) => {
+    setState({
+      ...state,
       [evt.target.name]: evt.target.value,
     });
   };
 
-  render() {
+  const switchTabs = (evt) => {
+    const tab = evt.target.name;
+    setState({
+      ...state,
+      tab: tab
+    })
+    console.log(state.tab);
+  }
+
     //console.log(window.screen.height);
     return (
       <div className='body' style={divStyle}>
         <div className='overlay'>
           <div className='main-form'>
-            <Form onSubmit={this.handleSubmit} className='inside-form'>
+            <Form onSubmit={handleSubmit} className='inside-form'>
               <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
+              <div style={{textAlign: 'center', margin:'15px 0px'}}>
+                <div class="ui pointing menu" >
+                  <a  name="client" onClick={switchTabs} class="item">Client</a>
+                  <a  name="vendor" onClick={switchTabs} class="item">Vendor</a>
+                  <a  name="admin" onClick={switchTabs} class="item">Admin</a>
+                </div>
+                {/* <div class="ui segment active tab">Tab 1 Content</div> */}
+              </div>
               <Form.Field style={{ paddingBottom: '6%' }}>
                 <label>Email</label>
                 <Input
                   name='email'
-                  value={this.state.email}
-                  onChange={this.handleChange}
+                  value={state.email}
+                  onChange={handleChange}
                   placeholder='Enter Email'
                 />
-                <div className='valerr'>{this.state.emailErr}</div>
+                <div className='valerr'>{state.emailErr}</div>
               </Form.Field>
               <Form.Field style={{ paddingBottom: '6%' }}>
                 <label>Password</label>
                 <Input
                   name='password'
-                  value={this.state.password}
-                  onChange={this.handleChange}
+                  value={state.password}
+                  onChange={handleChange}
                   type='password'
                   placeholder='Enter Password'
                 />
-                <div className='valerr'>{this.state.passErr}</div>
+                <div className='valerr'>{state.passErr}</div>
               </Form.Field>
               <Form.Field>
                 <Button fluid color='blue' type='submit'>
@@ -115,11 +157,6 @@ class Login extends Component {
         <Footer />
       </div>
     );
-  }
 }
-const mapStateToProps = (state) => {
-  return {
-    payload: state,
-  };
-};
-export default connect(mapStateToProps, { setAlert, authenticateUser })(Login);
+
+export default connect(null, { setAlert, authenticateUser })(Login);
