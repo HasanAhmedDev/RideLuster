@@ -10,6 +10,7 @@ import setAuthToken from '../utils/setAuthToken';
 import { setAlert } from '../actions/alert';
 
 export const loadUser = () => async (dispatch) => {
+    console.log("LOAD USERS")
   if (localStorage.Token) {
     setAuthToken(localStorage.Token);
   }
@@ -63,6 +64,7 @@ export const authenticateUser = (url, UserData, userType) => (dispatch) => {
       const errors = err.response.data.errors;
       if (errors) {
         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        
       }
       dispatch({
         type: USER_AUTH_UNSUCCESSFUL,

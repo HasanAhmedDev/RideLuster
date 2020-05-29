@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import "./SearchResults.css";
 import { Grid, Segment, Card, Button } from "semantic-ui-react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import Nav from '../Utility Components/Nav';
 import Footer from '../Footer/Footer';
 import { Link, Redirect } from 'react-router-dom';
 const SearchResults = props => {
-    console.log(props.userAuth);
-    if(!props.userAuth.isAuthenticated)
+  const userAuth = useSelector(st => st.userAuth);
+    if(userAuth.isAuthenticated || userAuth.userType != 'client')
       return <Redirect to="login" />
     return (
       <div>
@@ -161,7 +161,5 @@ const SearchResults = props => {
       </div>
     );
 }
-const mapStateToProps = state => ({
-  userAuth: state.userAuth
-});
-export default connect(mapStateToProps)(SearchResults);
+
+export default connect(null)(SearchResults);
