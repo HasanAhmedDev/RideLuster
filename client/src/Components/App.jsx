@@ -14,6 +14,7 @@ import { Provider } from 'react-redux';
 import store from '../store';
 import setAuthToken from '../utils/setAuthToken';
 import { loadUser } from '../actions/userAuth';
+import photoUpload from './Utility Components/photoUpload';
 
 if (localStorage.Token) {
   setAuthToken(localStorage.Token);
@@ -37,6 +38,7 @@ const App = () => {
         <Route exact path='/vendor' component={vendor}></Route>
         <Route exact path='/admin' component={AdminPanel}></Route>
         <Route exact path='/book' component={BookingForm}></Route>
+        <Route exact path='/photoUpload' component={photoUpload}></Route>
       </BrowserRouter>
     </Provider>
   );

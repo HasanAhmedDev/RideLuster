@@ -167,6 +167,7 @@ const updateUserPassword = async (req, res) => {
 };
 
 const uploadUserPhoto = async (req, res) => {
+  console.log("called")
   if (!req.files) {
     return res.status(400).json({
       success: false,

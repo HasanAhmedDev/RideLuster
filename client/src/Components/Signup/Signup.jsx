@@ -27,7 +27,7 @@ const Signup = (props) => {
 
   const userAuth = useSelector((st) => st.userAuth);
   if (userAuth.isAuthenticated) props.history.replace('searchResult');
-  const vaidate = () => {
+  const validate = () => {
     let fnameErr = '';
     let lnameErr = '';
     let emailErr = '';
@@ -77,15 +77,15 @@ const Signup = (props) => {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     console.log(state);
-    let isvalid = true;
+    let isvalid = validate();
     if (isvalid) {
-      console.log('VALID!', props);
       await props.authenticateUser('http://localhost:5000/api/users/', {
         firstname: state.fname,
         lastname: state.lname,
         email: state.email,
         password: state.pass1,
       });
+      props.history.replace('photoUpload');
     }
   };
 
