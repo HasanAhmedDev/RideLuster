@@ -26,8 +26,9 @@ const Signup = (props) => {
   });
 
   const userAuth = useSelector((st) => st.userAuth);
-  if (userAuth.isAuthenticated) props.history.replace('searchResult');
-  const validate = () => {
+  if (userAuth.isAuthenticated)
+    props.history.replace(`${userAuth.userType == 'client' ? 'searchResult' : userAuth.userType}`);
+  const vaidate = () => {
     let fnameErr = '';
     let lnameErr = '';
     let emailErr = '';
@@ -77,9 +78,10 @@ const Signup = (props) => {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     console.log(state);
-    let isvalid = validate();
+    let isvalid = vaidate();
     if (isvalid) {
-      await props.authenticateUser('http://localhost:5000/api/users/', {
+      console.log('VALID!', props);
+      await props.authenticateUser('/api/users/', {
         firstname: state.fname,
         lastname: state.lname,
         email: state.email,

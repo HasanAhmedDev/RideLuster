@@ -20,21 +20,6 @@ const Login = (props) => {
     tab: 'client',
   });
   const userAuth = useSelector((st) => st.userAuth);
-  if (userAuth.isAuthenticated)
-    switch (userAuth.type) {
-      case 'client':
-        props.history.replace('searchResult');
-        break;
-      case 'vendor':
-        props.history.replace('vendor');
-        break;
-      case 'admin':
-        props.history.replace('admin');
-        break;
-      default:
-        setAlert('You Need to Sign In Again', false);
-        break;
-    }
 
   const validate = () => {
     let emailErr = '';
@@ -66,7 +51,6 @@ const Login = (props) => {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     let isvalid = validate();
-    console.log(state);
     let url;
     let payload = {
       email: state.email,
@@ -112,14 +96,14 @@ const Login = (props) => {
           <Form onSubmit={handleSubmit} className='inside-form'>
             <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
             <div style={{ textAlign: 'center', margin: '15px 0px' }}>
-              <div class='ui pointing menu'>
-                <a name='client' onClick={switchTabs} class='item'>
+              <div className='ui pointing menu'>
+                <a name='client' onClick={switchTabs} className='item'>
                   Client
                 </a>
-                <a name='vendor' onClick={switchTabs} class='item'>
+                <a name='vendor' onClick={switchTabs} className='item'>
                   Vendor
                 </a>
-                <a name='admin' onClick={switchTabs} class='item'>
+                <a name='admin' onClick={switchTabs} className='item'>
                   Admin
                 </a>
               </div>
