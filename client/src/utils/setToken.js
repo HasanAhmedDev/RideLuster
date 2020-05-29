@@ -1,8 +1,7 @@
 const setToken = (token = null) => {
-    if(token){
+    if (token) {
         localStorage.setItem('Token', token)
-    }
-    else{
+    } else {
         localStorage.clear();
     }
 }

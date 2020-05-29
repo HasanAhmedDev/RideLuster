@@ -113,7 +113,7 @@ router.delete('/admin/deleteservicestation/:id', auth('admin'), AuthController.d
 //@route GET api/auth/vendor
 //@desc Get auth vendor
 //@access Private
-router.get('/vendor', AuthController.getAuthVendor)
+router.get('/vendor', auth('vendor'), AuthController.getAuthVendor)
 
 //@route POST api/auth/vendor
 //@desc Authenticate and get token

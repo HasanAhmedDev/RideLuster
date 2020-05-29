@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'semantic-ui-react';
 
-
 import Footer from '../Footer/Footer';
 import { connect, useSelector } from 'react-redux';
 import { setAlert } from '../../actions/alert';
@@ -12,34 +11,31 @@ const divStyle = {
   height: window.screen.height,
 };
 
-
-
-const Login = props => {
-  
+const Login = (props) => {
   const [state, setState] = useState({
-      email: '',
-      password: '',
-      emailErr: '',
-      passErr: '',
-      tab: 'client'
+    email: '',
+    password: '',
+    emailErr: '',
+    passErr: '',
+    tab: 'client',
   });
-  const userAuth = useSelector(st => st.userAuth);
-  if(userAuth.isAuthenticated)
-    switch(userAuth.type){
-      case "client":
+  const userAuth = useSelector((st) => st.userAuth);
+  if (userAuth.isAuthenticated)
+    switch (userAuth.type) {
+      case 'client':
         props.history.replace('searchResult');
         break;
-      case "vendor":
+      case 'vendor':
         props.history.replace('vendor');
         break;
-      case "admin":
+      case 'admin':
         props.history.replace('admin');
         break;
       default:
-        setAlert("You Need to Sign In Again", false);
+        setAlert('You Need to Sign In Again', false);
         break;
     }
-    
+
   const validate = () => {
     let emailErr = '';
     let passErr = '';
@@ -50,7 +46,6 @@ const Login = props => {
     } else {
       emailErr = '* This field must be non-empty.';
     }
-
 
     if (state.password) {
       if (state.password.length < 8) {
@@ -75,16 +70,15 @@ const Login = props => {
     let url;
     let payload = {
       email: state.email,
-      password: state.password
-    }
+      password: state.password,
+    };
     if (isvalid) {
-      await props.setAlert('Log in Successfull', 'success');
-      switch(state.tab){
+      switch (state.tab) {
         case 'vendor':
           url = 'http://localhost:5000/api/auth/vendor';
           break;
         case 'admin':
-          url = 'http://localhost:5000/api/auth/admin'
+          url = 'http://localhost:5000/api/auth/admin';
           break;
         default:
           url = 'http://localhost:5000/api/auth/user';
@@ -105,58 +99,64 @@ const Login = props => {
     const tab = evt.target.name;
     setState({
       ...state,
-      tab: tab
-    })
+      tab: tab,
+    });
     console.log(state.tab);
-  }
+  };
 
-    //console.log(window.screen.height);
-    return (
-      <div className='body' style={divStyle}>
-        <div className='overlay'>
-          <div className='main-form'>
-            <Form onSubmit={handleSubmit} className='inside-form'>
-              <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
-              <div style={{textAlign: 'center', margin:'15px 0px'}}>
-                <div class="ui pointing menu" >
-                  <a  name="client" onClick={switchTabs} class="item">Client</a>
-                  <a  name="vendor" onClick={switchTabs} class="item">Vendor</a>
-                  <a  name="admin" onClick={switchTabs} class="item">Admin</a>
-                </div>
-                {/* <div class="ui segment active tab">Tab 1 Content</div> */}
+  //console.log(window.screen.height);
+  return (
+    <div className='body' style={divStyle}>
+      <div className='overlay'>
+        <div className='main-form'>
+          <Form onSubmit={handleSubmit} className='inside-form'>
+            <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
+            <div style={{ textAlign: 'center', margin: '15px 0px' }}>
+              <div class='ui pointing menu'>
+                <a name='client' onClick={switchTabs} class='item'>
+                  Client
+                </a>
+                <a name='vendor' onClick={switchTabs} class='item'>
+                  Vendor
+                </a>
+                <a name='admin' onClick={switchTabs} class='item'>
+                  Admin
+                </a>
               </div>
-              <Form.Field style={{ paddingBottom: '6%' }}>
-                <label>Email</label>
-                <Input
-                  name='email'
-                  value={state.email}
-                  onChange={handleChange}
-                  placeholder='Enter Email'
-                />
-                <div className='valerr'>{state.emailErr}</div>
-              </Form.Field>
-              <Form.Field style={{ paddingBottom: '6%' }}>
-                <label>Password</label>
-                <Input
-                  name='password'
-                  value={state.password}
-                  onChange={handleChange}
-                  type='password'
-                  placeholder='Enter Password'
-                />
-                <div className='valerr'>{state.passErr}</div>
-              </Form.Field>
-              <Form.Field>
-                <Button fluid color='blue' type='submit'>
-                  Login
-                </Button>
-              </Form.Field>
-            </Form>
-          </div>
+              {/* <div class="ui segment active tab">Tab 1 Content</div> */}
+            </div>
+            <Form.Field style={{ paddingBottom: '6%' }}>
+              <label>Email</label>
+              <Input
+                name='email'
+                value={state.email}
+                onChange={handleChange}
+                placeholder='Enter Email'
+              />
+              <div className='valerr'>{state.emailErr}</div>
+            </Form.Field>
+            <Form.Field style={{ paddingBottom: '6%' }}>
+              <label>Password</label>
+              <Input
+                name='password'
+                value={state.password}
+                onChange={handleChange}
+                type='password'
+                placeholder='Enter Password'
+              />
+              <div className='valerr'>{state.passErr}</div>
+            </Form.Field>
+            <Form.Field>
+              <Button fluid color='blue' type='submit'>
+                Login
+              </Button>
+            </Form.Field>
+          </Form>
         </div>
-        <Footer />
       </div>
-    );
-}
+      <Footer />
+    </div>
+  );
+};
 
 export default connect(null, { setAlert, authenticateUser })(Login);

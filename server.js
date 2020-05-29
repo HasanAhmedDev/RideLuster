@@ -7,6 +7,10 @@ const clientIO = require('./socket.io/user');
 const app = express();
 
 
+var cors=require('cors')
+
+app.use(cors())
+
 //Middleware
 app.use(
   express.json({
