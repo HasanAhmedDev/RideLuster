@@ -8,7 +8,7 @@ import {
 import thunk from 'redux-thunk'
 import rootReducer from './reducers'
 
-const initialState = []
+const initialState = {}
 
 const middleware = [thunk]
 
