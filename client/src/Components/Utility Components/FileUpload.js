@@ -4,6 +4,7 @@ import Progress from './Progress';
 import axios from 'axios';
 import { setAlert } from '../../actions/alert';
 import { connect, useSelector } from 'react-redux';
+import { Redirect } from 'react-router';
 const FileUpload = (props) => {
   const [file, setFile] = useState('');
   const [filename, setFilename] = useState('Choose File');

@@ -4,12 +4,12 @@ import Cover from './Cover/Cover';
 import Slider from './Slider/Slider';
 import Contact from './Contact/Contact';
 
-
 import Footer from '../Footer/Footer';
 import './Landing.css'
 export default class Landing extends React.Component {
     render() {
         return (
+            
             <div className="landing-body">
                 <div className="bg-img">
                     <div className="overlay">

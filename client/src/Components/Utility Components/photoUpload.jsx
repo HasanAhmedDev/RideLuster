@@ -29,7 +29,7 @@ export default function PhotoUpload(props) {
   return (
     <div className='container mt-4'>
       <h4 className='display-4 text-center mb-4'>
-        User Photo Upload
+        {userAuth.userType === 'vendor' ? 'Service Station' : 'User'} Photo Upload
       </h4>
 
       {state.render}

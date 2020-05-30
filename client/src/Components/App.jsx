@@ -17,6 +17,7 @@ import store from '../store';
 import setAuthToken from '../utils/setAuthToken';
 import { loadUser } from '../actions/userAuth';
 import photoUpload from './Utility Components/photoUpload';
+import Loader from './Utility Components/Loader';
 
 if (localStorage.Token) {
   setAuthToken(localStorage.Token);
@@ -38,7 +39,7 @@ const App = () => {
         <Route exact path='/searchResult' component={SearchResults}></Route>
         <Route exact path='/searchResult/:id' component={SearchDetails}></Route>
         <Route exact path='/vendor' component={vendor}></Route>
-        <Route exact path='/vendorDashboard' component={VendorDashboard}></Route>
+        {/* <Route exact path='/vendorDashboard' component={VendorDashboard}></Route> */}
         <Route exact path='/addSS' component={addServiceStation}></Route>
         <Route exact path='/admin' component={AdminPanel}></Route>
         <Route exact path='/book' component={BookingForm}></Route>
