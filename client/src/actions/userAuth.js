@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from 'axios';
 import {
   USER_AUTH_SUCCESSFUL,
@@ -41,6 +42,7 @@ export const loadUser = () => async (dispatch) => {
 };
 
 export const authenticateUser = (url, UserData, userType) => (dispatch) => {
+  console.log("AUTHENTICATE USER")
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -57,6 +59,7 @@ export const authenticateUser = (url, UserData, userType) => (dispatch) => {
           payload: res.data,
           userType: userType,
         });
+        dispatch(loadUser());
       }
     })
     .catch((err) => {

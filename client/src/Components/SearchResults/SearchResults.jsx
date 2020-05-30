@@ -7,8 +7,8 @@ import Footer from '../Footer/Footer';
 import { Link, Redirect } from 'react-router-dom';
 const SearchResults = props => {
   const userAuth = useSelector(st => st.userAuth);
-    if(userAuth.isAuthenticated || userAuth.userType != 'client')
-      return <Redirect to="login" />
+    if((!userAuth.isAuthenticated || userAuth.userType != 'client') && userAuth.userLoaded)
+      props.history.replace('login');
     return (
       <div>
         <div className="nav">

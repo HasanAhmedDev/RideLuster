@@ -23,11 +23,17 @@ const Signup = (props) => {
     emailErr: '',
     pass1Err: '',
     pass2Err: '',
+    tab: 'client'
   });
 
   const userAuth = useSelector((st) => st.userAuth);
-  if (userAuth.isAuthenticated)
-    props.history.replace(`${userAuth.userType == 'client' ? 'searchResult' : userAuth.userType}`);
+  if(userAuth.isAuthenticated && userAuth.userType && userAuth.userLoaded){
+    if(userAuth.userType === 'client')
+      props.history.replace('searchResult');
+    if(userAuth.userType === 'vendor')
+      props.history.replace('addSS');
+  }
+
   const vaidate = () => {
     let fnameErr = '';
     let lnameErr = '';
@@ -81,13 +87,28 @@ const Signup = (props) => {
     let isvalid = vaidate();
     if (isvalid) {
       console.log('VALID!', props);
-      await props.authenticateUser('/api/users/', {
-        firstname: state.fname,
-        lastname: state.lname,
-        email: state.email,
-        password: state.pass1,
-      });
-      props.history.replace('photoUpload');
+      let url;
+      let payload = {}
+      switch(state.tab){
+        case 'vendor':
+          url = 'http://localhost:5000/api/vendors/';
+          payload = {
+            email: state.email,
+            password: state.pass1,
+            name: state.fname + " " + state.lname
+          }
+          break;
+        default:
+          url = 'http://localhost:5000/api/users/';
+          payload = {
+            email: state.email,
+            password: state.pass1,
+            firstname: state.fname,
+            lastname: state.lname
+          }
+          break;
+      }
+      await props.authenticateUser(url, payload, state.tab);
     }
   };
 
@@ -98,12 +119,32 @@ const Signup = (props) => {
     });
   };
 
+  const switchTabs = (evt) => {
+    const tab = evt.target.name;
+    setState({
+      ...state,
+      tab: tab,
+    });
+    console.log(state.tab);
+  };
+
   return (
     <Form.Field className='body' style={divStyle}>
       <Form.Field className='overlay'>
         <Form.Field className='main-form'>
           <Form onSubmit={handleSubmit} className='inside-form'>
             <h4>Welcome to Sign Up</h4>
+            <div style={{ textAlign: 'center', margin: '15px 0px' }}>
+              <div className='ui pointing menu'>
+                <a name='client' onClick={switchTabs} className='item'>
+                  Client
+                </a>
+                <a name='vendor' onClick={switchTabs} className='item'>
+                  Vendor
+                </a>
+              </div>
+              {/* <div class="ui segment active tab">Tab 1 Content</div> */}
+            </div>
             <Form.Field>
               <label>FirstName</label>
               <Input
