@@ -616,7 +616,7 @@ const getAllRequests = async (req, res) => {
     }
     return res.status(200).json({
       success: true,
-      servicestations: allss
+      ssRequests: allss
     })
   } catch (error) {
     console.error(error.message);
@@ -1036,8 +1036,8 @@ const handleBookingRequest = async (req, res, next) => {
         senderID: req.vendor.id,
         receiverID: bookingExist.client,
         payload: [{
-            isApproved: approved,
-            booking: bookingExist
+          isApproved: approved,
+          booking: bookingExist
         }]
       })
       await notify.save();
@@ -1061,8 +1061,8 @@ const handleBookingRequest = async (req, res, next) => {
       senderID: req.vendor.id,
       receiverID: bookingExist.client,
       payload: [{
-          isApproved: approved,
-          booking: bookingExist
+        isApproved: approved,
+        booking: bookingExist
       }]
     })
     await notify.save();
