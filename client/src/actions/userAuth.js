@@ -9,6 +9,7 @@ import {
 import setToken from '../utils/setToken';
 import setAuthToken from '../utils/setAuthToken';
 import { setAlert } from '../actions/alert';
+import { getServiceStation } from './servicestation';
 
 export const loadUser = () => async (dispatch) => {
     console.log("LOAD USERS")
@@ -60,6 +61,9 @@ export const authenticateUser = (url, UserData, userType) => (dispatch) => {
           userType: userType,
         });
         dispatch(loadUser());
+        if(userType === 'vendor'){
+          dispatch(getServiceStation());
+        }
       }
     })
     .catch((err) => {

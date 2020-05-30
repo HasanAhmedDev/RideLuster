@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Input, Select, Dropdown } from 'semantic-ui-react';
 import Footer from '../Footer/Footer';
-import { connect, useSelector } from 'react-redux';
-import { addServiceStation } from '../../actions/vendor';
+import { connect, useSelector, useDispatch } from 'react-redux';
+import { addServiceStation, getServiceStation } from '../../actions/servicestation';
 import './style.css'
 import { Redirect } from 'react-router';
 
@@ -24,6 +24,7 @@ const initialState = {
   nameErr: '',
   areaErr: '',
   locationErr: '',
+  render: null
 }
 
 const vehicleOptions = [
@@ -46,14 +47,22 @@ const areaOptions = [
 const AddServiceStation = (props) => {
   const [state, setState] = useState(initialState);
 
-  const userAuth = useSelector((st) => st.userAuth);
-  const vendor = useSelector(st => st.vendor);
-    
+  const {userAuth, vendor} = useSelector((st) => st);
+  let dispatch = useDispatch();
   useEffect(()=>{
+    if(!vendor.ssLoaded){
+      dispatch(getServiceStation());
+    }
     if((!userAuth.isAuthenticated || userAuth.userType !== 'vendor') && userAuth.userLoaded)
       props.history.replace('login');
-    if(vendor.ss && userAuth.userLoaded)
+    if(vendor.ssLoaded && vendor.ss !==null && userAuth.userLoaded)
       props.history.replace('photoUpload');
+    if(userAuth.userLoaded && vendor.ssLoaded && state.render === null){
+      setState({
+        ...state,
+        render: template
+      })
+    }
   })
   const validate = () => {
     let nameErr = '';
@@ -152,7 +161,7 @@ const AddServiceStation = (props) => {
         })
     })
   }
-  return (
+  const template = (
     <Form.Field className='body' style={divStyle}>
       <Form.Field className='overlay'>
         <Form.Field className='main-form'>
@@ -219,5 +228,6 @@ const AddServiceStation = (props) => {
       <Footer />
     </Form.Field>
   );
+  return state.render;
 };
 export default connect(null, {addServiceStation})(AddServiceStation);
