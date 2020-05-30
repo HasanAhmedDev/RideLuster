@@ -6,6 +6,8 @@ import Signup from './Signup/Signup';
 import Login from './Login/Login';
 import SearchResults from './SearchResults/SearchResultsWrapper';
 import vendor from './Vendor Interface/vendorWrapper';
+import VendorDashboard from './Vendor Interface/Vendor';
+import addServiceStation from '../Components/Vendor Interface/AddServiceStation';
 import SearchDetails from './SearchResults/SearchDetails/SearchDetails';
 import AdminPanel from './Admin/Admin';
 import BookingForm from './BookingForm/BookingForm';
@@ -36,6 +38,8 @@ const App = () => {
         <Route exact path='/searchResult' component={SearchResults}></Route>
         <Route exact path='/searchResult/:id' component={SearchDetails}></Route>
         <Route exact path='/vendor' component={vendor}></Route>
+        <Route exact path='/vendorDashboard' component={VendorDashboard}></Route>
+        <Route exact path='/addSS' component={addServiceStation}></Route>
         <Route exact path='/admin' component={AdminPanel}></Route>
         <Route exact path='/book' component={BookingForm}></Route>
         <Route exact path='/photoUpload' component={photoUpload}></Route>

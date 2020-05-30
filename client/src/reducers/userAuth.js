@@ -13,6 +13,7 @@ const initialState = {
   user: null,
   admin: null,
   vendor: null,
+  userLoaded: false
 };
 
 export default function (state = initialState, action) {
@@ -24,6 +25,7 @@ export default function (state = initialState, action) {
         ...payload,
         isAuthenticated: true,
         loading: false,
+        userLoaded: true,
       };
     case USER_AUTH_SUCCESSFUL:
       localStorage.setItem('Token', payload.token);
@@ -34,6 +36,7 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         loading: false,
         userType: userType,
+        userLoaded: false
       };
     case USER_AUTH_UNSUCCESSFUL:
     case AUTH_ERROR:
@@ -48,6 +51,7 @@ export default function (state = initialState, action) {
         user: null,
         admin: null,
         vendor: null,
+        userLoaded: true
       };
     default:
       return state;

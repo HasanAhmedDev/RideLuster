@@ -20,7 +20,8 @@ const Login = (props) => {
     tab: 'client',
   });
   const userAuth = useSelector((st) => st.userAuth);
-
+  if(userAuth.isAuthenticated && userAuth.userType && userAuth.userLoaded)
+    props.history.replace(`${userAuth.userType === 'client' ? 'searchResult' : userAuth.userType}`);
   const validate = () => {
     let emailErr = '';
     let passErr = '';
