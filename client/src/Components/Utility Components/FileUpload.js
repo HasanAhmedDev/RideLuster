@@ -23,7 +23,7 @@ const FileUpload = (props) => {
     setMessage('')
 
     try {
-      const res = await axios.put('/api/auth/user/uploadphoto/', formData, {
+      const res = await axios.put(`/api/auth${props.type}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -40,7 +40,7 @@ const FileUpload = (props) => {
       });
 
       const fileName = 'Uploaded Photo'
-      const filePath=res.data.user.photo
+      const filePath= props.path === 'user' ? res.data.user.photo : res.data.servicestation.photo;
 
       setUploadedFile({ fileName, filePath });
 
@@ -86,7 +86,7 @@ const FileUpload = (props) => {
         <div className='row mt-5'>
           <div className='col-md-6 m-auto'>
             <h3 className='text-center'>{uploadedFile.fileName}</h3>
-            <img style={{ width: '100%' }} src={`http://localhost:5000/users_photos/${uploadedFile.filePath}`} alt='' />
+            <img style={{ width: '100%' }} src={`http://localhost:5000/${props.path}s_photos/${uploadedFile.filePath}`} alt='' />
           </div>
         </div>
       ) : null}

@@ -15,7 +15,8 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+
 
 import './Nav.css';
 const useStyles = makeStyles(theme => ({
@@ -83,7 +84,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Nav() {
+export default function Nav(props) {
   
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -109,6 +110,12 @@ export default function Nav() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const logout = () =>{
+    localStorage.clear();
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location.replace('/');
+  }
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -121,7 +128,7 @@ export default function Nav() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem onClick={logout}>Logout</MenuItem>
     </Menu>
   );
 

@@ -1,14 +1,12 @@
 import React, {useState} from "react";
 import "./SearchResults.css";
 import { Grid, Segment, Card, Button } from "semantic-ui-react";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import Nav from '../Utility Components/Nav';
 import Footer from '../Footer/Footer';
 import { Link, Redirect } from 'react-router-dom';
 const SearchResults = props => {
-  const userAuth = useSelector(st => st.userAuth);
-    if((!userAuth.isAuthenticated || userAuth.userType != 'client') && userAuth.userLoaded)
-      props.history.replace('login');
+  
     return (
       <div>
         <div className="nav">

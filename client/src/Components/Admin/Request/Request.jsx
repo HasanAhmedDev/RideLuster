@@ -15,9 +15,6 @@ const Request = (props) => {
 
   const requests = useSelector((st) => st.admin.ssRequests);
  
-  if(isAuthenticated==null && userType!='admin'){
-        return <Redirect to='/login' />;
-  }
  const handleDelete=async (id)=>{
      if(id){
         const res=await axios.delete(`/api/auth/admin/deleteservicestation/${id}`)
