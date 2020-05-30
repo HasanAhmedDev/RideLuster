@@ -164,4 +164,9 @@ router.post('/vendor/handleRequest', [
 
 router.post('/vendor/updateProcess', auth('vendor'), AuthController.updateProcess);
 
+//@route GET api/auth/vendor/getservicestation
+//@desc Get service station with vendor id
+//@access Private
+router.get('/vendor/getservicestation/', auth('vendor'), AuthController.getServiceStationByVendorId)
+
 module.exports = router

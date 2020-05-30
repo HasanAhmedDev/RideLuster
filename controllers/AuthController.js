@@ -1182,6 +1182,38 @@ const updateProcess = async (req, res, next) => {
   }
 }
 
+const getServiceStationByVendorId = async (req, res) => {
+  try {
+    const ss = await ServiceStation.findOne({
+      "owner": req.vendor.id
+    }).populate({
+      path: 'owner',
+      select: 'name email'
+    })
+    if (!ss) {
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: 'No registered service station found.'
+        }]
+      })
+    }
+    res.status(200).json({
+      success: true,
+      servicestation: ss
+    })
+
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error'
+      }]
+    })
+  }
+}
+
 exports.getAuthUser = getAuthUser;
 exports.authenticateUser = authenticateUser;
 exports.updateUserDetails = updateUserDetails;
@@ -1209,3 +1241,4 @@ exports.uploadServiceStationPhoto = uploadServiceStationPhoto
 exports.getAllRequests = getAllRequests
 exports.handleBookingRequest = handleBookingRequest
 exports.updateProcess = updateProcess
+exports.getServiceStationByVendorId=getServiceStationByVendorId

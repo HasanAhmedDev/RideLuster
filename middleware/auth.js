@@ -6,7 +6,6 @@ const Vendor = require('../models/Vendor')
 
 module.exports = function (type) {
     return async (req, res, next) => {
-        console.log("auth called")
         const token = req.header('x-auth-token')
         if (!token) {
             return res.status(401).json({
