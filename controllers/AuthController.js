@@ -330,7 +330,7 @@ const searchServiceStation = async (req, res) => {
   try {
     let query = {
       area: req.body.area,
-      approved:'true'
+      approved: 'true'
     };
     if (!req.body.area) {
       return res.status(400).json({
@@ -381,6 +381,35 @@ const searchServiceStation = async (req, res) => {
     });
 
   } catch (error) {
+    return res.status(500).json({
+      success: false,
+      errors: [{
+        msg: "Server Error"
+      }]
+    });
+  }
+}
+
+const getCompletedBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({
+      isCompleted: 'true',
+      client: req.user.id
+    })
+    if (bookings.length==0) {
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: "No Bookings found."
+        }]
+      })
+    }
+    res.status(200).json({
+      success: true,
+      bookings
+    })
+  } catch (error) {
+    console.log(error.message)
     return res.status(500).json({
       success: false,
       errors: [{
@@ -1222,6 +1251,7 @@ exports.updateUserPassword = updateUserPassword;
 exports.uploadUserPhoto = uploadUserPhoto;
 exports.bookService = BookService;
 exports.searchserviceStation = searchServiceStation
+exports.getCompletedBookings = getCompletedBookings
 
 exports.getAuthAdmin = getAuthAdmin;
 exports.authenticateAdmin = authenticateAdmin;

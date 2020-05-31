@@ -55,10 +55,15 @@ router.post('/user/bookService', [
     check('serviceStationId', 'Service ID is required').not().isEmpty(),
 ], auth('user'), AuthController.bookService);
 
-//@route GET api/auth/user/searchservicestation
-//@desc Get service stations
+//@route POST api/auth/user/searchservicestation
+//@desc Get service stations by area
 //@access Private
 router.post('/user/searchservicestation', auth('user'), AuthController.searchserviceStation)
+
+//@route GET api/auth/user/getcompletedbookings
+//@desc Get completed bookings of user
+//@access Private
+router.get('/user/getcompletedbookings', auth('user'), AuthController.getCompletedBookings)
 
 
 
