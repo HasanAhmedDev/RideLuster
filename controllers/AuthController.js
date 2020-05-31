@@ -329,7 +329,8 @@ const BookService = async (req, res, next) => {
 const searchServiceStation = async (req, res) => {
   try {
     let query = {
-      area: req.body.area
+      area: req.body.area,
+      approved:'true'
     };
     if (!req.body.area) {
       return res.status(400).json({

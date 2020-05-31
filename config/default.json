@@ -4,5 +4,5 @@
     "fileUploadUser": "./public/uploads/users_photos",
     "fileUploadServiceStation": "./public/uploads/servicestations_photos",
     "maxPhotoSize": "1000000",
-    "perPage": "6"
+    "perPage": "8"
 }
