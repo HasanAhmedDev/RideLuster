@@ -29,7 +29,7 @@ const Signup = (props) => {
   const userAuth = useSelector((st) => st.userAuth);
   if(userAuth.isAuthenticated && userAuth.userType && userAuth.userLoaded){
     if(userAuth.userType === 'client')
-      props.history.replace('searchResult');
+      props.history.replace('photoUpload');
     if(userAuth.userType === 'vendor')
       props.history.replace('addSS');
   }

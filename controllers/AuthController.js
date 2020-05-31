@@ -361,7 +361,7 @@ const searchServiceStation = async (req, res) => {
       if (result.docs.length == 0) {
         return res.status(404).json({
           success: false,
-          error: [{
+          errors: [{
             msg: "No Service Station Found"
           }]
         })
@@ -508,7 +508,7 @@ const delUserById = async (req, res) => {
         }, ],
       });
     }
-    if (!user.photo.startsWith('//www')) {
+    if (!user.photo.startsWith('http')) {
       const del = `${config.get('fileUploadUser')}/${user.photo}`;
       fs.unlink(del, (err) => {
         if (err) {
@@ -1241,4 +1241,4 @@ exports.uploadServiceStationPhoto = uploadServiceStationPhoto
 exports.getAllRequests = getAllRequests
 exports.handleBookingRequest = handleBookingRequest
 exports.updateProcess = updateProcess
-exports.getServiceStationByVendorId=getServiceStationByVendorId
+exports.getServiceStationByVendorId = getServiceStationByVendorId

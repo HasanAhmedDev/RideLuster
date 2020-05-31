@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 import {
   USER_AUTH_SUCCESSFUL,
@@ -6,9 +5,10 @@ import {
   USER_LOADED,
   AUTH_ERROR,
 } from './types';
-import setToken from '../utils/setToken';
 import setAuthToken from '../utils/setAuthToken';
 import { setAlert } from '../actions/alert';
+import { getServiceStation } from './servicestation';
+import { showLoader } from './loader';
 
 export const loadUser = () => async (dispatch) => {
     console.log("LOAD USERS")
@@ -60,6 +60,9 @@ export const authenticateUser = (url, UserData, userType) => (dispatch) => {
           userType: userType,
         });
         dispatch(loadUser());
+        if(userType === 'vendor'){
+          dispatch(getServiceStation());
+        }
       }
     })
     .catch((err) => {
@@ -72,5 +75,6 @@ export const authenticateUser = (url, UserData, userType) => (dispatch) => {
       dispatch({
         type: USER_AUTH_UNSUCCESSFUL,
       });
+      dispatch(showLoader(false));
     });
 };

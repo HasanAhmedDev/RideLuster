@@ -13,6 +13,7 @@
     font-weight: bold;
 }
 .searchimg{
+    margin: 0px;
     width: 100%;
     height: 180px;
 }
@@ -26,6 +27,7 @@
     width: 90% !important;
     margin: 30px auto;
     margin-top: 10px;
+    min-height: 80vh;
 }
 .segment{
     height: max-content !important;
@@ -33,7 +35,7 @@
 }
 .card{
     margin: auto !important;
-    height: 100%;
+    /* height: 100%; */
 }
 .card:hover{
     cursor: pointer;
@@ -54,4 +56,7 @@
     width: max-content;
     position: absolute;
     right: 10%;
+}
+.searchBarUser{
+    margin: 40px auto;
 }

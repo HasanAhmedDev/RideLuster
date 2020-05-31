@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import SearchResults from './SearchResults';
 import openSocket from 'socket.io-client';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import Loader from '../Utility Components/Loader';
+import { showLoader } from '../../actions/loader';
 
 const SearchResultsWrapper = props => {
 
@@ -9,7 +11,8 @@ const SearchResultsWrapper = props => {
     render: null
   })
   const userAuth = useSelector(st => st.userAuth);
-    
+  let dispatch = useDispatch();
+  dispatch(showLoader(true));
   useEffect(()=>{
     if((!userAuth.isAuthenticated || userAuth.userType !== 'client') && userAuth.userLoaded)
       props.history.replace('login');
@@ -29,12 +32,17 @@ const SearchResultsWrapper = props => {
         console.log(res);
       })
     }
-  })
+  },[])
   if(userAuth.userLoaded && userAuth.isAuthenticated && userAuth.userType === 'client' && state.render === null){
     setState({
       render: <SearchResults/>
     })
   }
-    return state.render;
+    return (
+      <React.Fragment>
+        {state.render === null ? <Loader/> : null}
+        {state.render}
+      </React.Fragment>
+    );
 }
 export default SearchResultsWrapper;

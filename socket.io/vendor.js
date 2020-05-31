@@ -4,23 +4,10 @@ const ServiceStation = require('../models/ServiceStation');
 let activeVendors = [];
 
 module.exports = async (vendorConnection, payload) => {
-    const serviceStation = await ServiceStation.findOne({
-        owner: payload.vendorID
-    });
-    console.log(serviceStation);
-    if(!serviceStation){
-        vendorConnection.emit('vendorIO', {
-            msg: "Vendor ACknowledgment from Server!!!",
-            ssExist: false
-        }); 
-    }
-    else{
-        vendorConnection.emit('vendorIO', {
-            msg: "Vendor ACknowledgment from Server!!!",
-            ssExist: true,
-            ss: serviceStation
-        });
-    }
+    vendorConnection.emit('vendorIO', {
+        msg: "Vendor ACknowledgment from Server!!!",
+    }); 
+
      
     activeVendors[payload.vendorID] = vendorConnection.id;
     vendorConnection.on('disconnect', () => {

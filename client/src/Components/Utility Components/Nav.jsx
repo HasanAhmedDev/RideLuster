@@ -15,7 +15,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 import './Nav.css';
