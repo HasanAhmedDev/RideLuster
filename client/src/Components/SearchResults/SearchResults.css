@@ -60,3 +60,10 @@
 .searchBarUser{
     margin: 40px auto;
 }
+.pagination{
+    position: relative;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 30px;
+}

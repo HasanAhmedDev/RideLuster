@@ -11,5 +11,7 @@
     outline: none;
 }
 .removeOutline{
-    outline: none;
+    border: 'none';
+    outline:'none';
+
 }

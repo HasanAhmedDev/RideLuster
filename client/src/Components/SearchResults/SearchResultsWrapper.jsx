@@ -8,15 +8,15 @@ import { showLoader } from '../../actions/loader';
 const SearchResultsWrapper = props => {
 
   const [state, setState] = useState({
+    clientConnected: false,
     render: null
   })
   const userAuth = useSelector(st => st.userAuth);
   let dispatch = useDispatch();
-  dispatch(showLoader(true));
+  
   useEffect(()=>{
-    if((!userAuth.isAuthenticated || userAuth.userType !== 'client') && userAuth.userLoaded)
-      props.history.replace('login');
-    if(userAuth.userLoaded && userAuth.isAuthenticated && userAuth.userType === 'client'){
+    console.log("USE EFFECT SRW");
+    if(state.clientConnected === false){
       const clientio = openSocket('http://localhost:5000');
       clientio.emit('client', {
         clientID : '5ec5c48d5897603fe8d3071d',
@@ -31,10 +31,17 @@ const SearchResultsWrapper = props => {
       clientio.on('processUpdated', res => {
         console.log(res);
       })
+      setState({
+        ...state,
+        clientConnected: true
+      })
     }
   },[])
+  if((!userAuth.isAuthenticated || userAuth.userType !== 'client') && userAuth.userLoaded)
+      props.history.replace('login');
   if(userAuth.userLoaded && userAuth.isAuthenticated && userAuth.userType === 'client' && state.render === null){
     setState({
+      ...state,
       render: <SearchResults/>
     })
   }
