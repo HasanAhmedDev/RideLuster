@@ -3,6 +3,7 @@ const {
     validationResult
 } = require('express-validator')
 const User = require('../models/User')
+const ServiceStation = require('../models/ServiceStation')
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -81,4 +82,33 @@ const registerUser = async (req, res) => {
 
 }
 
+const getRegisteredAreas = async (req, res) => {
+    try {
+        const areas = await ServiceStation.distinct('area', {
+            'approved': 'true'
+        })
+        if (!areas) {
+            return res.status(404).json({
+                success: false,
+                errors: [{
+                    msg: 'No Service station registered yet.'
+                }]
+            });
+        }
+        res.status(200).json({
+            success: true,
+            areas
+        })
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json({
+            success: false,
+            errors: [{
+                msg: 'Server Error'
+            }]
+        })
+    }
+}
+
 exports.registerUser = registerUser
+exports.getRegisteredAreas = getRegisteredAreas

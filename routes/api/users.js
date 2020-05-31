@@ -19,4 +19,9 @@ router.post('/', [
     })
 ], UserController.registerUser)
 
+//@route GET api/users/getareas
+//@desc Get areas of registered service stations
+//@access Public
+router.get('/getareas', UserController.getRegisteredAreas)
+
 module.exports = router
