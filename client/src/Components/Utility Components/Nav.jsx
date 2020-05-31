@@ -11,7 +11,7 @@ import Menu from '@material-ui/core/Menu';
 // import MenuIcon from '@material-ui/icons/Menu';
 // import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
+// import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
@@ -143,14 +143,14 @@ export default function Nav(props) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      {/* <MenuItem>
         <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="primary">
             <MailIcon />
           </Badge>
         </IconButton>
         <p>Messages</p>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
           <Badge badgeContent={11} color="primary">
@@ -213,13 +213,18 @@ export default function Nav(props) {
           </div> */}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
+            {/* <IconButton aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="primary">
                 <MailIcon />
               </Badge>
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" className="removeOutline" color="inherit">
-              <Badge badgeContent={17}  color="primary">
+            </IconButton> */}
+            <IconButton 
+            aria-label="show 17 new notifications" 
+            className="removeOutline" 
+            color="inherit"
+            style={{border: 'none', outline:'none'}}
+            >
+              <Badge badgeContent={5}  color="primary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -230,8 +235,10 @@ export default function Nav(props) {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
+              style={{border: 'none', outline:'none'}}
             >
-              <AccountCircle />
+              {/* <AccountCircle style={{fontSize: '45px'}} /> */}
+              <img style={{backgroundSize: 'cover', width: '50px', height: '50px', borderRadius: '50%'}} src="http://localhost:5000/users_photos/photo_865ac4b5-e1ae-4712-9db9-1e817c855659.jpg" alt="No Image"/>
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>

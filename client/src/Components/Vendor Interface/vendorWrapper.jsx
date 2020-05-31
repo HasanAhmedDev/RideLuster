@@ -34,7 +34,7 @@ const VendorWrapper = props => {
                 render: <Vendor/>
             })
         }
-    }, [])  
+    })  
     return state.render;
 }
 export default VendorWrapper;

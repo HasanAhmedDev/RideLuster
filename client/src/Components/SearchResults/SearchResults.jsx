@@ -8,7 +8,7 @@ import Loader from '../Utility Components/Loader';
 import { withRouter } from 'react-router-dom';
 import { searchServiceStation } from '../../actions/user';
 import { showLoader } from '../../actions/loader';
-
+import { Pagination } from 'semantic-ui-react'
 import { useEffect } from 'react';
 
 const locationOptions = [
@@ -22,12 +22,18 @@ const locationOptions = [
     text: 'Wapda Town',
     value: 'Wapda Town',
   },
+  {
+    key: 'Faisal',
+    text: 'Faisal Town',
+    value: 'Faisal Town',
+  },
 ];
 
 const SearchResults = (props) => {
   const user = useSelector((st) => st.user);
   let dispatch = useDispatch();
   useEffect(() => {
+    console.log("USE EFFECT SR")
     dispatch(showLoader(false));
   });
   const searchSS = async (e, { value }) => {
@@ -153,6 +159,19 @@ const SearchResults = (props) => {
             </h3>
           ) : null}
         </Grid>
+        {user.docs.length ?
+        <div className="pagination">
+          <Pagination
+            boundaryRange={0}
+            defaultActivePage={1}
+            ellipsisItem={null}
+            firstItem={user.nextpage}
+            lastItem={user.prevpage}
+            siblingRange={1}
+            totalPages={user.totalpages}
+          />
+        </div> : null
+        }
       </div>
       <Footer />
     </div>
