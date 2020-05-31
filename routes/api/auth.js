@@ -58,7 +58,7 @@ router.post('/user/bookService', [
 //@route GET api/auth/user/searchservicestation
 //@desc Get service stations
 //@access Private
-router.get('/user/searchservicestation', auth('user'), AuthController.searchserviceStation)
+router.post('/user/searchservicestation', auth('user'), AuthController.searchserviceStation)
 
 
 

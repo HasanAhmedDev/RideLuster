@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 import Landing from './Landing/Landing';
@@ -6,7 +6,6 @@ import Signup from './Signup/Signup';
 import Login from './Login/Login';
 import SearchResults from './SearchResults/SearchResultsWrapper';
 import vendor from './Vendor Interface/vendorWrapper';
-import VendorDashboard from './Vendor Interface/Vendor';
 import addServiceStation from '../Components/Vendor Interface/AddServiceStation';
 import SearchDetails from './SearchResults/SearchDetails/SearchDetails';
 import AdminPanel from './Admin/Admin';
@@ -17,7 +16,6 @@ import store from '../store';
 import setAuthToken from '../utils/setAuthToken';
 import { loadUser } from '../actions/userAuth';
 import photoUpload from './Utility Components/photoUpload';
-import Loader from './Utility Components/Loader';
 
 if (localStorage.Token) {
   setAuthToken(localStorage.Token);
@@ -31,15 +29,15 @@ const App = () => {
   return (
     <Provider store={store}>
       <Alert />
+      {/* <Loader/> */}
       <BrowserRouter>
         <Route exact path='/' component={Landing}></Route>
         <Route exact path='/landing' component={Landing}></Route>
         <Route exact path='/signup' component={Signup}></Route>
         <Route exact path='/login' component={Login}></Route>
         <Route exact path='/searchResult' component={SearchResults}></Route>
-        <Route exact path='/searchResult/:id' component={SearchDetails}></Route>
+        <Route exact path='/serviceStationDetails' component={SearchDetails}></Route>
         <Route exact path='/vendor' component={vendor}></Route>
-        {/* <Route exact path='/vendorDashboard' component={VendorDashboard}></Route> */}
         <Route exact path='/addSS' component={addServiceStation}></Route>
         <Route exact path='/admin' component={AdminPanel}></Route>
         <Route exact path='/book' component={BookingForm}></Route>

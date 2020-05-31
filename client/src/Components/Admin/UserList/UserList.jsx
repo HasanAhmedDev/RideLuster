@@ -13,7 +13,7 @@ const UserList = (props) => {
   
     const users = useSelector((st) => st.admin.users);
    
-    if(isAuthenticated==null && userType!='admin'){
+    if(isAuthenticated==null && userType!=='admin'){
           return <Redirect to='/login' />;
     }
    const handleDelete=async (id)=>{

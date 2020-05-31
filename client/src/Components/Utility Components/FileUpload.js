@@ -3,8 +3,8 @@ import Message from './Message';
 import Progress from './Progress';
 import axios from 'axios';
 import { setAlert } from '../../actions/alert';
-import { connect, useSelector } from 'react-redux';
-import { Redirect } from 'react-router';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 const FileUpload = (props) => {
   const [file, setFile] = useState('');
   const [filename, setFilename] = useState('Choose File');
@@ -44,7 +44,7 @@ const FileUpload = (props) => {
       const filePath= props.path === 'user' ? res.data.user.photo : res.data.servicestation.photo;
 
       setUploadedFile({ fileName, filePath });
-
+      redirect();
       setMessage('File Uploaded');
     } catch (err) {
       if (err.response.status === 500) {
@@ -58,7 +58,11 @@ const FileUpload = (props) => {
       }
     }
   };
-
+  const redirect = () => {
+    setTimeout(()=>{
+      props.history.push(`${props.path === 'user' ? 'searchResult' : 'vendor'}`);
+    }, 4000);
+  }
   return (
     <Fragment>
       {message ? <Message msg={message} /> : null}
@@ -95,4 +99,4 @@ const FileUpload = (props) => {
   );
 };
 
-export default connect(null, { setAlert})(FileUpload);
+export default withRouter(connect(null, { setAlert})(FileUpload));

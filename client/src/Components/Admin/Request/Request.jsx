@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
 import './Request.css';
 import { connect, useSelector } from 'react-redux';
 import { loadRequests } from '../../../actions/admin';
@@ -7,8 +6,8 @@ import axios from 'axios'
 
 const Request = (props) => {
   let showreqs;
-  const isAuthenticated = useSelector((st) => st.userAuth.isAuthenticated);
-  const userType = useSelector((st) => st.userAuth.userType);
+  // const isAuthenticated = useSelector((st) => st.userAuth.isAuthenticated);
+  // const userType = useSelector((st) => st.userAuth.userType);
   useEffect(() => {
     props.loadRequests();
   }, []);
