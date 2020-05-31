@@ -5,6 +5,8 @@ import Footer from '../Footer/Footer';
 import { connect, useSelector } from 'react-redux';
 import { setAlert } from '../../actions/alert';
 import { authenticateUser } from '../../actions/userAuth';
+import { showLoader } from '../../actions/loader';
+import Loader from '../Utility Components/Loader';
 //import { Link } from 'react-router-dom';
 import './Login.css';
 const divStyle = {
@@ -58,6 +60,7 @@ const Login = (props) => {
       password: state.password,
     };
     if (isvalid) {
+      props.showLoader(true);
       switch (state.tab) {
         case 'vendor':
           url = 'http://localhost:5000/api/auth/vendor';
@@ -69,6 +72,7 @@ const Login = (props) => {
           url = 'http://localhost:5000/api/auth/user';
           break;
       }
+      
       await props.authenticateUser(url, payload, state.tab);
     }
   };
@@ -78,6 +82,7 @@ const Login = (props) => {
       ...state,
       [evt.target.name]: evt.target.value,
     });
+    
   };
 
   const switchTabs = (evt) => {
@@ -92,6 +97,7 @@ const Login = (props) => {
   //console.log(window.screen.height);
   return (
     <div className='body' style={divStyle}>
+      <Loader/>
       <div className='overlay'>
         <div className='main-form'>
           <Form onSubmit={handleSubmit} className='inside-form'>
@@ -144,4 +150,4 @@ const Login = (props) => {
   );
 };
 
-export default connect(null, { setAlert, authenticateUser })(Login);
+export default connect(null, { setAlert, authenticateUser, showLoader })(Login);

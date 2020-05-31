@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, Select, Dropdown } from 'semantic-ui-react';
+import { Button, Form, Input, Dropdown } from 'semantic-ui-react';
 import Footer from '../Footer/Footer';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { addServiceStation, getServiceStation } from '../../actions/servicestation';
 import './style.css'
-import { Redirect } from 'react-router';
 
 const divStyle = {
   height: window.screen.height,
@@ -57,13 +56,13 @@ const AddServiceStation = (props) => {
       props.history.replace('login');
     if(vendor.ssLoaded && vendor.ss !==null && userAuth.userLoaded)
       props.history.replace('photoUpload');
-    if(userAuth.userLoaded && vendor.ssLoaded && state.render === null){
-      setState({
-        ...state,
-        render: template
-      })
-    }
   })
+  if(userAuth.userLoaded && vendor.ssLoaded && state.render === null){
+    setState({
+      ...state,
+      render: true
+    })
+  }
   const validate = () => {
     let nameErr = '';
     let vehicleErr = '';
@@ -161,7 +160,8 @@ const AddServiceStation = (props) => {
         })
     })
   }
-  const template = (
+  return (
+    state.render === null ? null :
     <Form.Field className='body' style={divStyle}>
       <Form.Field className='overlay'>
         <Form.Field className='main-form'>
@@ -228,6 +228,5 @@ const AddServiceStation = (props) => {
       <Footer />
     </Form.Field>
   );
-  return state.render;
 };
 export default connect(null, {addServiceStation})(AddServiceStation);
