@@ -7,6 +7,7 @@ const socketio = require('../socket.io/socket');
 const userSocket = require('../socket.io/user');
 const vendorSocket = require('../socket.io/vendor');
 const notifications = require('../models/Notifications');
+const sendEmail = require('../utils/sendEmail')
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -396,7 +397,7 @@ const getCompletedBookings = async (req, res) => {
       isCompleted: 'true',
       client: req.user.id
     })
-    if (bookings.length==0) {
+    if (bookings.length == 0) {
       return res.status(404).json({
         success: false,
         errors: [{
@@ -603,6 +604,9 @@ const approveServiceStationById = async (req, res) => {
     const ss = await ServiceStation.findByIdAndUpdate(req.params.id, fieldstoupdate, {
       new: true,
       runValidators: true
+    }).populate({
+      path: 'owner',
+      select: 'name email'
     })
     if (!ss) {
       return res.status(404).json({
@@ -612,6 +616,11 @@ const approveServiceStationById = async (req, res) => {
         }, ],
       });
     }
+    const emailsending = await sendEmail({
+      email: ss.owner.email,
+      subject: 'Service Station registration Approved',
+      message: `Congratulations! Your service station has been registered in our portal. You can now start managing you service station using our portal.\nThe details of your service station is:\nOwner Name: ${ss.owner.name}\nService Station Name: ${ss.name}\nArea: ${ss.area}\nServices Provided: ${ss.services}\nServing Vehicles: ${ss.vehicles}`
+    })
     return res.status(200).json({
       success: true,
       servicestation: ss
