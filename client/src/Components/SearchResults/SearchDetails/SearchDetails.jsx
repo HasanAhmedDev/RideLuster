@@ -24,8 +24,8 @@ const SearchDetails = (props) => {
   let dispatch = useDispatch();
   if (props.location.ssID === undefined) props.history.replace('searchResult');
   useEffect(() => {
-    dispatch(showLoader(false));
-  });
+      dispatch(showLoader(false));
+  }, []);
   if (state.serviceStation === null && props.location.ssID !== undefined)
     setState({
       ...state,
@@ -36,7 +36,6 @@ const SearchDetails = (props) => {
         longitude: user.docs[props.location.ssID].location.coordinates[1],
       },
     });
-  console.log(state);
   return (
     <React.Fragment>
       <Loader />

@@ -4,7 +4,7 @@
     "fileUploadUser": "./public/uploads/users_photos",
     "fileUploadServiceStation": "./public/uploads/servicestations_photos",
     "maxPhotoSize": "1000000",
-    "perPage": "8",
+    "perPage": "2",
     "FROM_EMAIL":"rideluster@gmail.com",
     "EMAIL_PASSWORD":"project1122"
 }

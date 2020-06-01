@@ -1,8 +1,12 @@
 import {
     FETCH_SS_SUCCESSFULL,
-    FETCH_SS_UNSUCCESSFULL
+    FETCH_SS_UNSUCCESSFULL,
+    GET_ALL_SS_SUCCESSFULL,
+    GET_ALL_SS_UNSUCCESSFULL,
+    OPEN_USER_SOCKET
 } from './types';
 import axios from 'axios';
+import openSocket from 'socket.io-client';
 import {
     setAlert
 } from '../actions/alert';
@@ -10,15 +14,17 @@ import {
     showLoader
 } from './loader';
 
-export const searchServiceStation = (area, page) => dispatch => {
+export const searchServiceStation = ({area, page}) => dispatch => {
     axios.post('http://localhost:5000/api/auth/user/searchservicestation/', {
         area,
         page
     }).then((res) => {
+       
         dispatch({
             type: FETCH_SS_SUCCESSFULL,
             payload: res.data
         })
+        dispatch(showLoader(false));
     }).catch((err) => {
         console.log(err.message);
         const errors = err.response.data.errors;
@@ -32,5 +38,39 @@ export const searchServiceStation = (area, page) => dispatch => {
             type: FETCH_SS_UNSUCCESSFULL,
         })
 
+    })
+}
+
+export const getAllServiceStation = () => dispatch => {
+    axios.get('http://localhost:5000/api/users/getareas').then((res)=>{
+        dispatch({
+            type: GET_ALL_SS_SUCCESSFULL,
+            payload: res.data
+        })
+        dispatch(showLoader(false));
+    }).catch((err)=>{
+        console.log(err.message);
+        const errors = err.response.data.errors;
+        console.log(errors)
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+
+        }
+        dispatch(showLoader(false));
+        dispatch({
+            type: GET_ALL_SS_UNSUCCESSFULL
+        })
+    })
+}
+
+export const openSocketConnectionUser = (clientID) => dispatch => {
+    const clientio = openSocket('http://localhost:5000');
+      clientio.emit('client', {
+        clientID : clientID,
+        msg: "Hi I am client with ID : "
+      })
+    dispatch({
+        type: OPEN_USER_SOCKET,
+        payload: clientio
     })
 }

@@ -6,7 +6,7 @@ import Footer from '../Footer/Footer';
 import { getServiceStation } from '../../actions/servicestation';
 import ProcessController from './ProcessController';
 import './Vendor.css';
-import { Redirect } from 'react-router';
+import { Redirect, withRouter } from 'react-router';
 const Vendor = props => {
     
     const [state, setState] = useState({
@@ -61,4 +61,4 @@ const Vendor = props => {
    
         return state.render;
 }
-export default Vendor;
+export default withRouter(Vendor);
