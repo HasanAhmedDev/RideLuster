@@ -25,13 +25,20 @@ const divStyle = {
 };
 
 class BookingForm extends Component {
+  constructor(props){
+    super(props)
+    if(!props.location.ssID){
+      props.history.replace('searchResult');
+    }
+  }
   state = initialState;
-
+  
   changeService=()=>{
     this.setState({
       service: !this.state.service
     });
   }
+  
   changePolish=()=>{
     this.setState({
       polish: !this.state.polish

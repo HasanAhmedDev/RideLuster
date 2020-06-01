@@ -43,3 +43,9 @@
   font-size: 12px;
   text-align: left;
 }
+.activ{
+  background-color: white !important;
+  /* padding: 1px 5px !important; */
+  /* border-radius: 0.25rem !important; */
+  color: black !important;
+}

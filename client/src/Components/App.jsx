@@ -16,6 +16,7 @@ import store from '../store';
 import setAuthToken from '../utils/setAuthToken';
 import { loadUser } from '../actions/userAuth';
 import photoUpload from './Utility Components/photoUpload';
+import ServiceDetails from './SearchResults/ServiceDetails/ServiceDetails';
 
 if (localStorage.Token) {
   setAuthToken(localStorage.Token);
@@ -37,6 +38,7 @@ const App = () => {
         <Route exact path='/login' component={Login}></Route>
         <Route exact path='/searchResult' component={SearchResults}></Route>
         <Route exact path='/serviceStationDetails' component={SearchDetails}></Route>
+        <Route exact path='/serviceDetails' component={ServiceDetails}></Route>
         <Route exact path='/vendor' component={vendor}></Route>
         <Route exact path='/addSS' component={addServiceStation}></Route>
         <Route exact path='/admin' component={AdminPanel}></Route>

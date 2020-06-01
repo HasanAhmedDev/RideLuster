@@ -45,14 +45,36 @@ const SearchResults = (props) => {
 
   const ssDetails = (index) => {
     dispatch(showLoader(true));
-    props.history.push({
-      pathname: 'serviceStationDetails',
-      ssID: index,
-    });
+    setTimeout(()=>{
+      props.history.push({
+        pathname: 'serviceStationDetails',
+        ssID: index,
+      });
+    }, 1000)
   };
   const onPageChange = (event, data) =>{
     dispatch(showLoader(true));
     dispatch(searchServiceStation({area: user.docs[0].area,page: data.activePage}));
+  }
+  const serviceDetails = () =>{
+    dispatch(showLoader(true));
+    setTimeout(()=>{
+      props.history.push({
+        pathname: 'serviceDetails',
+        render: true
+      })
+    }, 1000)
+    
+  }
+
+  const booking = (ssID)=>{
+    dispatch(showLoader(true));
+    setTimeout(()=>{
+      props.history.push({
+        pathname: 'book',
+        ssID: ssID
+      })
+    }, 1000)
   }
   return (
     <div>
@@ -69,6 +91,7 @@ const SearchResults = (props) => {
         ) : null}
       </div>
       <div className='main'>
+        <button onClick={serviceDetails} class="ui fluid positive button">Completed Services</button>
         <div className='searchBarUser'>
           <Dropdown
             onChange={searchSS}
@@ -147,6 +170,7 @@ const SearchResults = (props) => {
                           fluid
                           content='Book Now'
                           primary
+                          onClick={()=> booking(ss._id)}
                         />
                         <Button
                           fluid

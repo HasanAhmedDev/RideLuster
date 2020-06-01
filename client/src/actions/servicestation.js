@@ -3,11 +3,13 @@ import {
   SS_ADDED_SUCCESSFUL,
   SS_ADDED_UNSUCCESSFUL,
   GET_SS_SUCCESSFULL,
-  GET_SS_UNSUCCESSFULL
+  GET_SS_UNSUCCESSFULL,
+  OPEN_VENDOR_SOCKET
 } from './types';
 import { setAlert } from '../actions/alert';
 import setAuthToken from '../utils/setAuthToken';
-
+import openSocket from 'socket.io-client';
+import { showLoader } from './loader';
 
 export const addServiceStation = (url, UserData, token) => (dispatch) => {
   const config = {
@@ -45,11 +47,25 @@ export const getServiceStation = () => dispatch => {
       type: GET_SS_SUCCESSFULL,
       payload: res.data
     })
+    dispatch(showLoader(false));
   }).catch((err)=>{
     dispatch({
       type: GET_SS_UNSUCCESSFULL,
     })
+    dispatch(showLoader(false));
     console.log(err);
   })
 
+}
+
+export const openSocketVendor = (id) => dispatch =>{
+  const vendorio = openSocket('http://localhost:5000');
+  vendorio.emit('vendor', {
+      vendorID: id,
+      msg: "Hi I am Vendor"
+  });
+  dispatch({
+    type: OPEN_VENDOR_SOCKET,
+    payload: vendorio
+  })
 }
