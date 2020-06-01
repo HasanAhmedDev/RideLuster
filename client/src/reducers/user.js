@@ -1,6 +1,9 @@
 import {
     FETCH_SS_SUCCESSFULL,
-    FETCH_SS_UNSUCCESSFULL
+    FETCH_SS_UNSUCCESSFULL,
+    GET_ALL_SS_SUCCESSFULL,
+    GET_ALL_SS_UNSUCCESSFULL,
+    OPEN_USER_SOCKET
 } from '../actions/types'
 
 const initialState = {
@@ -11,7 +14,9 @@ const initialState = {
     hasnext: null,
     nextpage: null,
     hasprev: null,
-    prevpage: null
+    prevpage: null,
+    areas: [],
+    userSocket: null
 }
 
 export default function (state = initialState, action){
@@ -22,7 +27,17 @@ export default function (state = initialState, action){
                 ...state,
                 ...payload
             }
-
+        case GET_ALL_SS_SUCCESSFULL:
+            return {
+                ...state,
+                areas: payload.areas
+            }
+        case OPEN_USER_SOCKET:
+            return{
+                ...state,
+                userSocket: payload
+            }
+        case GET_ALL_SS_UNSUCCESSFULL:
         case FETCH_SS_UNSUCCESSFULL:
             return {
                 ...state,

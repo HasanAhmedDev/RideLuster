@@ -6,39 +6,41 @@ import Nav from '../Utility Components/Nav';
 import Footer from '../Footer/Footer';
 import Loader from '../Utility Components/Loader';
 import { withRouter } from 'react-router-dom';
-import { searchServiceStation } from '../../actions/user';
+import { searchServiceStation, getAllServiceStation } from '../../actions/user';
 import { showLoader } from '../../actions/loader';
 import { Pagination } from 'semantic-ui-react'
 import { useEffect } from 'react';
-
-const locationOptions = [
-  {
-    key: 'johar',
-    text: 'Johar Town',
-    value: 'Johar Town',
-  },
-  {
-    key: 'Wapda',
-    text: 'Wapda Town',
-    value: 'Wapda Town',
-  },
-  {
-    key: 'Faisal',
-    text: 'Faisal Town',
-    value: 'Faisal Town',
-  },
-];
+import { useState } from 'react';
 
 const SearchResults = (props) => {
+  const [state, setState] = useState({
+    areas: [],
+    areasLoaded: false
+  })
   const user = useSelector((st) => st.user);
   let dispatch = useDispatch();
   useEffect(() => {
-    console.log("USE EFFECT SR")
-    dispatch(showLoader(false));
-  });
+    dispatch(showLoader(true));
+    dispatch(getAllServiceStation());
+    
+  },[]);
+  if(user.areas.length && !state.areasLoaded){
+    let areasArray = user.areas.map((area)=>{
+      return {
+        key: area,
+        text: area,
+        value: area
+      }
+    })
+    setState({
+      ...state,
+      areas: areasArray,
+      areasLoaded: true
+    })
+  }
   const searchSS = async (e, { value }) => {
     dispatch(showLoader(true));
-    dispatch(searchServiceStation(value, 1));
+    dispatch(searchServiceStation({area: value, page: 1}));
   };
 
   const ssDetails = (index) => {
@@ -48,6 +50,10 @@ const SearchResults = (props) => {
       ssID: index,
     });
   };
+  const onPageChange = (event, data) =>{
+    dispatch(showLoader(true));
+    dispatch(searchServiceStation({area: user.docs[0].area,page: data.activePage}));
+  }
   return (
     <div>
       <Loader />
@@ -69,7 +75,7 @@ const SearchResults = (props) => {
             placeholder='Select Location'
             fluid
             selection
-            options={locationOptions}
+            options={state.areas}
           />
         </div>
         <Grid centered>
@@ -162,13 +168,14 @@ const SearchResults = (props) => {
         {user.docs.length ?
         <div className="pagination">
           <Pagination
-            boundaryRange={0}
+            // boundaryRange={0}
             defaultActivePage={1}
-            ellipsisItem={null}
-            firstItem={user.nextpage}
-            lastItem={user.prevpage}
+            // ellipsisItem={null}
+            // firstItem={user.prevpage}
+            // lastItem={user.nextpage}
             siblingRange={1}
             totalPages={user.totalpages}
+            onPageChange={onPageChange}
           />
         </div> : null
         }
