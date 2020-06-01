@@ -102,20 +102,13 @@ const AddServiceStation = (props) => {
     console.log(state);
     let isvalid = validate();
     if (isvalid) {
-      let location = {
-        type : 'Point',
-        coordinates : [
-          -72.7738706,
-          41.6332836
-        ]
-      }
       console.log('VALID!', state);
       await props.addServiceStation('http://localhost:5000/api/auth/vendor/addservicestation', {
           vehicles: state.vehicle,
           services: state.services,
           name: state.name,
           area: state.area,
-          location: location
+          location: state.location
       }, userAuth.token);
       // props.history.replace('photoUpload');
     }
