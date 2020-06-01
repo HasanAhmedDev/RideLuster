@@ -999,7 +999,7 @@ const uploadServiceStationPhoto = async (req, res) => {
   const ss = await ServiceStation.findOne({
     owner: req.vendor.id
   })
-  if (!ss.photo.startsWith('no')) {
+  if (!ss.photo.startsWith('ss')) {
     const del = `${config.get('fileUploadServiceStation')}/${ss.photo}`;
     fs.unlink(del, (err) => {
       if (err) {

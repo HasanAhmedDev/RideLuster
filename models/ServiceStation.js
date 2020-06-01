@@ -58,7 +58,7 @@ const ServiceStationSchema = new mongoose.Schema({
     },
     photo: {
         type: String,
-        default: 'no-photo.jpg'
+        default: 'ss.jpg'
     },
     createdAt: {
         type: Date,
