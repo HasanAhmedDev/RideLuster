@@ -3,8 +3,9 @@ import Message from './Message';
 import Progress from './Progress';
 import axios from 'axios';
 import { setAlert } from '../../actions/alert';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
+import { loadUser } from '../../actions/userAuth';
 const FileUpload = (props) => {
   const [file, setFile] = useState('');
   const [filename, setFilename] = useState('Choose File');
@@ -12,6 +13,7 @@ const FileUpload = (props) => {
   const [message, setMessage] = useState('');
   const [uploadPercentage, setUploadPercentage] = useState(0);
 
+  let dispatch = useDispatch();
   const onChange = e => {
     setFile(e.target.files[0]);
     setFilename(e.target.files[0].name);
@@ -36,7 +38,7 @@ const FileUpload = (props) => {
           );
 
           // Clear percentage
-          setTimeout(() => setUploadPercentage(0), 10000);
+          // setTimeout(() => setUploadPercentage(0), 10000);
         }
       });
 
@@ -44,6 +46,7 @@ const FileUpload = (props) => {
       const filePath= props.path === 'user' ? res.data.user.photo : res.data.servicestation.photo;
 
       setUploadedFile({ fileName, filePath });
+      dispatch(loadUser());
       redirect();
       setMessage('File Uploaded');
     } catch (err) {
@@ -60,8 +63,8 @@ const FileUpload = (props) => {
   };
   const redirect = () => {
     setTimeout(()=>{
-      props.history.push(`${props.path === 'user' ? 'searchResult' : 'vendor'}`);
-    }, 4000);
+      props.history.replace(props.path === 'user' ? 'searchResult' : 'vendor');
+    }, 2000);
   }
   return (
     <Fragment>

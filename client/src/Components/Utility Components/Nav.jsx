@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 
 
 import './Nav.css';
+import { useSelector } from 'react-redux';
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
@@ -86,6 +87,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Nav(props) {
   
+  const {userAuth, vendor} = useSelector(st => st);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -238,7 +240,22 @@ export default function Nav(props) {
               style={{border: 'none', outline:'none'}}
             >
               {/* <AccountCircle style={{fontSize: '45px'}} /> */}
-              <img style={{backgroundSize: 'cover', width: '50px', height: '50px', borderRadius: '50%'}} src="http://localhost:5000/users_photos/photo_865ac4b5-e1ae-4712-9db9-1e817c855659.jpg" alt="No Image"/>
+              {userAuth.user !== null ? 
+              <img style={{backgroundSize: 'cover', width: '50px', height: '50px', borderRadius: '50%'}} 
+              src={userAuth.user.photo[0] === "h" ?
+              `${userAuth.user.photo}` : 
+              `http://localhost:5000/users_photos/${userAuth.user.photo}`} 
+              alt="No Image"/>:
+              null
+              }
+              {userAuth.vendor !== null && vendor.ss !== null? 
+              <img style={{backgroundSize: 'cover', width: '50px', height: '50px', borderRadius: '50%'}} 
+              src={vendor.ss.photo[0] === "h" ?
+              `${vendor.ss.photo}` : 
+              `http://localhost:5000/servicestations_photos/${vendor.ss.photo}`} 
+              alt="No Image"/>:
+              null
+              }
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>

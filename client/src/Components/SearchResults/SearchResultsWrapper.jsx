@@ -4,42 +4,45 @@ import openSocket from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from '../Utility Components/Loader';
 import { showLoader } from '../../actions/loader';
+import { openSocketConnectionUser } from '../../actions/user';
 
 const SearchResultsWrapper = props => {
 
   const [state, setState] = useState({
-    clientConnected: false,
+    firstMount: false,
     render: null
   })
-  const userAuth = useSelector(st => st.userAuth);
+  const {userAuth, loader, user} = useSelector(st => st);
   let dispatch = useDispatch();
   
   useEffect(()=>{
-    console.log("USE EFFECT SRW");
-    if(state.clientConnected === false){
-      const clientio = openSocket('http://localhost:5000');
-      clientio.emit('client', {
-        clientID : '5ec5c48d5897603fe8d3071d',
-        msg: "Hi I am client with ID : "
-      })
-      clientio.on('clientIO', res => {
-        console.log(res);
-      })
-      clientio.on('clientNotification', res => {
-        console.log(res);
-      })
-      clientio.on('processUpdated', res => {
-        console.log(res);
-      })
+    if(!state.firstMount){
+      dispatch(showLoader(true));
       setState({
         ...state,
-        clientConnected: true
+        firstMount: true
       })
     }
-  },[])
+    if(user.userSocket === null && userAuth.user !== null)
+    {
+      dispatch(openSocketConnectionUser(userAuth.user._id));
+    }
+    if(user.userSocket){
+      user.userSocket.on('clientIO', res => {
+        console.log(res);
+      })
+      user.userSocket.on('clientNotification', res => {
+        console.log(res);
+      })
+      user.userSocket.on('processUpdated', res => {
+        console.log(res);
+      })
+    }
+  })
   if((!userAuth.isAuthenticated || userAuth.userType !== 'client') && userAuth.userLoaded)
       props.history.replace('login');
   if(userAuth.userLoaded && userAuth.isAuthenticated && userAuth.userType === 'client' && state.render === null){
+    dispatch(showLoader(false));
     setState({
       ...state,
       render: <SearchResults/>
