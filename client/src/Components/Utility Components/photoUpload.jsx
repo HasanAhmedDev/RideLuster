@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FileUpload from './FileUpload';
 import { useSelector } from 'react-redux';
+import Loader from './Loader';
 
 export default function PhotoUpload(props) {
   const [state, setState] = useState({
@@ -29,6 +30,9 @@ export default function PhotoUpload(props) {
   }
 
   return (
+    <React.Fragment>
+      <Loader/>
+    
     <div className='container mt-4'>
       <h4 className='display-4 text-center mb-4'>
         {userAuth.userType === 'vendor' ? 'Service Station' : 'User'} Photo
@@ -36,6 +40,8 @@ export default function PhotoUpload(props) {
       </h4>
 
       {state.render}
+      
     </div>
+    </React.Fragment>
   );
 }

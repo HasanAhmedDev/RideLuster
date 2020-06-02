@@ -13,16 +13,16 @@ const VendorWrapper = props => {
     })
     let dispatch = useDispatch();
 
-    // if(!state.firstMount){
-    //     dispatch(showLoader(true));
-    //     setState({
-    //         ...state,
-    //         firstMount: true
-    //     })
-    // }
+    if(!state.firstMount){
+        dispatch(showLoader(true));
+        setState({
+            ...state,
+            firstMount: true
+        })
+    }
     const { userAuth, vendor }= useSelector(st => st);
     useEffect(()=>{
-        
+        console.log("First");
         if(vendor.vendorSocket === null && userAuth.vendor !== null)
         {
             dispatch(openSocketVendor(userAuth.vendor._id));
@@ -41,13 +41,15 @@ const VendorWrapper = props => {
         props.history.replace('login');
     }
     if(vendor.ssLoaded && vendor.ss === null && userAuth.userLoaded && userAuth.isAuthenticated){
+        dispatch(showLoader(true));
         props.history.replace('addSS');
     }
-    if(vendor.ssLoaded && vendor.ss !== null && userAuth.userLoaded && userAuth.isAuthenticated){
-        if(vendor.ss.photo === 'no-photo.jpg'){
-            return <Redirect to="photoUpload"/>
-        }
-    }
+    // if(vendor.ssLoaded && vendor.ss !== null && userAuth.userLoaded && userAuth.isAuthenticated){
+    //     if(vendor.ss.photo === 'no-photo.jpg'){
+    //         dispatch(showLoader(true));
+    //         return <Redirect to="photoUpload"/>
+    //     }
+    // }
     if(state.render === null && userAuth.userLoaded && userAuth.isAuthenticated) {
         setState({
             ...state,
