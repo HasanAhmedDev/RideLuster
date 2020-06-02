@@ -3,7 +3,9 @@ import {
     FETCH_SS_UNSUCCESSFULL,
     GET_ALL_SS_SUCCESSFULL,
     GET_ALL_SS_UNSUCCESSFULL,
-    OPEN_USER_SOCKET
+    OPEN_USER_SOCKET,
+    GET_COMPLETED_SERVICES_SUCCESSFULL,
+    GET_COMPLETED_SERVICES_UNSUCCESSFULL
 } from './types';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
@@ -72,5 +74,27 @@ export const openSocketConnectionUser = (clientID) => dispatch => {
     dispatch({
         type: OPEN_USER_SOCKET,
         payload: clientio
+    })
+}
+
+export const getCompletedServices = () => dispatch => {
+    axios.get('http://localhost:5000/api/auth/user/getcompletedbookings').then((res)=>{
+        dispatch({
+            type: GET_COMPLETED_SERVICES_SUCCESSFULL,
+            payload: res.data
+        })
+        dispatch(showLoader(false));
+    }).catch((err)=>{
+        console.log(err.message);
+        const errors = err.response.data.errors;
+        console.log(errors)
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+
+        }
+        dispatch({
+            type: GET_COMPLETED_SERVICES_UNSUCCESSFULL
+        })
+        dispatch(showLoader(false));
     })
 }

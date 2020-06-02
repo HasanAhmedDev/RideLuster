@@ -1,40 +1,64 @@
 import React, { useEffect} from 'react';
-import openSocket from 'socket.io-client';
 import Vendor from './Vendor';
 import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react';
-
+import {openSocketVendor} from '../../actions/servicestation';
+import { Redirect } from 'react-router';
+import { showLoader } from '../../actions/loader';
+import Loader from '../Utility Components/Loader';
 const VendorWrapper = props => {
     const [state, setState] = useState({
-        render: null
+        render: null,
+        firstMount: false
     })
-    const { userAuth }= useSelector(st => st);
+    let dispatch = useDispatch();
 
+    // if(!state.firstMount){
+    //     dispatch(showLoader(true));
+    //     setState({
+    //         ...state,
+    //         firstMount: true
+    //     })
+    // }
+    const { userAuth, vendor }= useSelector(st => st);
     useEffect(()=>{
-        console.log("USE EFFECT");
         
-        if((!userAuth.isAuthenticated || userAuth.userType !== 'vendor') && userAuth.userLoaded)
+        if(vendor.vendorSocket === null && userAuth.vendor !== null)
         {
-            props.history.replace('login');
+            dispatch(openSocketVendor(userAuth.vendor._id));
         }
-        if(userAuth.userLoaded && userAuth.isAuthenticated && userAuth.userType === 'vendor' && state.render === null){
-            const vendorio = openSocket('http://localhost:5000');
-            vendorio.emit('vendor', {
-                vendorID: userAuth.vendor._id,
-                msg: "Hi I am Vendor"
-            });
-            vendorio.on('vendorIO', res => {
+        if(vendor.vendorSocket){
+            vendor.vendorSocket.on('vendorIO', res => {
                 console.log(res, "Called");
             })
-            vendorio.on('VendorNotification', res => {
+            vendor.vendorSocket.on('VendorNotification', res => {
                 console.log(res);
             })
-            setState({
-                ...state,
-                render: <Vendor/>
-            })
         }
-    })  
-    return state.render;
+    }) 
+    if((!userAuth.isAuthenticated || userAuth.userType !== 'vendor') && userAuth.userLoaded)
+    {
+        props.history.replace('login');
+    }
+    if(vendor.ssLoaded && vendor.ss === null && userAuth.userLoaded && userAuth.isAuthenticated){
+        props.history.replace('addSS');
+    }
+    if(vendor.ssLoaded && vendor.ss !== null && userAuth.userLoaded && userAuth.isAuthenticated){
+        if(vendor.ss.photo === 'no-photo.jpg'){
+            return <Redirect to="photoUpload"/>
+        }
+    }
+    if(state.render === null && userAuth.userLoaded && userAuth.isAuthenticated) {
+        setState({
+            ...state,
+            render: <Vendor/>
+        })
+    }
+    return( 
+        <React.Fragment>
+        <Loader/>
+        {state.render}
+        </React.Fragment>
+    );
 }
 export default VendorWrapper;

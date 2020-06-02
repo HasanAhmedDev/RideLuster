@@ -9,6 +9,7 @@ import { showLoader } from '../../actions/loader';
 import Loader from '../Utility Components/Loader';
 //import { Link } from 'react-router-dom';
 import './Login.css';
+import { useEffect } from 'react';
 const divStyle = {
   height: window.screen.height,
 };
@@ -21,6 +22,9 @@ const Login = (props) => {
     passErr: '',
     tab: 'client',
   });
+  useEffect(()=>{
+
+  })
   const userAuth = useSelector((st) => st.userAuth);
   if(userAuth.isAuthenticated && userAuth.userType && userAuth.userLoaded)
     props.history.replace(`${userAuth.userType === 'client' ? 'searchResult' : userAuth.userType}`);
@@ -86,11 +90,16 @@ const Login = (props) => {
   };
 
   const switchTabs = (evt) => {
-    const tab = evt.target.name;
+    let menu = document.getElementsByClassName('item');
+    menu[0].className = 'item';
+    menu[1].className = 'item';
+    menu[2].className = 'item';
+    document.getElementById(evt).className += ' activ ';
     setState({
       ...state,
-      tab: tab,
+      tab: evt,
     });
+    
     console.log(state.tab);
   };
 
@@ -102,21 +111,23 @@ const Login = (props) => {
         <div className='main-form'>
           <Form onSubmit={handleSubmit} className='inside-form'>
             <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
-            <div style={{ textAlign: 'center', margin: '15px 0px' }}>
-              <div className='ui pointing menu'>
-                <a name='client' onClick={switchTabs} className='item'>
-                  Client
+            <div>
+              <div class="ui attached tabular menu" style={{width: 'fit-content'}}>
+                <a class="activ item" id="client" name onClick={() => switchTabs('client')}>
+                  <i aria-hidden="true" class="client icon"></i>
+                  Users
                 </a>
-                <a name='vendor' onClick={switchTabs} className='item'>
-                  Vendor
+                <a class="item" id="vendor" onClick={() => switchTabs('vendor')}>
+                  Vendors
+                  {/* <div class="ui label">15</div> */}
                 </a>
-                <a name='admin' onClick={switchTabs} className='item'>
+                <a class="item" id="admin" onClick={() => switchTabs('admin')}>
                   Admin
+                  {/* <div class="ui label">15</div> */}
                 </a>
               </div>
-              {/* <div class="ui segment active tab">Tab 1 Content</div> */}
-            </div>
-            <Form.Field style={{ paddingBottom: '6%' }}>
+              {/* <div class="ui bottom attached segment active tab"> */}
+              <Form.Field style={{ paddingBottom: '6%' }}>
               <label>Email</label>
               <Input
                 name='email'
@@ -142,6 +153,10 @@ const Login = (props) => {
                 Login
               </Button>
             </Form.Field>
+
+              {/* </div> */}
+            </div>
+            
           </Form>
         </div>
       </div>

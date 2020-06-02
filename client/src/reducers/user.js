@@ -3,7 +3,9 @@ import {
     FETCH_SS_UNSUCCESSFULL,
     GET_ALL_SS_SUCCESSFULL,
     GET_ALL_SS_UNSUCCESSFULL,
-    OPEN_USER_SOCKET
+    OPEN_USER_SOCKET,
+    GET_COMPLETED_SERVICES_SUCCESSFULL,
+    GET_COMPLETED_SERVICES_UNSUCCESSFULL
 } from '../actions/types'
 
 const initialState = {
@@ -16,7 +18,8 @@ const initialState = {
     hasprev: null,
     prevpage: null,
     areas: [],
-    userSocket: null
+    userSocket: null,
+    completedServices: []
 }
 
 export default function (state = initialState, action){
@@ -31,6 +34,16 @@ export default function (state = initialState, action){
             return {
                 ...state,
                 areas: payload.areas
+            }
+        case GET_COMPLETED_SERVICES_SUCCESSFULL:
+            return {
+                ...state,
+                completedServices: payload.bookings
+            }
+        case GET_COMPLETED_SERVICES_UNSUCCESSFULL:
+            return{
+                ...state,
+                completedServices: []
             }
         case OPEN_USER_SOCKET:
             return{
