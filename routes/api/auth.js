@@ -159,7 +159,7 @@ router.put('/vendor/closeservicestation', auth('vendor'), AuthController.closeSe
 router.put('/vendor/uploadservicestationphoto', auth('vendor'), AuthController.uploadServiceStationPhoto)
 
 //@route GET api/auth/vendor/getUnhandledBookings
-router.get('/vendor/getUnhandledBookings', auth('vendor'), AuthController.getUnhandledBookings);
+router.post('/vendor/getUnhandledBookings', auth('vendor'), AuthController.getUnhandledBookings);
 
 //@route POST api/auth/vendor/handleBookingRequest
 router.post('/vendor/handleRequest', [

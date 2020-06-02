@@ -305,7 +305,8 @@ const BookService = async (req, res, next) => {
       senderID: req.user.id,
       receiverID: serviceStation.owner,
       payload: [{
-        msg: `Booking from Client`,
+        id: 200,
+        msg: `New Booking from Client`,
         booking: booking
       }]
     });
@@ -1018,10 +1019,12 @@ const uploadServiceStationPhoto = async (req, res) => {
 }
 
 const getUnhandledBookings = async (req, res, next) => {
+  const { id } = req.body;
   try {
     const Bookings = await Booking.find({
       isApproved: false,
-      isCompleted: false
+      isCompleted: false,
+      serviceStation: id
     });
     return res.status(200).json({
       success: true,
@@ -1069,7 +1072,7 @@ const handleBookingRequest = async (req, res, next) => {
         }]
       })
     }
-    if (approved === 'false') {
+    if (approved === false) {
       await Booking.findByIdAndDelete(bookingId);
       let notify = new notifications({
         senderID: req.vendor.id,

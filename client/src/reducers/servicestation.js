@@ -3,13 +3,17 @@ import {
     SS_ADDED_UNSUCCESSFUL,
     GET_SS_SUCCESSFULL,
     GET_SS_UNSUCCESSFULL,
-    OPEN_VENDOR_SOCKET
+    OPEN_VENDOR_SOCKET,
+    GET_UNHANDLED_REQUEST_SUCCESSFULL,
+    GET_UNHANDLED_REQUEST_UNSUCCESSFULL,
+    // HANDLE_BOOKING_REQUEST_SUCCESSFULL
   } from '../actions/types';
   
   const initialState = {
     ss: null,
     ssLoaded: false,
-    vendorSocket: null
+    vendorSocket: null,
+    unhandledBooking: []
   };
   
   export default function (state = initialState, action) {
@@ -30,6 +34,20 @@ import {
         return{
           ...state,
           vendorSocket: payload
+        }
+      // case HANDLE_BOOKING_REQUEST_SUCCESSFULL:
+      //   return{
+      //     ...state,
+      //   }
+      case GET_UNHANDLED_REQUEST_SUCCESSFULL:
+        return{
+          ...state,
+          unhandledBooking: payload.bookings
+        }
+      case GET_UNHANDLED_REQUEST_UNSUCCESSFULL:
+        return{
+          ...state,
+          unhandledBooking: []
         }
       case GET_SS_UNSUCCESSFULL:
       case SS_ADDED_UNSUCCESSFUL:

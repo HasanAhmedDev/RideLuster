@@ -3,7 +3,6 @@ import Vendor from './Vendor';
 import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react';
 import {openSocketVendor} from '../../actions/servicestation';
-import { Redirect } from 'react-router';
 import { showLoader } from '../../actions/loader';
 import Loader from '../Utility Components/Loader';
 const VendorWrapper = props => {
@@ -22,7 +21,6 @@ const VendorWrapper = props => {
     }
     const { userAuth, vendor }= useSelector(st => st);
     useEffect(()=>{
-        console.log("First");
         if(vendor.vendorSocket === null && userAuth.vendor !== null)
         {
             dispatch(openSocketVendor(userAuth.vendor._id));
@@ -31,9 +29,9 @@ const VendorWrapper = props => {
             vendor.vendorSocket.on('vendorIO', res => {
                 console.log(res, "Called");
             })
-            vendor.vendorSocket.on('VendorNotification', res => {
-                console.log(res);
-            })
+            // vendor.vendorSocket.on('VendorNotification', res => {
+            //     console.log(res);
+            // })
         }
     }) 
     if((!userAuth.isAuthenticated || userAuth.userType !== 'vendor') && userAuth.userLoaded)

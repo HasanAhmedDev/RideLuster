@@ -3,7 +3,7 @@ import Nav from '../Utility Components/Nav';
 import { useSelector, useDispatch } from 'react-redux';
 import Panel from './Control Panel/Panel';
 import Footer from '../Footer/Footer';
-import { getServiceStation } from '../../actions/servicestation';
+import { getServiceStation, GetUnhandledRequest } from '../../actions/servicestation';
 import ProcessController from './ProcessController';
 import './Vendor.css';
 import { withRouter } from 'react-router';
@@ -14,17 +14,23 @@ const Vendor = props => {
     const [state, setState] = useState({
         processName: '',
     });
-    const { vendor} = useSelector(st => st);
+    const { vendor } = useSelector(st => st);
     let dispatch = useDispatch();
     useEffect(()=>{
-        console.log("SECOND");
         if(!vendor.ssLoaded){
             dispatch(getServiceStation());
         }
         dispatch(showLoader(false));
     },[])
 
-    
+    if(vendor.vendorSocket && vendor.ssLoaded){
+        vendor.vendorSocket.on('VendorNotification', res => {
+            if(res[0].id === 200){
+                return dispatch(GetUnhandledRequest({id: vendor.ss._id}));
+            }
+            console.log(res);
+        })
+    }
     const switchProcess = (event)=>{
         setState({
             ...state,
