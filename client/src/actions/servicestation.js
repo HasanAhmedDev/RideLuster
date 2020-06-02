@@ -49,11 +49,13 @@ export const getServiceStation = () => dispatch => {
     })
     dispatch(showLoader(false));
   }).catch((err)=>{
+    console.log(err.message);
+      const errors = err.response.data.errors;
+      
     dispatch({
       type: GET_SS_UNSUCCESSFULL,
     })
     dispatch(showLoader(false));
-    console.log(err);
   })
 
 }

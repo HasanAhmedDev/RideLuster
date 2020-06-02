@@ -17,7 +17,7 @@ const SearchResults = (props) => {
     areas: [],
     areasLoaded: false
   })
-  const user = useSelector((st) => st.user);
+  const { user, userAuth } = useSelector((st) => st);
   let dispatch = useDispatch();
   useEffect(() => {
     dispatch(showLoader(true));
@@ -72,7 +72,8 @@ const SearchResults = (props) => {
     setTimeout(()=>{
       props.history.push({
         pathname: 'book',
-        ssID: ssID
+        ssID: ssID,
+        cID: userAuth.user._id
       })
     }, 1000)
   }

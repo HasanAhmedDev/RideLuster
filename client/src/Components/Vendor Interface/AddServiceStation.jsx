@@ -4,6 +4,9 @@ import Footer from '../Footer/Footer';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { addServiceStation, getServiceStation } from '../../actions/servicestation';
 import './style.css'
+import { showLoader } from '../../actions/loader';
+import Loader from '../Utility Components/Loader';
+import ShowLoader from '../Utility Components/Loader';
 
 const divStyle = {
   height: window.screen.height,
@@ -52,12 +55,18 @@ const AddServiceStation = (props) => {
     if(!vendor.ssLoaded){
       dispatch(getServiceStation());
     }
-    if((!userAuth.isAuthenticated || userAuth.userType !== 'vendor') && userAuth.userLoaded)
+    
+    if((!userAuth.isAuthenticated || userAuth.userType !== 'vendor') && userAuth.userLoaded){
+      dispatch(showLoader(false));
       props.history.replace('login');
-    if(vendor.ssLoaded && vendor.ss !==null && userAuth.userLoaded)
+    }
+    if(vendor.ssLoaded && vendor.ss !==null && userAuth.userLoaded){
+      dispatch(showLoader(true));
       props.history.replace('photoUpload');
+    }
   })
   if(userAuth.userLoaded && vendor.ssLoaded && state.render === null){
+    dispatch(showLoader(false));
     setState({
       ...state,
       render: true
@@ -102,7 +111,7 @@ const AddServiceStation = (props) => {
     console.log(state);
     let isvalid = validate();
     if (isvalid) {
-      console.log('VALID!', state);
+      dispatch(ShowLoader(true));
       await props.addServiceStation('http://localhost:5000/api/auth/vendor/addservicestation', {
           vehicles: state.vehicle,
           services: state.services,
@@ -156,6 +165,7 @@ const AddServiceStation = (props) => {
   return (
     state.render === null ? null :
     <Form.Field className='body' style={divStyle}>
+      <Loader/>
       <Form.Field className='overlay'>
         <Form.Field className='main-form'>
           <Form onSubmit={handleSubmit} className='inside-form'>

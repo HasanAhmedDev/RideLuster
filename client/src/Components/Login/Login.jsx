@@ -22,12 +22,13 @@ const Login = (props) => {
     passErr: '',
     tab: 'client',
   });
-  useEffect(()=>{
-
-  })
   const userAuth = useSelector((st) => st.userAuth);
-  if(userAuth.isAuthenticated && userAuth.userType && userAuth.userLoaded)
-    props.history.replace(`${userAuth.userType === 'client' ? 'searchResult' : userAuth.userType}`);
+
+  useEffect(()=>{
+    if(userAuth.isAuthenticated && userAuth.userType && userAuth.userLoaded)
+      props.history.replace(`${userAuth.userType === 'client' ? 'searchResult' : userAuth.userType}`);
+  })
+  
   const validate = () => {
     let emailErr = '';
     let passErr = '';
@@ -112,16 +113,16 @@ const Login = (props) => {
           <Form onSubmit={handleSubmit} className='inside-form'>
             <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
             <div>
-              <div class="ui attached tabular menu" style={{width: 'fit-content'}}>
-                <a class="activ item" id="client" name onClick={() => switchTabs('client')}>
-                  <i aria-hidden="true" class="client icon"></i>
+              <div className="ui attached tabular menu" style={{width: 'fit-content'}}>
+                <a className="activ item" id="client" onClick={() => switchTabs('client')}>
+                  <i aria-hidden="true" className="client icon"></i>
                   Users
                 </a>
-                <a class="item" id="vendor" onClick={() => switchTabs('vendor')}>
+                <a className="item" id="vendor" onClick={() => switchTabs('vendor')}>
                   Vendors
-                  {/* <div class="ui label">15</div> */}
+                  {/* <div className="ui label">15</div> */}
                 </a>
-                <a class="item" id="admin" onClick={() => switchTabs('admin')}>
+                <a className="item" id="admin" onClick={() => switchTabs('admin')}>
                   Admin
                   {/* <div class="ui label">15</div> */}
                 </a>

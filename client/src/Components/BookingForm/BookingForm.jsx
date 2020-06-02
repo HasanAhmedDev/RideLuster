@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { Button, Form, Input } from "semantic-ui-react";
+import { Button, Form, Input, Dropdown } from "semantic-ui-react";
 import Footer from "../Footer/Footer";
 import "./BookingForm.css";
+import { connect } from "react-redux";
+import { bookService } from  '../../actions/user';
 
 const initialState = {
   vhType: "",
@@ -19,6 +21,24 @@ const initialState = {
   regErr:"",
   conErr:""
 };
+
+const serviceOptions = [
+  {
+    key: 'Wash',
+    text: 'Wash',
+    value: 'Wash',
+  },
+  {
+    key: 'Polish',
+    text: 'Polish',
+    value: 'Polish',
+  },
+  {
+    key: 'Oil Change',
+    text: 'Oil Change',
+    value: 'Oil Change',
+  },
+]
 
 const divStyle = {
   height: window.screen.height,
@@ -80,9 +100,7 @@ class BookingForm extends Component {
     this.setState({ makeErr });
 
     if (this.state.model) {
-      if (/^[A-Za-z]+\s*/.test(this.state.model) === false) {
-        modelErr = "* Can contain only alphabets";
-      }
+
     } else {
       modelErr = "* This field must be non-empty.";
     }
@@ -117,11 +135,23 @@ class BookingForm extends Component {
   };
 
   handleSubmit = (evt) => {
+    
     evt.preventDefault();
     console.log(this.state);
     let isvalid = this.vaidate();
     if (isvalid) {
       this.setState(initialState);
+      console.log(this.state);
+      this.props.bookService({
+        vehicleType: this.state.vhType,
+        vehicleMake: this.state.make,
+        vehicleModel: this.state.model,
+        vehicleNo: this.state.reg,
+        serviceType: this.state.service,
+        contactNo: this.state.con,
+        clientId: this.props.location.cID,
+        serviceStationId: this.props.location.ssID
+      });
     }
   };
 
@@ -130,6 +160,20 @@ class BookingForm extends Component {
       [evt.target.name]: evt.target.value,
     });
   };
+  
+  vehicleType = (e, {value}) => {
+    this.setState({
+      ...this.state,
+      vhType: value
+    })
+  }
+
+  serviceType = (e, {value}) => {
+    this.setState({
+      ...this.state,
+      service: value
+    })
+  }
 
   render() {
     return (
@@ -138,57 +182,34 @@ class BookingForm extends Component {
           <Form.Field className="main-form">
             <Form onSubmit={this.handleSubmit} className="inside-form">
               <h4>Booking Details</h4>
-              <Form.Group>
-                <label className="vhbold">Vehicle Type: </label>
-                <Form.Field
-                  label="Car"
-                  control="input"
-                  type="radio"
-                  name="vhType"
-                  value="car"
-                  checked={this.state.vhType === "car"}
-                  onChange={this.handleChange}
-                  width={8}
+              
+                <Dropdown
+                  placeholder='Select Vehicle'
+                  fluid
+                  selection
+                  onChange={this.vehicleType}
+                  options={[{
+                    key: 'Car',
+                    text: 'Car',
+                    value: 'Car',
+                  },
+                  {
+                    key: 'Bike',
+                    text: 'Bike',
+                    value: 'Bike',
+                  }
+                ]}
                 />
-                <Form.Field
-                  label="Bike"
-                  control="input"
-                  type="radio"
-                  name="vhType"
-                  value="bike"
-                  checked={this.state.vhType === "bike"}
-                  onChange={this.handleChange}
-                  width={8}
-                />
-              </Form.Group>
               <div className="valerr">{this.state.vhErr}</div>
-              <Form.Group>
-                <label className="vhbold">Service: </label>
-                <Form.Field
-                  label="Wash"
-                  control="input"
-                  type="checkbox"
-                  checked={this.state.service}
-                  onChange={this.changeService}
-                  width={4}
+                <div style={{margin: '10px'}}>
+                <Dropdown
+                  placeholder='Select Service'
+                  fluid
+                  selection
+                  onChange={this.serviceType}
+                  options={serviceOptions}
                 />
-                <Form.Field
-                  label="Polish"
-                  control="input"
-                  type="checkbox"
-                  checked={this.state.polish}
-                  onChange={this.changePolish}
-                  width={4}
-                />
-                <Form.Field
-                  label="Oil Change"
-                  control="input"
-                  type="checkbox"
-                  checked={this.state.oil}
-                  onChange={this.changeOil}
-                  width={4}
-                />
-              </Form.Group>
+                </div>
               <div className="valerr">{this.state.serErr}</div>
                 <Form.Input
                   name="make"
@@ -205,7 +226,7 @@ class BookingForm extends Component {
                   onChange={this.handleChange}
                   label="Model"
                   placeholder="Enter Model"
-                  
+                  type="number"
                 />
               <div className="valerr">{this.state.modelErr}</div>
 
@@ -226,6 +247,7 @@ class BookingForm extends Component {
                   onChange={this.handleChange}
                   value={this.state.con}
                   placeholder="03241111111"
+                  type="number"
                 />
                 <div className="valerr">{this.state.conErr}</div>
               </Form.Field>
@@ -242,4 +264,7 @@ class BookingForm extends Component {
     );
   }
 }
-export default BookingForm;
+const mapDispatchToProps = {
+  bookService
+ };
+export default connect(null, mapDispatchToProps)(BookingForm);

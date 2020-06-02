@@ -5,7 +5,9 @@ import {
     GET_ALL_SS_UNSUCCESSFULL,
     OPEN_USER_SOCKET,
     GET_COMPLETED_SERVICES_SUCCESSFULL,
-    GET_COMPLETED_SERVICES_UNSUCCESSFULL
+    GET_COMPLETED_SERVICES_UNSUCCESSFULL,
+    BOOK_SERVICE_SUCCESSFULL,
+    BOOK_SERVICE_UNSUCCESSFULL
 } from './types';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
@@ -96,5 +98,22 @@ export const getCompletedServices = () => dispatch => {
             type: GET_COMPLETED_SERVICES_UNSUCCESSFULL
         })
         dispatch(showLoader(false));
+    })
+}
+
+export const bookService = (booking) => dispatch => {
+    axios.post('http://localhost:5000/api/auth/user/bookService',booking).then((res) => {
+        dispatch(setAlert(res.data.msg, 'success'));
+        return;
+    }).catch((err) => {
+        console.log(err.message);
+        const errors = err.response.data.errors;
+        console.log(errors)
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+
+        }
+        dispatch(showLoader(false));
+        return;
     })
 }

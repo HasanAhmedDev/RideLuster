@@ -17,6 +17,7 @@ const Vendor = props => {
     const { vendor} = useSelector(st => st);
     let dispatch = useDispatch();
     useEffect(()=>{
+        console.log("SECOND");
         if(!vendor.ssLoaded){
             dispatch(getServiceStation());
         }
