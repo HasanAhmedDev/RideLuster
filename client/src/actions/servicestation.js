@@ -4,7 +4,10 @@ import {
   SS_ADDED_UNSUCCESSFUL,
   GET_SS_SUCCESSFULL,
   GET_SS_UNSUCCESSFULL,
-  OPEN_VENDOR_SOCKET
+  OPEN_VENDOR_SOCKET,
+  GET_UNHANDLED_REQUEST_SUCCESSFULL,
+  GET_UNHANDLED_REQUEST_UNSUCCESSFULL,
+  HANDLE_BOOKING_REQUEST_SUCCESSFULL
 } from './types';
 import { setAlert } from '../actions/alert';
 import setAuthToken from '../utils/setAuthToken';
@@ -47,7 +50,7 @@ export const getServiceStation = () => dispatch => {
       type: GET_SS_SUCCESSFULL,
       payload: res.data
     })
-    dispatch(showLoader(false));
+      dispatch(showLoader(false));
   }).catch((err)=>{
     console.log(err.message);
       const errors = err.response.data.errors;
@@ -69,5 +72,45 @@ export const openSocketVendor = (id) => dispatch =>{
   dispatch({
     type: OPEN_VENDOR_SOCKET,
     payload: vendorio
+  })
+}
+
+export const GetUnhandledRequest = (id) => dispatch => {
+  axios.post('http://localhost:5000/api/auth/vendor/getUnhandledBookings',id).then((res)=> {
+    dispatch({
+      type: GET_UNHANDLED_REQUEST_SUCCESSFULL,
+      payload: res.data
+    })
+    dispatch(showLoader(false));
+  }).catch((err)=>{
+    console.log(err.message);
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+      }
+      dispatch(showLoader(false));
+      dispatch({
+        type: GET_UNHANDLED_REQUEST_UNSUCCESSFULL
+      })
+  })
+}
+
+export const handleBookingRequest = (payload) => dispatch => {
+  axios.post('http://localhost:5000/api/auth/vendor/handleRequest', payload).then((res)=>{
+    console.log(res);
+  dispatch({
+    type: HANDLE_BOOKING_REQUEST_SUCCESSFULL,
+    payload: res.data
+  })
+  dispatch(setAlert(res.data.msg, 'success'));
+  dispatch(GetUnhandledRequest());
+  }).catch((err)=>{
+    console.log(err.message);
+      // const errors = err.response.data.errors;
+      // if (errors) {
+      //   errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+      // }
+      dispatch(showLoader(false));
+      return;
   })
 }

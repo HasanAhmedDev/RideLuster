@@ -18,4 +18,4 @@ module.exports = async (vendorConnection, payload) => {
 const sendNotificationToVendor = (notify)=>{
     io.getIO().to(activeVendors[notify.receiverID]).emit('VendorNotification', notify.payload);
 }
-module.exports.sendNotificationToVendor = sendNotificationToVendor
+module.exports.sendNotificationToVendor = sendNotificationToVendor;

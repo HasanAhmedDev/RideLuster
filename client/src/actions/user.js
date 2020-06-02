@@ -6,8 +6,8 @@ import {
     OPEN_USER_SOCKET,
     GET_COMPLETED_SERVICES_SUCCESSFULL,
     GET_COMPLETED_SERVICES_UNSUCCESSFULL,
-    BOOK_SERVICE_SUCCESSFULL,
-    BOOK_SERVICE_UNSUCCESSFULL
+    // BOOK_SERVICE_SUCCESSFULL,
+    // BOOK_SERVICE_UNSUCCESSFULL
 } from './types';
 import axios from 'axios';
 import openSocket from 'socket.io-client';
