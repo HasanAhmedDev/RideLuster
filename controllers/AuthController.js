@@ -1258,7 +1258,7 @@ const getServiceStationByVendorId = async (req, res) => {
     }).populate({
       path: 'owner',
       select: 'name email'
-    })
+    }).populate('bookings').populate('activeProcess');
     if (!ss) {
       return res.status(404).json({
         success: false,

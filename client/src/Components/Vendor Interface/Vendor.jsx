@@ -20,7 +20,6 @@ const Vendor = props => {
         if(!vendor.ssLoaded){
             dispatch(getServiceStation());
         }
-        dispatch(showLoader(false));
     },[])
 
     if(vendor.vendorSocket && vendor.ssLoaded){
