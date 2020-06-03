@@ -111,7 +111,7 @@ const AddServiceStation = (props) => {
     console.log(state);
     let isvalid = validate();
     if (isvalid) {
-      dispatch(ShowLoader(true));
+      // dispatch(ShowLoader(true));
       await props.addServiceStation('http://localhost:5000/api/auth/vendor/addservicestation', {
           vehicles: state.vehicle,
           services: state.services,

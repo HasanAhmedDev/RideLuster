@@ -39,9 +39,21 @@ const VendorList = (props) => {
               <Card.Header>{d.name}</Card.Header>
               <Card.Header>{d.area}</Card.Header>
               <Card.Meta>
-                <span className='date'>
+                <div className='date'>
                   Owner Name: <span className='green'> {d.owner.name}</span>
-                </span>
+                </div>
+                <div className='date'>
+                Services:
+                  {d.services.map((i, ind)=>{
+                    return <span key={ind} className='green'>{ind === 0 ? null : ','}{i}</span>
+                  })}
+                </div>
+                <div className='date'>
+                Vehicles:
+                  {d.vehicles.map((i, ind)=>{
+                    return <span key={ind} className='green'>{ind === 0 ? null : ','}{i}</span>
+                  })}
+                </div>
               </Card.Meta>
               {/* <Link to='/searchResult/1'>
                 <Button fluid content='Details' />

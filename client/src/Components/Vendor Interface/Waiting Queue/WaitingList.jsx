@@ -57,7 +57,7 @@ const WaitingList = props => {
                                     <li> <b>VEHICLE NUMBER: </b> {waiting.vehicleNo}</li>
                                 </ul>
                                 <h6>Alloted Process Time: <span className="green">{waiting.timeForService}</span></h6>
-                                <h6>Vehicle Serving Start Time: <span className="red">{waiting.estimatedStartTime.getTime()}</span></h6>
+                                <h6>Vehicle Serving Start Time: <span className="red">{waiting.estimatedStartTime}</span></h6>
                             </div>
                             </div>
                             <div className="extra content">

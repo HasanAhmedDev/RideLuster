@@ -10,7 +10,7 @@ import './Signup.css';
 const divStyle = {
   height: window.screen.height,
 };
-let type = 'client';
+var type = 'client';
 const Signup = (props) => {
   const [state, setState] = useState({
     fname: '',
@@ -27,7 +27,7 @@ const Signup = (props) => {
   });
 
   const userAuth = useSelector((st) => st.userAuth);
-  if(userAuth.isAuthenticated && userAuth.userType && userAuth.userLoaded){
+  if(userAuth.isAuthenticated && userAuth.userLoaded){
     if(userAuth.userType === 'client')
       props.history.replace('photoUpload');
     if(userAuth.userType === 'vendor')
@@ -108,7 +108,7 @@ const Signup = (props) => {
           }
           break;
       }
-      await props.authenticateUser(url, payload, type);
+      await props.authenticateUser(url, payload, state.tab);
     }
   };
 
@@ -125,7 +125,19 @@ const Signup = (props) => {
       ...state,
       tab: tab,
     });
-    type = evt;
+    type = evt.target.name;
+    let c = document.getElementById('c');
+    let v = document.getElementById('v');
+
+    c.className = 'item';
+    v.className = 'item';
+
+    if(evt.target.name === 'client'){
+      c.className+= ' accc';
+    }
+    else{
+      v.className+= ' accc';
+    }
     console.log(state.tab);
   };
 
@@ -137,10 +149,10 @@ const Signup = (props) => {
             <h4>Welcome to Sign Up</h4>
             <div style={{ textAlign: 'center', margin: '15px 0px' }}>
               <div className='ui pointing menu'>
-                <a name='client' onClick={switchTabs} className='item'>
+                <a name='client' id="c" onClick={switchTabs} className='accc item'>
                   Client
                 </a>
-                <a name='vendor' onClick={switchTabs} className='item'>
+                <a name='vendor' id="v" onClick={switchTabs} className='item'>
                   Vendor
                 </a>
               </div>

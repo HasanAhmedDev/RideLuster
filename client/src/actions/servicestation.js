@@ -156,3 +156,20 @@ export const getCompletedServicesSS = () => dispatch =>{
       return ;
   })
 }
+
+export const closeSS = () => dispatch =>{
+  axios.put('http://localhost:5000/api/auth/vendor/closeservicestation').then((res)=>{
+    console.log(res);
+    dispatch(showLoader(false));
+    return;
+  }).catch((err)=>{
+    console.log(err);
+    console.log(err.message);
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+      }
+      dispatch(showLoader(false));
+      return ;
+  })
+}

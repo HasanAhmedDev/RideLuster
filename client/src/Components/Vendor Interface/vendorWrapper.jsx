@@ -39,7 +39,7 @@ const VendorWrapper = props => {
         props.history.replace('login');
     }
     if(vendor.ssLoaded && vendor.ss === null && userAuth.userLoaded && userAuth.isAuthenticated){
-        dispatch(showLoader(true));
+        // dispatch(showLoader(true));
         props.history.replace('addSS');
     }
     // if(vendor.ssLoaded && vendor.ss !== null && userAuth.userLoaded && userAuth.isAuthenticated){

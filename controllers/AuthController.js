@@ -397,7 +397,7 @@ const getCompletedBookings = async (req, res) => {
     const bookings = await Booking.find({
       isCompleted: 'true',
       client: req.user.id
-    })
+    }).populate('serviceStation');
     if (bookings.length == 0) {
       return res.status(404).json({
         success: false,

@@ -18,11 +18,17 @@ export const loadRequests = () => async (dispatch) => {
         setAuthToken(localStorage.Token);
     }
     try {
-        const res = await axios.get('/api/auth/admin/getallrequests')
-        dispatch({
-            type: GET_REQUEST_SUCCESSFULL,
-            payload: res.data,
-        });
+        axios.get('/api/auth/admin/getallrequests').then((res)=>{
+            console.log(res);
+            dispatch({
+                type: GET_REQUEST_SUCCESSFULL,
+                payload: res.data,
+            });
+        }).catch((err)=>{
+            console.log(err);
+            return;
+        })
+        
     } catch (err) {
         console.log(err.message);
         const errors = err.response.data.errors;

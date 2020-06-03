@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Loader from '../Utility Components/Loader';
 import { showLoader } from '../../actions/loader';
 import { openSocketConnectionUser } from '../../actions/user';
+import { setAlert } from '../../actions/alert';
 
 const SearchResultsWrapper = props => {
 
@@ -33,9 +34,11 @@ const SearchResultsWrapper = props => {
       })
       user.userSocket.on('clientNotification', res => {
         console.log(res);
+        dispatch(setAlert(res.msg, 'success'))
       })
       user.userSocket.on('processUpdated', res => {
         console.log(res);
+        dispatch(setAlert(res[0].status, 'success'))
       })
     }
   })

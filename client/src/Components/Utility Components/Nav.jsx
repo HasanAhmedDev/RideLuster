@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import { closeSS } from '../../actions/servicestation';
 // import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -19,7 +20,7 @@ import { Link } from 'react-router-dom';
 
 
 import './Nav.css';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
@@ -88,6 +89,7 @@ const useStyles = makeStyles(theme => ({
 export default function Nav(props) {
   
   const {userAuth, vendor} = useSelector(st => st);
+  let dispatch = useDispatch();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -114,6 +116,8 @@ export default function Nav(props) {
 
   const logout = () =>{
     localStorage.clear();
+    if(userAuth.userType === 'vendor')
+      dispatch(closeSS());
     setAnchorEl(null);
     handleMobileMenuClose();
     window.location.replace('/');

@@ -1,16 +1,21 @@
 import React, { useEffect } from 'react';
 import './Request.css';
-import { connect, useSelector } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { loadRequests } from '../../../actions/admin';
 import axios from 'axios'
-
+let once = false;
 const Request = (props) => {
   let showreqs;
+  const {userAuth} = useSelector(st => st);
+
   // const isAuthenticated = useSelector((st) => st.userAuth.isAuthenticated);
   // const userType = useSelector((st) => st.userAuth.userType);
+  let dispatch = useDispatch()
   useEffect(() => {
-    props.loadRequests();
-  }, []);
+    if(userAuth.isAuthenticated && !once)
+      dispatch(loadRequests());
+    once = true;
+  });
 
   const requests = useSelector((st) => st.admin.ssRequests);
  
@@ -23,8 +28,11 @@ const Request = (props) => {
  }
  const handleapprove=async(id)=>{
      if(id){
-        const res=await axios.put(`/api/auth/admin/approveservicestation/${id}`)
-        console.log(res)
+        axios.put(`/api/auth/admin/approveservicestation/${id}`).then((res)=>{
+          console.log(res)
+        }).catch((err)=>{
+          console.log(err)
+        })
         props.loadRequests()
      }
  }

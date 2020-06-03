@@ -32,6 +32,8 @@ const ServiceDetails = props => {
                             <li> <b>Vehicle Type:</b> {service.vehicleType}</li>
                             <li> <b>Vehicle Make:</b> {service.vehicleMake}</li>
                             <li> <b>Vehicle Number:</b> {service.vehicleNo}</li>
+                            <li> <b>Service Station Name:</b> {service.serviceStation.name}</li>
+                            <li> <b>Area:</b> {service.serviceStation.area}</li>
                         </div>
                     })
                 
