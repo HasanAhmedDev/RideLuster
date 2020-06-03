@@ -10,7 +10,7 @@ import './Signup.css';
 const divStyle = {
   height: window.screen.height,
 };
-var type = 'client';
+let type = 'client';
 const Signup = (props) => {
   const [state, setState] = useState({
     fname: '',
@@ -108,7 +108,7 @@ const Signup = (props) => {
           }
           break;
       }
-      await props.authenticateUser(url, payload, state.tab);
+      await props.authenticateUser(url, payload, type);
     }
   };
 
@@ -120,20 +120,13 @@ const Signup = (props) => {
   };
 
   const switchTabs = (evt) => {
-    type = evt.target.name;
-    let c = document.getElementById('c');
-    let v = document.getElementById('v');
-    c.className = 'item';
-    v.className = 'item';
-
-    if(type === 'client')
-      c.className+= ' accc';
-    else
-      v.className+=' accc';
-    // setState({
-    //   ...state,
-    //   tab: tab,
-    // });
+    const tab = evt.target.name;
+    setState({
+      ...state,
+      tab: tab,
+    });
+    type = evt;
+    console.log(state.tab);
   };
 
   return (
@@ -143,11 +136,11 @@ const Signup = (props) => {
           <Form onSubmit={handleSubmit} className='inside-form'>
             <h4>Welcome to Sign Up</h4>
             <div style={{ textAlign: 'center', margin: '15px 0px' }}>
-              <div className='ui  pointing menu'>
-                <a name='client' id="c" onClick={switchTabs} className='item accc'>
+              <div className='ui pointing menu'>
+                <a name='client' onClick={switchTabs} className='item'>
                   Client
                 </a>
-                <a name='vendor' id="v" onClick={switchTabs} className='item'>
+                <a name='vendor' onClick={switchTabs} className='item'>
                   Vendor
                 </a>
               </div>
