@@ -77,6 +77,7 @@ export const openSocketVendor = (id) => dispatch =>{
 
 export const GetUnhandledRequest = (id) => dispatch => {
   axios.post('http://localhost:5000/api/auth/vendor/getUnhandledBookings',id).then((res)=> {
+    console.log("GET", res);
     dispatch({
       type: GET_UNHANDLED_REQUEST_SUCCESSFULL,
       payload: res.data
@@ -103,7 +104,8 @@ export const handleBookingRequest = (payload) => dispatch => {
     payload: res.data
   })
   dispatch(setAlert(res.data.msg, 'success'));
-  dispatch(GetUnhandledRequest());
+  dispatch(GetUnhandledRequest({id: payload.id}));
+  dispatch(getServiceStation())
   }).catch((err)=>{
     console.log(err.message);
       // const errors = err.response.data.errors;
@@ -112,5 +114,24 @@ export const handleBookingRequest = (payload) => dispatch => {
       // }
       dispatch(showLoader(false));
       return;
+  })
+}
+
+export const updateProcess = (data) => dispatch =>{
+  axios.post('http://localhost:5000/api/auth/vendor/updateProcess', data).then((res)=>{
+    console.log(res)
+    dispatch(showLoader(false));
+    dispatch(getServiceStation());
+    return;
+
+  }).catch((err)=>{
+    console.log(err);
+    console.log(err.message);
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+      }
+      dispatch(showLoader(false));
+      return ;
   })
 }

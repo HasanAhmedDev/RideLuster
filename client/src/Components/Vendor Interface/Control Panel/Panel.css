@@ -183,10 +183,13 @@ h6{
     
 }
 .bottom-btn{
-    position: absolute;
-    left: 50%;
+    width: 90% !important;
+    margin: 10px auto;
+    /* position: absolute; */
+    /* left: 50%;
     transform: translateX(-50%);
-    bottom: 0;
+    bottom: 0; */
+    font-size: 15px;
 }
 .nav-btn:hover{
     opacity: 0.8;
@@ -196,3 +199,20 @@ h6{
     border: 0.02rem solid #333;
     color: #333;
 }
+.flex{
+    display: flex;
+}
+
+.not{
+    width: max-content;
+    height: max-content;
+    padding: 2px 7px;
+    font-size: 12px;
+    color: white;
+    border-radius: 0.2rem;
+    background-color: rgba(23,67,88,0.3);
+    margin-left: auto;
+    position: relative;
+    align-self: center;
+}
+

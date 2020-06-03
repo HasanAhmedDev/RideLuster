@@ -18,12 +18,12 @@ export default class Landing extends React.Component {
                     <Cover></Cover>
                     </div>
                 </div>
-                <div className="carousel">
+                {/* <div className="carousel">
                     <Slider></Slider>
-                </div>
-                <div className="contact">
+                </div> */}
+                {/* <div className="contact">
                     <Contact></Contact>
-                </div>
+                </div> */}
                 <div className="footer">
                     <Footer></Footer>
                 </div>

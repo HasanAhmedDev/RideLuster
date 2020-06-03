@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 const divStyle = {
   height: window.screen.height,
 };
-
+var type = 'client';
 const Login = (props) => {
   const [state, setState] = useState({
     email: '',
@@ -66,7 +66,7 @@ const Login = (props) => {
     };
     if (isvalid) {
       props.showLoader(true);
-      switch (state.tab) {
+      switch (type) {
         case 'vendor':
           url = 'http://localhost:5000/api/auth/vendor';
           break;
@@ -96,12 +96,11 @@ const Login = (props) => {
     menu[1].className = 'item';
     menu[2].className = 'item';
     document.getElementById(evt).className += ' activ ';
-    setState({
-      ...state,
-      tab: evt,
-    });
-    
-    console.log(state.tab);
+    // setState({
+    //   ...state,
+    //   tab: evt,
+    // });
+    type = evt;
   };
 
   //console.log(window.screen.height);

@@ -10,7 +10,7 @@ import './Signup.css';
 const divStyle = {
   height: window.screen.height,
 };
-
+var type = 'client';
 const Signup = (props) => {
   const [state, setState] = useState({
     fname: '',
@@ -89,7 +89,7 @@ const Signup = (props) => {
       console.log('VALID!', props);
       let url;
       let payload = {}
-      switch(state.tab){
+      switch(type){
         case 'vendor':
           url = 'http://localhost:5000/api/vendors/';
           payload = {
@@ -120,12 +120,20 @@ const Signup = (props) => {
   };
 
   const switchTabs = (evt) => {
-    const tab = evt.target.name;
-    setState({
-      ...state,
-      tab: tab,
-    });
-    console.log(state.tab);
+    type = evt.target.name;
+    let c = document.getElementById('c');
+    let v = document.getElementById('v');
+    c.className = 'item';
+    v.className = 'item';
+
+    if(type === 'client')
+      c.className+= ' accc';
+    else
+      v.className+=' accc';
+    // setState({
+    //   ...state,
+    //   tab: tab,
+    // });
   };
 
   return (
@@ -135,11 +143,11 @@ const Signup = (props) => {
           <Form onSubmit={handleSubmit} className='inside-form'>
             <h4>Welcome to Sign Up</h4>
             <div style={{ textAlign: 'center', margin: '15px 0px' }}>
-              <div className='ui pointing menu'>
-                <a name='client' onClick={switchTabs} className='item'>
+              <div className='ui  pointing menu'>
+                <a name='client' id="c" onClick={switchTabs} className='item accc'>
                   Client
                 </a>
-                <a name='vendor' onClick={switchTabs} className='item'>
+                <a name='vendor' id="v" onClick={switchTabs} className='item'>
                   Vendor
                 </a>
               </div>

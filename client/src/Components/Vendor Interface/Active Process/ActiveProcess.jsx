@@ -1,83 +1,79 @@
 import React from'react';
 import './ActiveProcess.css';
-export default class ActiveProcess extends React.Component{
-    render(){
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { getServiceStation, updateProcess } from '../../../actions/servicestation'
+import { showLoader } from '../../../actions/loader';
+const ActiveProcess = props => {
+    const [state, setState] = useState({
+        once: false
+    })
+    const {vendor} = useSelector(st => st);
+    let dispatch = useDispatch()
+    useEffect(()=>{
+        if(vendor.ss && !state.once){
+            dispatch(getServiceStation());
+            setState({
+                ...state,
+                once: true
+            })
+        }
+    })
+    const completeProcess = (id) => {
+        dispatch(showLoader(true));
+        dispatch(updateProcess({
+            status: 'Active',
+            bookingId: id
+        }))
+    }
         return (
             <div className="main-active">
                 <h3 className="ui block center header r-head 3">ACTIVE PROCESS</h3>
                 <div className="body-request">
                     <div className="ui cards">
-                        <div className="card r-card">
-                            <div className="content">
-                            <img className="right floated mini ui image" alt="" src={require('../../../assets/luther-bottrill-EsBufnuK4NE-unsplash.jpg')}/>
-                            <div className="header">
-                                Elliot Fu
-                            </div>
-                            <div className="meta">
-                                Johar Town
-                                <br/>
-                                0321-4251291
-                                <br/>
-                                ID: RL44
-                                <br/>
-                                Request Time: 12:50 pm
-                            </div>
-                            <div className="description">
-                                <h5 className="r-h5 green">General Service</h5>
-                                <h6 className="r-h5">STATUS: <span className="blue">Active</span></h6>
-                                <ul className="r-ul">
-                                    <li> <b>VEHICLE NAME: </b> Suzuki Ciaz</li>
-                                    <li> <b>VEHICLE TYPE: </b> Sedan</li>
-                                    <li> <b>VEHICLE NUMBER: </b> LEB-2319</li>
-                                </ul>
-                                <h6>Process Complete in: <span className="yellow">15 Minutes</span></h6>
-                            </div>
-                            </div>
-                            <div className="extra content">
-                            <div className="ui two buttons">
-                                <div className="ui basic green button">Complete</div>
-                                {/* <div className="ui basic red button">Cancel</div> */}
-                            </div>
-                            </div>
-                        </div>
                         
-                        
-                        <div className="card r-card">
+                        {vendor.ss.activeProcess.length ?
+                        vendor.ss.activeProcess.map((process,index)=>{
+                            return <div key={index} className="card r-card">
                             <div className="content">
                             <img className="right floated mini ui image" alt="" src={require('../../../assets/stas-svechnikov-zXQdgHr2KIw-unsplash.jpg')}/>
                             <div className="header">
-                                Ahmad
                             </div>
                             <div className="meta">
                                 Faisal Town
                                 <br/>
-                                0300-2910493
+                                {process.contactNo}
                                 <br/>
-                                ID: RL75
-                                <br/>
-                                Request Time: 1:00 pm
+                                {process.createdAt}
                             </div>
                             <div className="description">
-                                <h5 className="r-h5 green">Simple Wash</h5>
-                                <h6 className="r-h5">STATUS: <span className="blue">Active</span></h6>
+                                <h5 className="r-h5 green">{process.serviceType}</h5>
+                                <h6 className="r-h5">STATUS: <span className="blue">{process.status}</span></h6>
                                 <ul className="r-ul">
-                                    <li> <b>VEHICLE NAME: </b> Honda N-ONE</li>
-                                    <li> <b>VEHICLE TYPE: </b> Hatch-Back</li>
-                                    <li> <b>VEHICLE NUMBER: </b> LEE-1144</li>
+                                    <li> <b>VEHICLE NAME: </b> {process.vehicleMake}</li>
+                                    <li> <b>VEHICLE TYPE: </b> {process.vehicleType}</li>
+                                    <li> <b>VEHICLE NUMBER: </b> {process.vehicleNo}</li>
                                 </ul>
-                                <h6>Process Complete in: <span className="yellow">10 Minutes</span></h6>
+                                {/* <h6>Process Complete in: <span className="yellow">10 Minutes</span></h6> */}
                             </div>
                             </div>
                             <div className="extra content">
                             <div className="ui two buttons">
-                                <div className="ui basic green button">Complete</div>
+                                <div onClick={() => completeProcess(process._id)} className="ui basic green button">Complete</div>
                                 {/* <div className="ui basic red button">Cancel</div> */}
                             </div>
                             </div>
                         </div>
-                        </div>
+                        }):
+                        <div><h2>No Active Process</h2></div>
+                        }
+                        
+                        
+                    </div>
                 </div>
             </div>
         )
-    }
+
 }
+export default ActiveProcess;
