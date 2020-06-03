@@ -1095,12 +1095,11 @@ const handleBookingRequest = async (req, res, next) => {
 
 
     let time = 0
-    time += +timeForService
     let allServiceStationBookings = serviceStation.bookings ? serviceStation.bookings : [];
     let allActiveProcess = serviceStation.activeProcess ? serviceStation.activeProcess : [];
     allServiceStationBookings.forEach(async (val) => {
       const bk = await Booking.findById(val)
-      time += val.estimatedTime
+      time += bk.estimatedTime
     })
     allActiveProcess.forEach(async (val) => {
       const bk = await Booking.findById(val)
@@ -1130,7 +1129,8 @@ const handleBookingRequest = async (req, res, next) => {
       receiverID: bookingExist.client,
       payload: [{
         isApproved: approved,
-        booking: bookingExist
+        booking: bookingExist,
+        estimatedStartTime:estimatedstart
       }]
     })
     await notify.save();
