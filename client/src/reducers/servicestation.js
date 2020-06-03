@@ -6,6 +6,7 @@ import {
     OPEN_VENDOR_SOCKET,
     GET_UNHANDLED_REQUEST_SUCCESSFULL,
     GET_UNHANDLED_REQUEST_UNSUCCESSFULL,
+    GET_COMPLETED_SERVICES_SS
     // HANDLE_BOOKING_REQUEST_SUCCESSFULL
   } from '../actions/types';
   
@@ -13,7 +14,8 @@ import {
     ss: null,
     ssLoaded: false,
     vendorSocket: null,
-    unhandledBooking: []
+    unhandledBooking: [],
+    completed: []
   };
   
   export default function (state = initialState, action) {
@@ -29,6 +31,11 @@ import {
           ...state,
           ss: payload.servicestation,
           ssLoaded: true
+        }
+      case GET_COMPLETED_SERVICES_SS:
+        return{
+          ...state,
+          completed: payload.bookings
         }
       case OPEN_VENDOR_SOCKET:
         return{

@@ -7,7 +7,8 @@ import {
   OPEN_VENDOR_SOCKET,
   GET_UNHANDLED_REQUEST_SUCCESSFULL,
   GET_UNHANDLED_REQUEST_UNSUCCESSFULL,
-  HANDLE_BOOKING_REQUEST_SUCCESSFULL
+  HANDLE_BOOKING_REQUEST_SUCCESSFULL,
+  GET_COMPLETED_SERVICES_SS
 } from './types';
 import { setAlert } from '../actions/alert';
 import setAuthToken from '../utils/setAuthToken';
@@ -124,6 +125,26 @@ export const updateProcess = (data) => dispatch =>{
     dispatch(getServiceStation());
     return;
 
+  }).catch((err)=>{
+    console.log(err);
+    console.log(err.message);
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+      }
+      dispatch(showLoader(false));
+      return ;
+  })
+}
+
+export const getCompletedServicesSS = () => dispatch =>{
+  axios.get('http://localhost:5000/api/auth/vendor/getcompletedbookings').then((res)=>{
+    console.log(res);
+    dispatch({
+      type: GET_COMPLETED_SERVICES_SS,
+      payload: res.data
+    })
+    dispatch(showLoader(false));
   }).catch((err)=>{
     console.log(err);
     console.log(err.message);

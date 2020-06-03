@@ -1,38 +1,57 @@
 import React from 'react';
 import './Completed.css';
-export default class Completed extends React.Component{
-    render(){
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { getCompletedServicesSS } from '../../../actions/servicestation';
+import { showLoader } from '../../../actions/loader';
+const Completed = props => {
+    const [state, setState] = useState({
+        once: false
+    })
+        const {vendor} = useSelector(st => st);
+        let dispatch = useDispatch();
+        useEffect(()=>{
+            if(vendor.ss && vendor.ssLoaded && !state.once){
+                dispatch(showLoader(true));
+                dispatch(getCompletedServicesSS());
+                setState({
+                    ...state,
+                    once: true
+                })
+            }
+           
+        })
         return(
             <div className="main-waiting">
                 <h3 className="ui block center header r-head 3">COMPLETED PROCESS</h3>
                 <div className="body-request">
                     <div className="ui cards">
-                        <div className="card r-card">
+
+                        {vendor.completed.length ? 
+                        vendor.completed.map((booking, ind)=>{
+                            return  <div key={ind} className="card r-card">
                             <div className="content">
                             <img className="right floated mini ui image" alt="" src={require('../../../assets/luther-bottrill-EsBufnuK4NE-unsplash.jpg')}/>
                             <div className="header">
-                                Elliot Fu
                             </div>
                             <div className="meta">
-                                Johar Town
                                 <br/>
-                                0321-4251291
+                                {booking.contactNo}
                                 <br/>
-                                ID: RL44
-                                <br/>
-                                Request Time: 12:50 pm
+                                Request Time: {booking.createdAt}
                             </div>
                             <div className="description">
-                                <h5 className="r-h5 green">General Service</h5>
-                                <h6 className="r-h5">STATUS: <span className="green">Completed</span></h6>
+                                <h5 className="r-h5 green">{booking.serviceType}</h5>
+                                <h6 className="r-h5">STATUS: <span className="green">{booking.status}</span></h6>
                                 <ul className="r-ul">
-                                    <li> <b>VEHICLE NAME: </b> Suzuki Ciaz</li>
-                                    <li> <b>VEHICLE TYPE: </b> Sedan</li>
-                                    <li> <b>VEHICLE NUMBER: </b> LEB-2319</li>
+                                    <li> <b>VEHICLE NAME: </b> {booking.vehicleMake}</li>
+                                    <li> <b>VEHICLE TYPE: </b> {booking.vehicleType}</li>
+                                    <li> <b>VEHICLE NUMBER: </b> {booking.vehicleNo}</li>
                                 </ul>
-                                <h6>Process Time: <span className="green">15 Minutes</span></h6>
+                                {/* <h6>Process Time: <span className="green">15 Minutes</span></h6>
                                 <h6>Completion Time: <span className="green">12:32 pm</span></h6>
-                                <h6>Payment: <span className="red">Pending</span></h6>
+                                <h6>Payment: <span className="red">Pending</span></h6> */}
                             </div>
                             </div>
                             {/* <div className="extra content">
@@ -42,6 +61,10 @@ export default class Completed extends React.Component{
                             </div>
                             </div> */}
                         </div>
+                        }):
+                        <div><h2>No Completed Services</h2></div>
+                        }
+                       
                         
                         
                         
@@ -49,5 +72,5 @@ export default class Completed extends React.Component{
                 </div>
             </div>
         )
-    }
 }
+export default Completed;

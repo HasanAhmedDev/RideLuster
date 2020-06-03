@@ -43,9 +43,9 @@ const VendorList = (props) => {
                   Owner Name: <span className='green'> {d.owner.name}</span>
                 </span>
               </Card.Meta>
-              <Link to='/searchResult/1'>
+              {/* <Link to='/searchResult/1'>
                 <Button fluid content='Details' />
-              </Link>
+              </Link> */}
               <Button
                 style={{ marginTop: '1%' }}
                 fluid
