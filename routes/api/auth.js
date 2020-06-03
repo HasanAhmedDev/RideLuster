@@ -175,6 +175,11 @@ router.post('/vendor/updateProcess', auth('vendor'), AuthController.updateProces
 //@access Private
 router.get('/vendor/getservicestation/', auth('vendor'), AuthController.getServiceStationByVendorId)
 
+//@route GET api/auth/vendor/getservicestation
+//@desc Get service station with vendor id
+//@access Private
+router.get('/vendor/getcompletedbookings/', auth('vendor'), AuthController.getSSCompletedBookings)
+
 
 
 module.exports = router

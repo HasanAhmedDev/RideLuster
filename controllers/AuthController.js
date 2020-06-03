@@ -1283,6 +1283,46 @@ const getServiceStationByVendorId = async (req, res) => {
   }
 }
 
+const getSSCompletedBookings=async(req,res)=>{
+  try {
+    const ss=await ServiceStation.findOne({
+      owner:req.vendor.id
+    })
+    if(!ss){
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: "No Service Station found."
+        }]
+      })
+    }
+    const bookings = await Booking.find({
+      isCompleted: 'true',
+      serviceStation: ss.id
+    })
+    if (bookings.length == 0) {
+      return res.status(404).json({
+        success: false,
+        errors: [{
+          msg: "No Bookings found."
+        }]
+      })
+    }
+    res.status(200).json({
+      success: true,
+      bookings
+    })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      errors: [{
+        msg: "Server Error"
+      }]
+    });
+  }
+}
+
 exports.getAuthUser = getAuthUser;
 exports.authenticateUser = authenticateUser;
 exports.updateUserDetails = updateUserDetails;
@@ -1312,4 +1352,5 @@ exports.getAllRequests = getAllRequests
 exports.handleBookingRequest = handleBookingRequest
 exports.updateProcess = updateProcess
 exports.getServiceStationByVendorId = getServiceStationByVendorId
+exports.getSSCompletedBookings=getSSCompletedBookings
 
