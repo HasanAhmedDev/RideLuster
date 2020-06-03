@@ -1019,7 +1019,9 @@ const uploadServiceStationPhoto = async (req, res) => {
 }
 
 const getUnhandledBookings = async (req, res, next) => {
-  const { id } = req.body;
+  const {
+    id
+  } = req.body;
   try {
     const Bookings = await Booking.find({
       isApproved: false,
@@ -1051,7 +1053,8 @@ const handleBookingRequest = async (req, res, next) => {
   }
   const {
     approved,
-    bookingId
+    bookingId,
+    timeForService
   } = req.body;
   try {
     const bookingExist = await Booking.findById(bookingId);
@@ -1089,12 +1092,35 @@ const handleBookingRequest = async (req, res, next) => {
         msg: "Request Denied Successfully!"
       })
     }
+
+
+    let time = 0
+    time += +timeForService
+    let allServiceStationBookings = serviceStation.bookings ? serviceStation.bookings : [];
+    let allActiveProcess = serviceStation.activeProcess ? serviceStation.activeProcess : [];
+    allServiceStationBookings.forEach(async (val) => {
+      const bk = await Booking.findById(val)
+      time += val.estimatedTime
+    })
+    allActiveProcess.forEach(async (val) => {
+      const bk = await Booking.findById(val)
+      const dt = new Date()
+      const newdt = dt - bk.startedAt
+      if (newdt.getMinutes() < timeForService) {
+        time += newdt.getMinutes()
+      }
+    })
+    estimatedstart = bookingExist.createdAt
+    estimatedstart = estimatedstart.setMinutes(estimatedstart.getMinutes() + time)
+
     await Booking.findByIdAndUpdate(bookingId, {
       isApproved: true,
-      status: 'Waiting'
+      status: 'Waiting',
+      timeForService,
+      estimatedTime: time,
+      estimatedStartTime: estimatedstart
     })
-    let allServiceStationBookings = serviceStation.bookings ? serviceStation.bookings : [];
-    allServiceStationBookings.push(bookingId);
+    allServiceStationBookings.push(bookingId)
     await ServiceStation.findByIdAndUpdate(serviceStation._id, {
       bookings: allServiceStationBookings
     });
@@ -1150,6 +1176,7 @@ const updateProcess = async (req, res, next) => {
     switch (status) {
       case 'Waiting':
         booking.status = 'Active';
+        booking.startedAt = new Date()
         let allActiveProcess = serviceStation.activeProcess;
         let alreadyExist = allActiveProcess.find(id => id == bookingId)
         if (alreadyExist) {
@@ -1285,3 +1312,4 @@ exports.getAllRequests = getAllRequests
 exports.handleBookingRequest = handleBookingRequest
 exports.updateProcess = updateProcess
 exports.getServiceStationByVendorId = getServiceStationByVendorId
+

@@ -1,59 +1,71 @@
 const moongose = require('mongoose');
 
 const BookingSchema = new moongose.Schema({
-    vehicleType:{
+    vehicleType: {
         type: String,
         required: [true, 'Vehicle Type is required']
     },
-    vehicleMake:{
+    vehicleMake: {
         type: String,
         required: [true, 'Vehicle Make is required']
     },
-    vehicleModel:{
+    vehicleModel: {
         type: Number,
         required: [true, 'Vehicle Model is required']
     },
-    vehicleNo:{
+    vehicleNo: {
         type: String,
         required: [true, 'Vehicle Number is required']
     },
-    serviceType:{
+    serviceType: {
         type: String,
         required: [true, 'Service Type is required'],
         enum: ['Wash', 'Polish', 'Oil Change']
     },
-    contactNo:{
+    contactNo: {
         type: Number,
         required: true,
         minlength: 11,
-        maxlength: 12        
+        maxlength: 12
     },
-    client:{
+    client: {
         type: moongose.Schema.ObjectId,
         ref: 'user',
         required: [true, 'Client is required'],
     },
-    serviceStation:{
+    serviceStation: {
         type: moongose.Schema.ObjectId,
         ref: 'servicestation',
         required: [true, 'Sercive Station is required']
     },
-    isApproved:{
-        type:Boolean,
+    isApproved: {
+        type: Boolean,
         default: false
     },
-    isCompleted:{
-        type:Boolean,
+    isCompleted: {
+        type: Boolean,
         default: false
     },
-    status:{
+    status: {
         type: String,
         enum: ['Pending', 'Waiting', 'Active', 'Completed'],
         default: 'Pending'
     },
-    createdAt:{
+    createdAt: {
         type: Date,
         default: Date.now
+    },
+    startedAt: {
+        type: Date
+    },
+    timeForService: {
+        type: Number
+    },
+    estimatedTime: {
+        type: Number
+    },
+    estimatedStartTime:{
+        type:Date
     }
 })
 

@@ -164,7 +164,8 @@ router.post('/vendor/getUnhandledBookings', auth('vendor'), AuthController.getUn
 //@route POST api/auth/vendor/handleBookingRequest
 router.post('/vendor/handleRequest', [
     check('approved', 'Approval is required').not().isEmpty(),
-    check('bookingId', 'Booking is required').not().isEmpty()
+    check('bookingId', 'Booking is required').not().isEmpty(),
+    check('timeForService','Time for service is required').not().isEmpty()
 ], auth('vendor'), AuthController.handleBookingRequest);
 
 router.post('/vendor/updateProcess', auth('vendor'), AuthController.updateProcess);
@@ -173,5 +174,7 @@ router.post('/vendor/updateProcess', auth('vendor'), AuthController.updateProces
 //@desc Get service station with vendor id
 //@access Private
 router.get('/vendor/getservicestation/', auth('vendor'), AuthController.getServiceStationByVendorId)
+
+
 
 module.exports = router
