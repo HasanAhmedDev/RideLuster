@@ -22,14 +22,7 @@ const Vendor = props => {
         }
     },[])
 
-    if(vendor.vendorSocket && vendor.ssLoaded){
-        vendor.vendorSocket.on('VendorNotification', res => {
-            if(res[0].id === 200){
-                return dispatch(GetUnhandledRequest({id: vendor.ss._id}));
-            }
-            console.log(res);
-        })
-    }
+    
     const switchProcess = (event)=>{
         setState({
             ...state,

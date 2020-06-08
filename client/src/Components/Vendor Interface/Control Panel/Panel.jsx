@@ -7,7 +7,7 @@ const Panel = (props)=>{
             <div className="child-nav">
                         <div className="request">
                             <div className="head ">
-                            <button onClick={props.click} name="Request" className="nav-btn bottom-btn danger">INCOMING REQUEST  </button>
+                            <button onClick={props.click} name="Request" className="nav-btn bottom-btn danger">REQUESTS  </button>
                                 
                             </div>
                             {/* <div className="p-description">
@@ -71,7 +71,7 @@ const Panel = (props)=>{
                         </div>
                         <div className="c-process">
                             <div className="head">
-                            <button onClick={props.click} name="Completed" className="nav-btn bottom-btn success">COMPLETED PROCCESS</button>
+                            <button onClick={props.click} name="Completed" className="nav-btn bottom-btn success">COMPLETED</button>
                             </div>
                             {/* <div className="p-description">
                                 <h6>RL34 Process Completed</h6>

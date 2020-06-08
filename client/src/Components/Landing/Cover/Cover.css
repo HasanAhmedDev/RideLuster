@@ -34,13 +34,14 @@
 .my-grid{
     width: 60%;
     margin: 100px auto;
-    margin-bottom: 14px;
+    margin-bottom: 0px;
     text-align: center;
     display: grid;
     justify-items: center;
     grid-template-columns: 20% 20% 20% 20% 20%;
     height: max-content;
     background-color: rgba(241, 238, 238, 0.822);
+    bottom: 0;
 }
 .column-option{
     height: 100%;

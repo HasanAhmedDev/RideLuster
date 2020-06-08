@@ -6,7 +6,6 @@ import { addServiceStation, getServiceStation } from '../../actions/servicestati
 import './style.css'
 import { showLoader } from '../../actions/loader';
 import Loader from '../Utility Components/Loader';
-import ShowLoader from '../Utility Components/Loader';
 
 const divStyle = {
   height: window.screen.height,
@@ -105,13 +104,13 @@ const AddServiceStation = (props) => {
     }
     return true;
   };
-
+  console.log(props);
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     console.log(state);
     let isvalid = validate();
     if (isvalid) {
-      // dispatch(ShowLoader(true));
+      await props.showLoader(true);
       await props.addServiceStation('http://localhost:5000/api/auth/vendor/addservicestation', {
           vehicles: state.vehicle,
           services: state.services,
@@ -232,4 +231,5 @@ const AddServiceStation = (props) => {
     </Form.Field>
   );
 };
-export default connect(null, {addServiceStation})(AddServiceStation);
+
+export default connect(null, {addServiceStation, showLoader})(AddServiceStation);

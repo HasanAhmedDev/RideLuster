@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'semantic-ui-react';
 import Footer from '../Footer/Footer';
-import { connect, useSelector } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { setAlert } from '../../actions/alert';
 import { authenticateUser } from '../../actions/userAuth';
+import Loader from '../Utility Components/Loader';
 //import { Link } from "react-router-dom";	//import { Link } from "react-router-dom";
 import './Signup.css';
+import { showLoader } from '../../actions/loader';
 
 const divStyle = {
   height: window.screen.height,
@@ -26,6 +28,7 @@ const Signup = (props) => {
     tab: 'client'
   });
 
+  let dispatch = useDispatch();
   const userAuth = useSelector((st) => st.userAuth);
   if(userAuth.isAuthenticated && userAuth.userLoaded){
     if(userAuth.userType === 'client')
@@ -86,6 +89,7 @@ const Signup = (props) => {
     console.log(state);
     let isvalid = vaidate();
     if (isvalid) {
+      dispatch(showLoader(true));
       console.log('VALID!', props);
       let url;
       let payload = {}
@@ -129,8 +133,8 @@ const Signup = (props) => {
     let c = document.getElementById('c');
     let v = document.getElementById('v');
 
-    c.className = 'item';
-    v.className = 'item';
+    c.className = 'ite';
+    v.className = 'ite';
 
     if(evt.target.name === 'client'){
       c.className+= ' accc';
@@ -142,17 +146,19 @@ const Signup = (props) => {
   };
 
   return (
+    <React.Fragment>
+    <Loader/>
     <Form.Field className='body' style={divStyle}>
       <Form.Field className='overlay'>
         <Form.Field className='main-form'>
           <Form onSubmit={handleSubmit} className='inside-form'>
             <h4>Welcome to Sign Up</h4>
             <div style={{ textAlign: 'center', margin: '15px 0px' }}>
-              <div className='ui pointing menu'>
-                <a name='client' id="c" onClick={switchTabs} className='accc item'>
+              <div className='customSbar'>
+                <a name='client' id="c" onClick={switchTabs} className='accc ite'>
                   Client
                 </a>
-                <a name='vendor' id="v" onClick={switchTabs} className='item'>
+                <a name='vendor' id="v" onClick={switchTabs} className='ite'>
                   Vendor
                 </a>
               </div>
@@ -220,6 +226,7 @@ const Signup = (props) => {
       </Form.Field>
       <Footer />
     </Form.Field>
+    </React.Fragment>
   );
 };
 export default connect(null, { setAlert, authenticateUser })(Signup);

@@ -26,6 +26,9 @@ const Completed = props => {
             <div className="main-waiting">
                 <h3 className="ui block center header r-head 3">COMPLETED PROCESS</h3>
                 <div className="body-request">
+                    {vendor.completed.length === 0? 
+                        <div><h3 style={{color: 'black', textAlign: 'center', margin:'30px'}}>No Completed Services</h3></div>
+                    :null}
                     <div className="ui cards">
 
                         {vendor.completed.length ? 

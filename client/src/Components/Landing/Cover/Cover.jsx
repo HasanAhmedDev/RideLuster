@@ -1,6 +1,6 @@
 import React from 'react';
 import './Cover.css'
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 export default class Cover extends React.Component{
 
     render() {
@@ -11,9 +11,9 @@ export default class Cover extends React.Component{
                     {/* TEXT AREA */}
                     <div className="left-s split">
                         <h2><span id="one">MANAGE</span> <span id="two">YOUR</span> <span id="three">BUSINESS</span> <span id="four">CONVENIENTLY</span>  </h2>
-                        <Link className="d" to="/signup">
+                        {/* <Link className="d" to="/signup">
                         <button id="anim-btn" className="ui inverted button">SIGN UP FOR FREE</button>     
-                        </Link>   
+                        </Link>    */}
                     </div>
                     {/* SEARCH AREA */}
                     <div className="right-s split">

@@ -38,6 +38,7 @@ export const loadUser = () => async (dispatch) => {
     dispatch({
       type: AUTH_ERROR,
     });
+    dispatch(showLoader(false));
   }
 };
 
@@ -72,6 +73,8 @@ export const authenticateUser = (url, UserData, userType) => (dispatch) => {
         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
         
       }
+      else
+        dispatch(setAlert(err.message, 'danger'));
       dispatch({
         type: USER_AUTH_UNSUCCESSFUL,
       });

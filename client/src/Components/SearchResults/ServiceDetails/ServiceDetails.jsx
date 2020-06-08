@@ -7,15 +7,25 @@ import { Card } from 'semantic-ui-react'
 import { getCompletedServices } from '../../../actions/user';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 
 const ServiceDetails = props => {
     // if(!props.location.render)
     //     props.history.replace('searchResult');
-    const { user } = useSelector(st => st);
+    const [bookings, setBookings] = useState([]);
+    const { user, userAuth } = useSelector(st => st);
     let dispatch = useDispatch();
     useEffect(()=>{
         dispatch(getCompletedServices());
+        if(user && userAuth.user)
+        user.userSocket.emit('activeServices', userAuth.user._id);
     },[])
+    useEffect(()=>{
+        if(user.userSocket)
+        user.userSocket.on('inProcessServices', (res)=>{
+            setBookings(res)
+        })
+    }, [user.userSocket])
     return (
         <React.Fragment>
             <Loader/>
@@ -23,11 +33,35 @@ const ServiceDetails = props => {
             <div style={{width: '100%', minHeight: '85vh', padding: '30px'}}>
             <h3 className='ui block header'>Service Details</h3>
             <div style={{width: '80%', margin: '50px auto'}}>
+                {bookings.length ? 
+                    <h3 className='ui block header'>Active Services</h3>
+                    : null
+                }
+                {
+                    bookings.length ? 
+                    bookings.map((service, index)=>{
+                        return  <div key={index} className={`ui ${service.status === 'Active'? 'primary': 'warning'} message`}>
+                              <div className="header" style={{color: `${service.status === 'Active' ? 'blue': '#f0ad4e'}`}}>{service.status}</div>
+                              <li> <b>Service Type:</b> {service.serviceType}</li>
+                              <li> <b>Vehicle Type:</b> {service.vehicleType}</li>
+                              <li> <b>Vehicle Make:</b> {service.vehicleMake}</li>
+                              <li> <b>Vehicle Number:</b> {service.vehicleNo}</li>
+                              <li> <b>Service Station Name:</b> {service.serviceStation.name}</li>
+                              <li> <b>Area:</b> {service.serviceStation.area}</li>
+                          </div>
+                      })
+                    :
+                    null
+                }
+                {user.completedServices ? 
+                <h3 className='ui block header'>Completed Services</h3>
+                : null
+                }
                 {user.completedServices ? 
                 (
                     user.completedServices.map((service, index)=>{
-                      return  <div key={index} class="ui success message">
-                            <div class="header" style={{color: '#21ba45'}}>{service.status}</div>
+                      return  <div key={index} className="ui success message">
+                            <div className="header" style={{color: '#21ba45'}}>{service.status}</div>
                             <li> <b>Service Type:</b> {service.serviceType}</li>
                             <li> <b>Vehicle Type:</b> {service.vehicleType}</li>
                             <li> <b>Vehicle Make:</b> {service.vehicleMake}</li>

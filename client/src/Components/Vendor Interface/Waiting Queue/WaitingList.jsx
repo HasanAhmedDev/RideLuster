@@ -30,6 +30,9 @@ const WaitingList = props => {
             <div className="main-waiting">
                 <h3 className="ui block center header r-head 3">WAITING QUEUE</h3>
                 <div className="body-request">
+                    {vendor.ss.bookings.length === 0 ?
+                    <div><h3 style={{color: 'black', textAlign: 'center', margin:'30px'}}>Waiting Queue is Empty</h3></div>
+                    : null}
                     <div className="ui cards">
 
                         {vendor.ss.bookings.length ? 
@@ -57,7 +60,7 @@ const WaitingList = props => {
                                     <li> <b>VEHICLE NUMBER: </b> {waiting.vehicleNo}</li>
                                 </ul>
                                 <h6>Alloted Process Time: <span className="green">{waiting.timeForService}</span></h6>
-                                <h6>Vehicle Serving Start Time: <span className="red">{waiting.estimatedStartTime}</span></h6>
+                                <h6>Vehicle Serving Start Time: <span className="red">{new Date(waiting.estimatedStartTime).toLocaleTimeString()}</span></h6>
                             </div>
                             </div>
                             <div className="extra content">

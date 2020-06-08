@@ -16,11 +16,14 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { Button, Header, Icon, Modal } from 'semantic-ui-react'
 
 
 import './Nav.css';
 import { useSelector, useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { useEffect } from 'react';
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
@@ -86,9 +89,26 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Nav(props) {
-  
-  const {userAuth, vendor} = useSelector(st => st);
+function Nav(props) {
+  const [notificationTrigger, setNT] = useState(false);
+  const [notifications, setNotifications] = useState({
+    allNotifications: []
+  })
+  const {userAuth, vendor, user} = useSelector(st => st);
+  useEffect(()=>{
+    console.log("US", props);
+    if(user.userSocket){
+      user.userSocket.on('loggedInNotification', res => {
+        console.log(res);
+        if(res.unreadNotifications){
+          setNotifications({
+            ...notifications,
+            allNotifications: res.unreadNotifications
+          })
+        }
+      })
+    }
+  }, [user.userSocket])
   let dispatch = useDispatch();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -110,10 +130,22 @@ export default function Nav(props) {
     handleMobileMenuClose();
   };
 
+  const triggerNotify = ()=>{
+    setNT(!notificationTrigger);
+  }
+
   const handleMobileMenuOpen = event => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const read = () => {
+    user.userSocket.emit('readNotifications', notifications.allNotifications);
+    setNotifications({
+      ...notifications,
+      allNotifications: []
+    })
+    triggerNotify();
+  }
   const logout = () =>{
     localStorage.clear();
     if(userAuth.userType === 'vendor')
@@ -133,7 +165,7 @@ export default function Nav(props) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      {/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem> */}
       <MenuItem onClick={logout}>Logout</MenuItem>
     </Menu>
   );
@@ -157,15 +189,19 @@ export default function Nav(props) {
         </IconButton>
         <p>Messages</p>
       </MenuItem> */}
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="primary">
+      {userAuth.user && props.match.path === '/searchResult' ?
+      <MenuItem onClick={triggerNotify}>
+        <IconButton aria-label="" color="inherit">
+          <Badge badgeContent={notifications.allNotifications.length} color="primary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      : 
+      null
+      }
+      {/* <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -175,8 +211,8 @@ export default function Nav(props) {
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
-      </MenuItem>
-      <MenuItem >
+      </MenuItem> */}
+      <MenuItem onClick={logout} >
       <IconButton color="inherit">
           <Badge color="primary" overlap="circle" badgeContent=" " variant="dot">
             <ExitToAppRoundedIcon/>
@@ -188,6 +224,38 @@ export default function Nav(props) {
   );
 
   return (
+    <React.Fragment>
+      <Modal open={notificationTrigger} basic size='fullscreen' style={{zIndex: '50', textAlign: 'center'}}>
+    <Header icon='archive' content='NOTIFICATIONS' />
+    <Modal.Content scrolling>
+      {
+        notifications.allNotifications.map((notif)=>{
+          return notif.payload.map((noti,ind)=>{
+            if(noti.status == undefined){
+              return (
+              <p key={ind} style={{border: '1px solid', margin: '10px 0px', padding: '10px', backgroundColor: `${noti.isApproved === true? '#2ecc40' : '#ff695e'}` }}>Your Booking of vehicle {noti.booking.vehicleNo} is {noti.isApproved ? 'Approved': 'Denied'} {noti.estimatedStartTime ? `and your Service will start at ${new Date(noti.estimatedStartTime).toLocaleTimeString()}` : null}</p>
+              )
+            
+            }
+            else
+            return  <p key={ind} style={{border: '1px solid', margin: '10px 0px', padding: '10px', backgroundColor: '#2ecc40'}}>Your Booking of vehicle number {noti.booking.vehicleNo} is moved to {noti.status}</p>
+              })
+        })
+      }
+      {/* <p style={{border: '1px solid', margin: '10px 0px', padding: '10px'}}>
+        Your inbox is getting full, would you like us to enable automatic
+        archiving of old messages?
+      </p> */}
+    </Modal.Content>
+    <Modal.Actions>
+      {/* <Button  color='red' inverted>
+        <Icon name='remove' /> No
+      </Button> */}
+      <Button onClick={read} color='green' inverted>
+        <Icon name='checkmark' /> READ
+      </Button>
+    </Modal.Actions>
+  </Modal>
     <div className={classes.grow}>
       <AppBar position="static" color="default">
         <Toolbar>
@@ -224,16 +292,19 @@ export default function Nav(props) {
                 <MailIcon />
               </Badge>
             </IconButton> */}
+            {userAuth.user && props.match.path === '/searchResult' ? 
             <IconButton 
             aria-label="show 17 new notifications" 
             className="removeOutline" 
             color="inherit"
             style={{border: 'none', outline:'none'}}
+            onClick={triggerNotify}
             >
-              <Badge badgeContent={5}  color="primary">
+              <Badge badgeContent={notifications.allNotifications.length}  color="primary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            : null}
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -243,7 +314,9 @@ export default function Nav(props) {
               color="inherit"
               style={{border: 'none', outline:'none'}}
             >
-              {/* <AccountCircle style={{fontSize: '45px'}} /> */}
+              {userAuth.admin ?
+              <AccountCircle style={{fontSize: '45px'}} />: 
+              null}
               {userAuth.user !== null ? 
               <img style={{backgroundSize: 'cover', width: '50px', height: '50px', borderRadius: '50%'}} 
               src={userAuth.user.photo[0] === "h" ?
@@ -278,5 +351,8 @@ export default function Nav(props) {
       {renderMobileMenu}
       {renderMenu}
     </div>
+    </React.Fragment>
   );
 }
+
+export default withRouter(Nav);

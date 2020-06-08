@@ -31,6 +31,9 @@ const ActiveProcess = props => {
             <div className="main-active">
                 <h3 className="ui block center header r-head 3">ACTIVE PROCESS</h3>
                 <div className="body-request">
+                    {vendor.ss.activeProcess.length === 0 ?
+                    <div><h3 style={{color: 'black', textAlign: 'center', margin:'30px'}}>No Active Processess</h3></div>
+                    : null}
                     <div className="ui cards">
                         
                         {vendor.ss.activeProcess.length ?
@@ -65,12 +68,12 @@ const ActiveProcess = props => {
                             </div>
                             </div>
                         </div>
-                        }):
-                        <div><h2>No Active Process</h2></div>
+                        }): null
                         }
                         
                         
                     </div>
+                    
                 </div>
             </div>
         )

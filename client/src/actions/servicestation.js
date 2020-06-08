@@ -42,6 +42,7 @@ export const addServiceStation = (url, UserData, token) => (dispatch) => {
       dispatch({
         type: SS_ADDED_UNSUCCESSFUL,
       });
+      dispatch(showLoader(false));
     });
 };
 
@@ -77,6 +78,7 @@ export const openSocketVendor = (id) => dispatch =>{
 }
 
 export const GetUnhandledRequest = (id) => dispatch => {
+  console.log(id);
   axios.post('http://localhost:5000/api/auth/vendor/getUnhandledBookings',id).then((res)=> {
     console.log("GET", res);
     dispatch({
@@ -121,7 +123,6 @@ export const handleBookingRequest = (payload) => dispatch => {
 export const updateProcess = (data) => dispatch =>{
   axios.post('http://localhost:5000/api/auth/vendor/updateProcess', data).then((res)=>{
     console.log(res)
-    dispatch(showLoader(false));
     dispatch(getServiceStation());
     return;
 

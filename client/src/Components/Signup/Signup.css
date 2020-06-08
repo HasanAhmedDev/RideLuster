@@ -48,4 +48,13 @@
 }
 .accc{
   background-color: #777 !important;
+  color: white;
+}
+/* .customSbar{
+  border: 0.05rem solid #666;
+  align-content: space-around;
+} */
+.ite{
+  padding: 10px 15px !important;
+  cursor: pointer !important;
 }

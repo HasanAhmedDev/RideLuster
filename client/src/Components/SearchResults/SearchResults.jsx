@@ -11,6 +11,7 @@ import { showLoader } from '../../actions/loader';
 import { Pagination } from 'semantic-ui-react'
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { setAlert } from '../../actions/alert';
 
 const SearchResults = (props) => {
   const [state, setState] = useState({
@@ -22,7 +23,6 @@ const SearchResults = (props) => {
   useEffect(() => {
     dispatch(showLoader(true));
     dispatch(getAllServiceStation());
-    
   },[]);
   if(user.areas.length && !state.areasLoaded){
     let areasArray = user.areas.map((area)=>{

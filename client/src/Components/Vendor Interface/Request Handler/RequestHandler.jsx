@@ -6,6 +6,7 @@ import { showLoader } from '../../../actions/loader';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Dropdown, Button, Modal } from 'semantic-ui-react';
+import { setAlert } from '../../../actions/alert';
 
 const timeOptions = [
     {
@@ -34,7 +35,7 @@ const timeOptions = [
         value: '30',
       },
   ]
-
+let ssid = null;
 const RequestHandler = props => {
     const { vendor } = useSelector(st => st);
     let dispatch = useDispatch();
@@ -48,12 +49,25 @@ const RequestHandler = props => {
     useEffect(()=>{
         if(vendor.ss && !state.oneTimeCall){
         dispatch(GetUnhandledRequest({id:vendor.ss._id}));
+        ssid = vendor.ss._id;
+        console.log("INNER VS", ssid);
         setState({
             ...state,
             oneTimeCall: true
         })
         }
     })
+    useEffect(()=>{
+        if(vendor.vendorSocket){
+            vendor.vendorSocket.on('VendorNotification', res => {
+                if(res[0].id === 200){
+                    dispatch(setAlert('New Booking From Client', 'success'));
+                    dispatch(GetUnhandledRequest({id: ssid}));
+                }
+                console.log(res);
+            })
+        }
+    },[vendor.vendorSocket])
     const handleRequest = (bool, id = null) => {
         close();
         if( bool === true && state.time === null)
@@ -103,6 +117,9 @@ const RequestHandler = props => {
             <div className="main-request">
                 <h3 className="ui block center header r-head 3">INCOMING REQUESTS</h3>
                 <div className="body-request">
+                {vendor.unhandledBooking.length === 0 ?
+                    <div><h3 style={{color: 'black', textAlign: 'center', margin:'30px'}}>No Incoming Request Found</h3></div>
+                    : null}
                     <div className="ui cards">
                         {vendor.unhandledBooking.length !== 0 ?
                         vendor.unhandledBooking.map((booking, index)=>{

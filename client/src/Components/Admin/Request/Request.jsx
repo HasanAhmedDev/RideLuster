@@ -40,7 +40,13 @@ const Request = (props) => {
   if (requests) {
     showreqs = requests.map((d) => (
       <div key={d._id} className='r-tabs'>
-        <h5>{`Name :${d.name} | Area:${d.area}| Owner:${d.owner.name}`}</h5>
+        <h5 style={{wordSpacing: '2px'}}>
+          {`Name: ${d.name}`}
+          <br/>
+          {`Area: ${d.area}`}
+          <br/>
+          {`Owner: ${d.owner.name}`}
+          </h5>
         <div className='btn-group'>
           <button onClick={() => handleapprove(`${d._id}`)}>APPROVE</button>
           <button className='danger' onClick={() => handleDelete(`${d._id}`)}>DELETE</button>

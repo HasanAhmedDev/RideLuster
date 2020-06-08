@@ -1023,15 +1023,17 @@ const getUnhandledBookings = async (req, res, next) => {
     id
   } = req.body;
   try {
-    const Bookings = await Booking.find({
+    Booking.find({
       isApproved: false,
       isCompleted: false,
       serviceStation: id
-    });
-    return res.status(200).json({
-      success: true,
-      bookings: Bookings
+    }).then((Bookings)=>{
+      return res.status(200).json({
+        success: true,
+        bookings: Bookings
+      })
     })
+    
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({
@@ -1093,6 +1095,8 @@ const handleBookingRequest = async (req, res, next) => {
       })
     }
 
+    else{
+
 
     let time = 0
     let allServiceStationBookings = serviceStation.bookings ? serviceStation.bookings : [];
@@ -1104,7 +1108,7 @@ const handleBookingRequest = async (req, res, next) => {
     allActiveProcess.forEach(async (val) => {
       const bk = await Booking.findById(val)
       const dt = new Date()
-      const newdt = dt - bk.startedAt
+      const newdt = dt - new Date(bk.startedAt)
       if (newdt.getMinutes() < timeForService) {
         time += newdt.getMinutes()
       }
@@ -1112,7 +1116,7 @@ const handleBookingRequest = async (req, res, next) => {
     estimatedstart = bookingExist.createdAt
     estimatedstart = estimatedstart.setMinutes(estimatedstart.getMinutes() + time)
 
-    await Booking.findByIdAndUpdate(bookingId, {
+    let updatedBooking = await Booking.findByIdAndUpdate(bookingId, {
       isApproved: true,
       status: 'Waiting',
       timeForService,
@@ -1129,7 +1133,7 @@ const handleBookingRequest = async (req, res, next) => {
       receiverID: bookingExist.client,
       payload: [{
         isApproved: approved,
-        booking: bookingExist,
+        booking: updatedBooking,
         estimatedStartTime:estimatedstart
       }]
     })
@@ -1139,6 +1143,7 @@ const handleBookingRequest = async (req, res, next) => {
       success: true,
       msg: "Request Accepted Successfully!"
     })
+    }
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({

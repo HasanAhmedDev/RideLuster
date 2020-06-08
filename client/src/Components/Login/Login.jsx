@@ -91,10 +91,10 @@ const Login = (props) => {
   };
 
   const switchTabs = (evt) => {
-    let menu = document.getElementsByClassName('item');
-    menu[0].className = 'item';
-    menu[1].className = 'item';
-    menu[2].className = 'item';
+    let menu = document.getElementsByClassName('ite');
+    menu[0].className = 'ite';
+    menu[1].className = 'ite';
+    menu[2].className = 'ite';
     document.getElementById(evt).className += ' activ ';
     setState({
       ...state,
@@ -113,16 +113,15 @@ const Login = (props) => {
           <Form onSubmit={handleSubmit} className='inside-form'>
             <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
             <div>
-              <div className="ui attached tabular menu" style={{width: 'fit-content'}}>
-                <a className="activ item" id="client" onClick={() => switchTabs('client')}>
-                  <i aria-hidden="true" className="client icon"></i>
+              <div className="" style={{ textAlign: 'center', margin: '20px 0px'}}>
+                <a className="activ ite" id="client" onClick={() => switchTabs('client')}>
                   Users
                 </a>
-                <a className="item" id="vendor" onClick={() => switchTabs('vendor')}>
+                <a className="ite" id="vendor" onClick={() => switchTabs('vendor')}>
                   Vendors
                   {/* <div className="ui label">15</div> */}
                 </a>
-                <a className="item" id="admin" onClick={() => switchTabs('admin')}>
+                <a className="ite" id="admin" onClick={() => switchTabs('admin')}>
                   Admin
                   {/* <div class="ui label">15</div> */}
                 </a>

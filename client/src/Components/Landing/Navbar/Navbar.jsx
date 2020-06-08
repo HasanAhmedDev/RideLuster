@@ -9,10 +9,10 @@ export default class Navbar extends React.Component{
                 <div className="img"></div>
                 <div className="button-containers">
                 <Link className="d" to="/signup">
-                    <div className="ui animated blue button signup" tabIndex="0">
+                    <div className="ui blue button signup" tabIndex="0">
                         
-                            <div className="visible content" >Expand Business</div>                
-                                <div className="hidden content" >Sign Up For Free!</div>
+                            <div className="visible content" >Sign Up!</div>                
+                                {/* <div className="hidden content" ></div> */}
                         
                         
                     </div>

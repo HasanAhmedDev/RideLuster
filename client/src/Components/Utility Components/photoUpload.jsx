@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import FileUpload from './FileUpload';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Loader from './Loader';
+import { showLoader } from '../../actions/loader';
 
 export default function PhotoUpload(props) {
   const [state, setState] = useState({
     render: null,
   });
+  let dispatch = useDispatch();
   const userAuth = useSelector((st) => st.userAuth);
   if (!userAuth.isAuthenticated && userAuth.userLoaded) {
     props.history.replace('login');
   }
   if (userAuth.isAuthenticated && userAuth.userLoaded) {
+    dispatch(showLoader(false));
     if (userAuth.userType === 'client' && state.render === null)
       setState({
         ...state,

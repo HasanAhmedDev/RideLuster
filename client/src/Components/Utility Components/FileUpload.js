@@ -6,6 +6,7 @@ import { setAlert } from '../../actions/alert';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import { loadUser } from '../../actions/userAuth';
+import { showLoader } from '../../actions/loader';
 const FileUpload = (props) => {
   const [file, setFile] = useState('');
   const [filename, setFilename] = useState('Choose File');
@@ -50,6 +51,7 @@ const FileUpload = (props) => {
       redirect();
       setMessage('File Uploaded');
     } catch (err) {
+      dispatch(showLoader(false));
       if (err.response.status === 500) {
         setMessage('There was a problem with the server');
       } else {

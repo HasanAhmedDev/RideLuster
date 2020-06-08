@@ -4,6 +4,7 @@ import Footer from "../Footer/Footer";
 import "./BookingForm.css";
 import { connect } from "react-redux";
 import { bookService } from  '../../actions/user';
+import { Redirect } from "react-router";
 
 const initialState = {
   vhType: "",
@@ -137,11 +138,10 @@ class BookingForm extends Component {
   handleSubmit = (evt) => {
     
     evt.preventDefault();
-    console.log(this.state);
     let isvalid = this.vaidate();
     if (isvalid) {
       this.setState(initialState);
-      console.log(this.state);
+      console.log(this.props);
       this.props.bookService({
         vehicleType: this.state.vhType,
         vehicleMake: this.state.make,
@@ -152,6 +152,7 @@ class BookingForm extends Component {
         clientId: this.props.location.cID,
         serviceStationId: this.props.location.ssID
       });
+      this.props.history.replace('searchResult');
     }
   };
 
@@ -200,8 +201,7 @@ class BookingForm extends Component {
                   }
                 ]}
                 />
-              <div className="valerr">{this.state.vhErr}</div>
-                <div style={{margin: '10px'}}>
+              <div className="valerr" style={{margin: '10px'}}>{this.state.vhErr}</div>
                 <Dropdown
                   placeholder='Select Service'
                   fluid
@@ -209,8 +209,7 @@ class BookingForm extends Component {
                   onChange={this.serviceType}
                   options={serviceOptions}
                 />
-                </div>
-              <div className="valerr">{this.state.serErr}</div>
+              <div style={{margin: '10px'}} className="valerr">{this.state.serErr}</div>
                 <Form.Input
                   name="make"
                   value={this.state.make}

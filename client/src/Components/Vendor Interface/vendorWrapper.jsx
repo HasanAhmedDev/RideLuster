@@ -29,6 +29,7 @@ const VendorWrapper = props => {
             vendor.vendorSocket.on('vendorIO', res => {
                 console.log(res, "Called");
             })
+            
             // vendor.vendorSocket.on('VendorNotification', res => {
             //     console.log(res);
             // })
