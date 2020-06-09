@@ -8,7 +8,7 @@ import Loader from '../Utility Components/Loader';
 import { withRouter } from 'react-router-dom';
 import { searchServiceStation, getAllServiceStation } from '../../actions/user';
 import { showLoader } from '../../actions/loader';
-import { Pagination } from 'semantic-ui-react'
+import { Pagination } from 'semantic-ui-react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { setAlert } from '../../actions/alert';
@@ -16,67 +16,68 @@ import { setAlert } from '../../actions/alert';
 const SearchResults = (props) => {
   const [state, setState] = useState({
     areas: [],
-    areasLoaded: false
-  })
+    areasLoaded: false,
+  });
   const { user, userAuth } = useSelector((st) => st);
   let dispatch = useDispatch();
   useEffect(() => {
     dispatch(showLoader(true));
     dispatch(getAllServiceStation());
-  },[]);
-  if(user.areas.length && !state.areasLoaded){
-    let areasArray = user.areas.map((area)=>{
+  }, []);
+  if (user.areas.length && !state.areasLoaded) {
+    let areasArray = user.areas.map((area) => {
       return {
         key: area,
         text: area,
-        value: area
-      }
-    })
+        value: area,
+      };
+    });
     setState({
       ...state,
       areas: areasArray,
-      areasLoaded: true
-    })
+      areasLoaded: true,
+    });
   }
   const searchSS = async (e, { value }) => {
     dispatch(showLoader(true));
-    dispatch(searchServiceStation({area: value, page: 1}));
+    dispatch(searchServiceStation({ area: value, page: 1 }));
   };
 
   const ssDetails = (index) => {
     dispatch(showLoader(true));
-    setTimeout(()=>{
+    setTimeout(() => {
       props.history.push({
         pathname: 'serviceStationDetails',
         ssID: index,
       });
-    }, 1000)
+    }, 1000);
   };
-  const onPageChange = (event, data) =>{
+  const onPageChange = (event, data) => {
     dispatch(showLoader(true));
-    dispatch(searchServiceStation({area: user.docs[0].area,page: data.activePage}));
-  }
-  const serviceDetails = () =>{
+    dispatch(
+      searchServiceStation({ area: user.docs[0].area, page: data.activePage })
+    );
+  };
+  const serviceDetails = () => {
     dispatch(showLoader(true));
-    setTimeout(()=>{
+    setTimeout(() => {
       props.history.push({
         pathname: 'serviceDetails',
-        render: true
-      })
-    }, 1000)
-    
-  }
+        render: true,
+      });
+    }, 1000);
+  };
 
-  const booking = (ssID)=>{
+  const booking = (ssID) => {
     dispatch(showLoader(true));
-    setTimeout(()=>{
+    setTimeout(() => {
       props.history.push({
         pathname: 'book',
         ssID: ssID,
-        cID: userAuth.user._id
-      })
-    }, 1000)
-  }
+        cID: userAuth.user._id,
+      });
+    }, 1000);
+  };
   return (
     <div>
       <Loader />
@@ -92,7 +93,9 @@ const SearchResults = (props) => {
         ) : null}
       </div>
       <div className='main'>
-        <button onClick={serviceDetails} class="ui fluid positive button">Completed Services</button>
+        <button onClick={serviceDetails} class='ui fluid positive button'>
+          Services Details
+        </button>
         <div className='searchBarUser'>
           <Dropdown
             onChange={searchSS}
@@ -171,7 +174,7 @@ const SearchResults = (props) => {
                           fluid
                           content='Book Now'
                           primary
-                          onClick={()=> booking(ss._id)}
+                          onClick={() => booking(ss._id)}
                         />
                         <Button
                           fluid
@@ -190,20 +193,20 @@ const SearchResults = (props) => {
             </h3>
           ) : null}
         </Grid>
-        {user.docs.length ?
-        <div className="pagination">
-          <Pagination
-            // boundaryRange={0}
-            defaultActivePage={1}
-            // ellipsisItem={null}
-            // firstItem={user.prevpage}
-            // lastItem={user.nextpage}
-            siblingRange={1}
-            totalPages={user.totalpages}
-            onPageChange={onPageChange}
-          />
-        </div> : null
-        }
+        {user.docs.length ? (
+          <div className='pagination'>
+            <Pagination
+              // boundaryRange={0}
+              defaultActivePage={1}
+              // ellipsisItem={null}
+              // firstItem={user.prevpage}
+              // lastItem={user.nextpage}
+              siblingRange={1}
+              totalPages={user.totalpages}
+              onPageChange={onPageChange}
+            />
+          </div>
+        ) : null}
       </div>
       <Footer />
     </div>
