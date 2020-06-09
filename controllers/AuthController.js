@@ -1113,6 +1113,7 @@ const handleBookingRequest = async (req, res, next) => {
         time += newdt.getMinutes()
       }
     })
+    time += 10;
     estimatedstart = bookingExist.createdAt
     estimatedstart = estimatedstart.setMinutes(estimatedstart.getMinutes() + time)
 

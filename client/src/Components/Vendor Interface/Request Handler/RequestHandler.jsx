@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Dropdown, Button, Modal } from 'semantic-ui-react';
 import { setAlert } from '../../../actions/alert';
 
+let socketchk = true;
 const timeOptions = [
     {
       key: '10',
@@ -58,14 +59,18 @@ const RequestHandler = props => {
         }
     })
     useEffect(()=>{
-        if(vendor.vendorSocket){
+        if(vendor.vendorSocket && socketchk){
             vendor.vendorSocket.on('VendorNotification', res => {
+                socketchk = false;
                 if(res[0].id === 200){
                     dispatch(setAlert('New Booking From Client', 'success'));
                     dispatch(GetUnhandledRequest({id: ssid}));
                 }
                 console.log(res);
             })
+            setTimeout(()=>{
+                socketchk = true;
+            },3000)
         }
     },[vendor.vendorSocket])
     const handleRequest = (bool, id = null) => {

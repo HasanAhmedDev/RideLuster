@@ -7,6 +7,7 @@ import { showLoader } from '../../actions/loader';
 import { openSocketConnectionUser } from '../../actions/user';
 import { setAlert } from '../../actions/alert';
 
+let socketchk = true;
 const SearchResultsWrapper = props => {
 
   const [state, setState] = useState({
@@ -30,30 +31,32 @@ const SearchResultsWrapper = props => {
 
     }
   useEffect(()=>{
-    
-    
-    if(user.userSocket){
+
+    if(user.userSocket && socketchk){
+      socketchk = false;
       user.userSocket.on('clientIO', res => {
-       
+       console.log(res);
       })
       user.userSocket.on('clientNotification', res => {
+
         console.log(res);
         res.map((noti)=>{
           if(noti.status == undefined){
-            dispatch(setAlert(`Your Booking of vehicle ${noti.booking.vehicleNo} is ${noti.isApproved ? 'Approved': 'Denied'}`, `${noti.isApproved ? 'success' : 'danger'}`))
-            if(noti.estimatedStartTime){
-              dispatch(setAlert(`Your Service will start at ${new Date(noti.estimatedStartTime).toLocaleTimeString()}`, 'success'));
-            }
+            dispatch(setAlert(`Your Booking of vehicle ${noti.booking.vehicleNo} is ${noti.isApproved ? 'Approved': 'Denied'}.${noti.estimatedStartTime ? `Your Service will start at ${new Date(noti.estimatedStartTime).toLocaleTimeString()}`: null } `, `${noti.isApproved ? 'success' : 'danger'}`))
           }
           else
             dispatch(setAlert(`Your Booking of vehicle number ${noti.booking.vehicleNo} is moved to ${noti.status}`, 'success'))
-        
+
           })
 
       })
+
       user.userSocket.on('processUpdated', res => {
         console.log(res);
       })
+      setTimeout(()=>{
+        socketchk = true;
+      },2000)
     }
   },[user.userSocket])
   if((!userAuth.isAuthenticated || userAuth.userType !== 'client') && userAuth.userLoaded)
