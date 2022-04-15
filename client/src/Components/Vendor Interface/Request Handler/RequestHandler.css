@@ -30,8 +30,11 @@
     margin: 5px 0px;
 }
 .right.floated.mini.ui.image{
-    width: 65px !important;
-    height: 65px !important;
+    width: 75px !important;
+    height: 75px !important;
+    object-fit: cover !important;
+    border-radius: 5px !important;
+
 }
 .r-inp{
     border-radius: 0.25rem;

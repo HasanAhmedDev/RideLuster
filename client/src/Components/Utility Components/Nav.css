@@ -15,3 +15,10 @@
     outline:'none';
 
 }
+
+.imgpic {
+    object-fit: cover !important;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}

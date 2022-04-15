@@ -39,10 +39,10 @@ const UserList = (props) => {
   
   return (
     <div className='u-list'>
-      <div class='ui fluid action input' id='search'>
+      {/* <div class='ui fluid action input' id='search'>
         <input type='text' placeholder='Search...' />
         <div class='ui button'>Search</div>
-      </div>
+      </div> */}
       {showusers}
     </div>
   );

@@ -1,7 +1,14 @@
 .main-container{
     width: 100%;
+    min-height: 100vh;
 }
 .nav-container{
     width: 98%;
     margin: 0px auto;
+}
+.main-render {
+    min-height: calc(100vh - 183px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }

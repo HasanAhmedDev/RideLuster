@@ -24,20 +24,24 @@ const SearchResults = (props) => {
     dispatch(showLoader(true));
     dispatch(getAllServiceStation());
   }, []);
-  if (user.areas.length && !state.areasLoaded) {
-    let areasArray = user.areas.map((area) => {
-      return {
-        key: area,
-        text: area,
-        value: area,
-      };
-    });
-    setState({
-      ...state,
-      areas: areasArray,
-      areasLoaded: true,
-    });
-  }
+  useEffect(() => {
+    if (user.areas.length && !state.areasLoaded) {
+      let areasArray = user.areas.map((area) => {
+        return {
+          key: area,
+          text: area,
+          value: area,
+        };
+      });
+      setState({
+        ...state,
+        areas: areasArray,
+        areasLoaded: true,
+      });
+    }
+    console.log(user)
+  }, [user]);
+  
   const searchSS = async (e, { value }) => {
     dispatch(showLoader(true));
     dispatch(searchServiceStation({ area: value, page: 1 }));
@@ -93,8 +97,11 @@ const SearchResults = (props) => {
         ) : null}
       </div>
       <div className='main'>
-        <button onClick={serviceDetails} class='ui fluid positive button'>
-          Services Details
+        <button onClick={serviceDetails} style={{margin: '20px 0'}} className='ui animated positive button'>
+          <div class="visible content">Services Details</div>
+          <div class="hidden content">
+            <i class="right arrow icon"></i>
+          </div>
         </button>
         <div className='searchBarUser'>
           <Dropdown

@@ -35,14 +35,14 @@ const Completed = props => {
                         vendor.completed.map((booking, ind)=>{
                             return  <div key={ind} className="card r-card">
                             <div className="content">
-                            <img className="right floated mini ui image" alt="" src={require('../../../assets/luther-bottrill-EsBufnuK4NE-unsplash.jpg')}/>
+                            <img className="right floated mini ui image" alt="" src={require('../../../assets/men.png')}/>
                             <div className="header">
                             </div>
                             <div className="meta">
                                 <br/>
-                                {booking.contactNo}
+                                <b>Contact:</b> {booking.contactNo}
                                 <br/>
-                                Request Time: {booking.createdAt}
+                                <b>Request Time:</b> {booking.createdAt}
                             </div>
                             <div className="description">
                                 <h5 className="r-h5 green">{booking.serviceType}</h5>
@@ -56,6 +56,11 @@ const Completed = props => {
                                 <h6>Completion Time: <span className="green">12:32 pm</span></h6>
                                 <h6>Payment: <span className="red">Pending</span></h6> */}
                             </div>
+                            <div style={{marginTop: '20px'}}>
+                                <h4 className="ui header">Feedback</h4>
+                                <h5 className="ui header">In Progress...</h5>
+                                {/* <div class="ui heart rating" data-rating="1" data-max-rating="3"></div> */}
+                            </div>
                             </div>
                             {/* <div className="extra content">
                             <div className="ui two buttons">
@@ -67,11 +72,7 @@ const Completed = props => {
                         }):
                         <div><h2>No Completed Services</h2></div>
                         }
-                       
-                        
-                        
-                        
-                        </div>
+                    </div>
                 </div>
             </div>
         )

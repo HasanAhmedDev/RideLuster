@@ -39,17 +39,13 @@ const WaitingList = props => {
                         vendor.ss.bookings.map((waiting, index)=>{
                             return <div key={index} className="card r-card">
                             <div className="content">
-                            <img className="right floated mini ui image" alt="" src={require('../../../assets/stas-svechnikov-zXQdgHr2KIw-unsplash.jpg')}/>
+                            <img className="right floated mini ui image" alt="" src={require('../../../assets/men.png')}/>
                             <div className="header">
                             </div>
                             <div className="meta">
-                                Faisal Town
+                                <b>Contact:</b> {waiting.contactNo}
                                 <br/>
-                                0300-2910493
-                                <br/>
-                                ID: RL75
-                                <br/>
-                                {waiting.createdAt}
+                                <b>Request Time:</b> {waiting.createdAt}
                             </div>
                             <div className="description">
                                 <h5 className="r-h5 green">{waiting.serviceType}</h5>

@@ -10,7 +10,8 @@ import {
 const initialState = {
     ssRequests: null,
     servicestations: null,
-    users:null
+    users:null,
+    controls: null
 };
 
 export default function (state = initialState, action) {

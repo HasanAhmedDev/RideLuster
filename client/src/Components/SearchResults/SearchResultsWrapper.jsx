@@ -17,19 +17,26 @@ const SearchResultsWrapper = props => {
   const {userAuth, loader, user} = useSelector(st => st);
   let dispatch = useDispatch();
   
-  if(!state.firstMount){
-    dispatch(showLoader(true));
-    setState({
-      ...state,
-      firstMount: true
-    })
-  }
-  if(user.userSocket === null && userAuth.user !== null)
+  useEffect(() => {
+    if(!state.firstMount){
+      dispatch(showLoader(true));
+      setState({
+        ...state,
+        firstMount: true
+      })
+    }
+  }, []);
+
+  useEffect(() => {
+    if(user.userSocket === null && userAuth.user !== null)
     {
       dispatch(openSocketConnectionUser(userAuth.user._id));
       dispatch(setAlert('Logged in successfully', 'success'))
 
     }
+  }, [user, userAuth]);
+  
+  
   useEffect(()=>{
 
     if(user.userSocket && socketchk){
@@ -59,15 +66,18 @@ const SearchResultsWrapper = props => {
       },2000)
     }
   },[user.userSocket])
-  if((!userAuth.isAuthenticated || userAuth.userType !== 'client') && userAuth.userLoaded)
-      props.history.replace('login');
-  if(userAuth.userLoaded && userAuth.isAuthenticated && userAuth.userType === 'client' && state.render === null){
-    dispatch(showLoader(false));
-    setState({
-      ...state,
-      render: <SearchResults/>
-    })
-  }
+  useEffect(() => {
+    if((!userAuth.isAuthenticated || userAuth.userType !== 'client') && userAuth.userLoaded)
+    props.history.replace('login');
+    if(userAuth.userLoaded && userAuth.isAuthenticated && userAuth.userType === 'client' && state.render === null){
+      dispatch(showLoader(false));
+      setState({
+        ...state,
+        render: <SearchResults/>
+      })
+    }
+  }, [userAuth]);
+  
     return (
       <React.Fragment>
         {state.render === null ? <Loader/> : null}

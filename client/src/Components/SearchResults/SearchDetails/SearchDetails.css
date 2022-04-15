@@ -2,7 +2,7 @@
     width: 100%;
 }
 .details-body{
-    width: 95%;
+    width: 100%;
     margin: 30px auto;
 }
 img{
@@ -14,8 +14,9 @@ img{
 }
 .list-grid{
     display: grid;
-    width: 50%;
-    grid-template-columns: 50% 50%;
+    width: 75%;
+    grid-template-columns: 40% 40%;
+    justify-content: space-between;
     border-radius: 0.25rem;
     padding: 25px;
     margin: 10px auto;
@@ -26,5 +27,23 @@ img{
     font-weight: 500;
 }
 .right-grid{
-    text-align: right;
+    text-align: left;
+}
+
+.heading {
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0px;
+}
+.info-text {
+    margin: 0px;
+    font-weight: 450;
+    font-size: 15px;
+}
+.details-body .segments i {
+    width: fit-content !important;
+    height: fit-content !important;
+    max-width: 20px;
+    max-height: 20px;
+    margin-right: 10px !important;
 }

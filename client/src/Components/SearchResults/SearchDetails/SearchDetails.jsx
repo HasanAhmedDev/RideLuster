@@ -22,11 +22,12 @@ const SearchDetails = (props) => {
   });
   const user = useSelector((st) => st.user);
   let dispatch = useDispatch();
-  if (props.location.ssID === undefined) props.history.replace('searchResult');
+  
   useEffect(() => {
-      dispatch(showLoader(false));
-  }, []);
-  if (state.serviceStation === null && props.location.ssID !== undefined)
+    if (props.location.ssID === undefined) 
+      props.history.replace('searchResult');
+    dispatch(showLoader(false));
+    if (state.serviceStation === null && props.location.ssID !== undefined)
     setState({
       ...state,
       serviceStation: user.docs[props.location.ssID],
@@ -36,6 +37,8 @@ const SearchDetails = (props) => {
         longitude: user.docs[props.location.ssID].location.coordinates[1],
       },
     });
+  }, []);
+  
   return (
     <React.Fragment>
       <Loader />
@@ -43,15 +46,18 @@ const SearchDetails = (props) => {
         <div className='details-main'>
           <Nav />
           <div className='details-body'>
-            <h3 className='ui block header d-head'>
+            <h3 className='ui block header d-head' style={{display: 'flex', alignItems: 'center'}}>
               {state.serviceStation.name}
+              {
+                state.serviceStation.status === 'Open' ? <i style={{marginLeft: '15px'}} className='green small check circle icon'></i> : null
+              }
             </h3>
             <img
-              class='ui big aligned large image'
+              className='ui fluid image'
               src={`http://localhost:5000/servicestations_photos/${state.serviceStation.photo}`}
               alt='No Image'
             />
-            <span>
+            {/* <span>
               <div className='list-grid'>
                 <div className='left-grid'>
                   <ul>
@@ -70,7 +76,36 @@ const SearchDetails = (props) => {
                   </ul>
                 </div>
               </div>
-            </span>
+            </span> */}
+            <div style={{width: '90%', margin: '25px auto'}} class="ui segments">
+              <div class="ui segment" style={{display: 'flex', alignItems: 'center'}}>
+                <i class="location arrow icon"></i>
+                <p className='heading'> Location: </p>
+                <p className='info-text' style={{paddingLeft: '12px'}}> {state.serviceStation.area}</p>
+              </div>
+              <div class="ui segment" style={{display: 'flex', alignItems: 'center'}}>
+                <i class="cogs icon"></i>
+                <p className='heading'> Available Services</p>
+              </div>
+              <div class="ui segments">
+                {state.serviceStation.services.map((vehicle, index) => {
+                  return <div key={index} class="ui segment">
+                    <p className='info-text'>{vehicle}</p>
+                  </div>
+                })}
+              </div>
+              <div class="ui segment" style={{display: 'flex', alignItems: 'center'}}>
+                <i class="recycle icon"></i>
+                <p className='heading'> Vehicle Types </p>
+              </div>
+              <div class="ui horizontal segments">
+                {state.serviceStation.vehicles.map((vehicle, index) => {
+                  return <div key={index} class="ui segment">
+                    <p className='info-text'>{vehicle}</p>
+                  </div>
+                })}
+              </div>
+            </div>
           </div>
           <ReactMapGL
             {...state.viewport}

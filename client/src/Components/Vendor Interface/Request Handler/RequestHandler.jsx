@@ -29,12 +29,42 @@ const timeOptions = [
         key: '25',
         text: '25',
         value: '25',
-      },
-      {
+    },
+    {
         key: '30',
         text: '30',
         value: '30',
-      },
+    },
+    {
+        key: '35',
+        text: '35',
+        value: '35',
+    },
+    {
+        key: '40',
+        text: '40',
+        value: '40',
+    },
+    {
+        key: '45',
+        text: '45',
+        value: '45',
+    },
+    {
+        key: '50',
+        text: '50',
+        value: '50',
+    },
+    {
+        key: '55',
+        text: '55',
+        value: '55',
+    },
+    {
+        key: '60',
+        text: '60',
+        value: '60',
+    },
   ]
 let ssid = null;
 const RequestHandler = props => {
@@ -130,15 +160,14 @@ const RequestHandler = props => {
                         vendor.unhandledBooking.map((booking, index)=>{
                             return <div key={index} className="card r-card">
                             <div className="content">
-                            <img className="right floated mini ui image" alt="" src={require('../../../assets/stas-svechnikov-zXQdgHr2KIw-unsplash.jpg')}/>
+                            <img className="right floated mini ui image" alt="" src={require('../../../assets/men.png')}/>
                             <div className="header">
                             </div>
                             <div className="meta">
-                                
-                                {booking.contactNo}
+                                <b>Contact:</b> {booking.contactNo}
                                 <br/>
                                 
-                                Requested At: {booking.createdAt}
+                                <b>Request Time:</b> {booking.createdAt}
                             </div>
                             <div className="description">
                                 <h5 className="r-h5 green">{booking.serviceType}</h5>

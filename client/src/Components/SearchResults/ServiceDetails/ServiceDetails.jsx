@@ -19,6 +19,7 @@ const ServiceDetails = props => {
         dispatch(getCompletedServices());
         if(user && userAuth.user)
         user.userSocket.emit('activeServices', userAuth.user._id);
+        console.log(user);
     },[])
     useEffect(()=>{
         if(user.userSocket)
@@ -31,7 +32,7 @@ const ServiceDetails = props => {
             <Loader/>
             <Nav/>
             <div style={{width: '100%', minHeight: '85vh', padding: '30px'}}>
-            <h3 className='ui block header'>Service Details</h3>
+            {/* <h3 className='ui block header'>Service Details</h3> */}
             <div style={{width: '80%', margin: '50px auto'}}>
                 {bookings.length ? 
                     <h3 className='ui block header'>Active Services</h3>
@@ -53,32 +54,36 @@ const ServiceDetails = props => {
                     :
                     null
                 }
-                {user.completedServices ? 
+                {user.completedServices && user.completedServices.length ? 
                 <h3 className='ui block header'>Completed Services</h3>
                 : null
                 }
-                {user.completedServices ? 
+                {user.completedServices && user.completedServices.length  ? 
                 (
                     user.completedServices.map((service, index)=>{
                       return  <div key={index} className="ui success message">
-                            <div className="header" style={{color: '#21ba45'}}>{service.status}</div>
-                            <li> <b>Service Type:</b> {service.serviceType}</li>
-                            <li> <b>Vehicle Type:</b> {service.vehicleType}</li>
-                            <li> <b>Vehicle Make:</b> {service.vehicleMake}</li>
-                            <li> <b>Vehicle Number:</b> {service.vehicleNo}</li>
-                            <li> <b>Service Station Name:</b> {service.serviceStation.name}</li>
-                            <li> <b>Area:</b> {service.serviceStation.area}</li>
-                        </div>
+                                <div className="header" style={{color: '#21ba45'}}>{service.status}</div>
+                                <li> <b>Service Type:</b> {service.serviceType}</li>
+                                <li> <b>Vehicle Type:</b> {service.vehicleType}</li>
+                                <li> <b>Vehicle Make:</b> {service.vehicleMake}</li>
+                                <li> <b>Vehicle Number:</b> {service.vehicleNo}</li>
+                                <li> <b>Service Station Name:</b> {service.serviceStation.name}</li>
+                                <li> <b>Area:</b> {service.serviceStation.area}</li>
+                                <div style={{marginTop: '20px'}} class="ui fluid action input">
+                                    <input type="text" placeholder="Comment here..." />
+                                    <div class="ui success button">Submit</div>
+                                </div>
+                            </div>
                     })
                 
                 ) :
-                ( <div style={{textAlign: 'center'}}>
+                !bookings.length ? ( <div style={{textAlign: 'center'}}>
                     <h2 style={{color: '#333'}}>YOU DONT HAVE ANY SERVICE YET!</h2>
                     <div className="ui animated blue button" style={{width: '50%'}} tabIndex="0">
                         <div className="visible content" >TRY IT NOW</div>                
                         <div className="hidden content" >BOOK SERVICE</div>
                     </div>
-                </div>  )
+                </div>  ) : null
                 }
                 
             </div>

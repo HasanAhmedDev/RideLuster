@@ -74,6 +74,11 @@ router.get('/user/getcompletedbookings', auth('user'), AuthController.getComplet
 //@access Private
 router.get('/admin', auth('admin'), AuthController.getAuthAdmin)
 
+router.post('/admin/addArea', AuthController.addArea)
+router.post('/admin/removeArea', auth('admin'), AuthController.removeArea)
+router.post('/admin/addControl', AuthController.addControl)
+router.post('/admin/removeControl', auth('admin'), AuthController.removeControl)
+
 
 //@route POST api/auth/admin
 //@desc Authenticate and get token

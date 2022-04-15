@@ -10,27 +10,31 @@ export default function PhotoUpload(props) {
   });
   let dispatch = useDispatch();
   const userAuth = useSelector((st) => st.userAuth);
-  if (!userAuth.isAuthenticated && userAuth.userLoaded) {
-    props.history.replace('login');
-  }
-  if (userAuth.isAuthenticated && userAuth.userLoaded) {
-    dispatch(showLoader(false));
-    if (userAuth.userType === 'client' && state.render === null)
-      setState({
-        ...state,
-        render: <FileUpload type='/user/uploadphoto/' path='user' />,
-      });
-    if (userAuth.userType === 'vendor' && state.render === null)
-      setState({
-        ...state,
-        render: (
-          <FileUpload
-            type='/vendor/uploadservicestationphoto/'
-            path='servicestation'
-          />
-        ),
-      });
-  }
+
+  React.useEffect(() => {
+    if (!userAuth.isAuthenticated && userAuth.userLoaded) {
+      props.history.replace('login');
+    }
+    if (userAuth.isAuthenticated && userAuth.userLoaded) {
+      dispatch(showLoader(false));
+      if (userAuth.userType === 'client' && state.render === null)
+        setState({
+          ...state,
+          render: <FileUpload type='/user/uploadphoto/' path='user' />,
+        });
+      if (userAuth.userType === 'vendor' && state.render === null)
+        setState({
+          ...state,
+          render: (
+            <FileUpload
+              type='/vendor/uploadservicestationphoto/'
+              path='servicestation'
+            />
+          ),
+        });
+    }
+  }, [userAuth])
+  
 
   return (
     <React.Fragment>

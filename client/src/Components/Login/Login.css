@@ -26,9 +26,13 @@
 }
 .inside-form
 {
-    margin-top: 4%;
-    text-align: center;
-    margin-bottom: 4%;
+  margin: 30px auto;
+}
+
+.inside-form label
+{
+  font-size: 16px !important;
+  font-weight: 500 !important;
 }
 
 @media(max-width: 1000px)

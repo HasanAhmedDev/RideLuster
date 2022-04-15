@@ -23,13 +23,11 @@ const ServiceStationSchema = new mongoose.Schema({
     },
     vehicles: {
         type: [String],
-        enum: ['Bike', 'Car'],
         required: [true, 'Types of vehicles serverd are required']
     },
     services: {
         type: [String],
-        required: [true, 'Types of services provided are required'],
-        enum: ['Wash', 'Polish', 'Oil Change'],
+        required: [true, 'Types of services provided are required']
     },
     activeProcess: [{
         type: mongoose.Schema.ObjectId,

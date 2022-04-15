@@ -318,7 +318,7 @@ function Nav(props) {
               <AccountCircle style={{fontSize: '45px'}} />: 
               null}
               {userAuth.user !== null ? 
-              <img style={{backgroundSize: 'cover', width: '50px', height: '50px', borderRadius: '50%'}} 
+              <img className='imgpic' 
               src={userAuth.user.photo[0] === "h" ?
               `${userAuth.user.photo}` : 
               `http://localhost:5000/users_photos/${userAuth.user.photo}`} 
@@ -326,7 +326,7 @@ function Nav(props) {
               null
               }
               {userAuth.vendor !== null && vendor.ss !== null? 
-              <img style={{backgroundSize: 'cover', width: '50px', height: '50px', borderRadius: '50%'}} 
+              <img className='imgpic' 
               src={vendor.ss.photo[0] === "h" ?
               `${vendor.ss.photo}` : 
               `http://localhost:5000/servicestations_photos/${vendor.ss.photo}`} 

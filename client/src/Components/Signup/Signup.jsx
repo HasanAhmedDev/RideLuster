@@ -14,6 +14,7 @@ const divStyle = {
 };
 var type = 'client';
 const Signup = (props) => {
+  const [userType, setUserType] = useState(false);
   const [state, setState] = useState({
     fname: '',
     lname: '',
@@ -112,6 +113,7 @@ const Signup = (props) => {
           }
           break;
       }
+      console.log(payload, state, type);
       await props.authenticateUser(url, payload, state.tab);
     }
   };
@@ -124,25 +126,12 @@ const Signup = (props) => {
   };
 
   const switchTabs = (evt) => {
-    const tab = evt.target.name;
     setState({
       ...state,
-      tab: tab,
+      tab: evt,
     });
-    type = evt.target.name;
-    let c = document.getElementById('c');
-    let v = document.getElementById('v');
-
-    c.className = 'ite';
-    v.className = 'ite';
-
-    if(evt.target.name === 'client'){
-      c.className+= ' accc';
-    }
-    else{
-      v.className+= ' accc';
-    }
-    console.log(state.tab);
+    type = evt;
+    setUserType(true);
   };
 
   return (
@@ -151,77 +140,77 @@ const Signup = (props) => {
     <Form.Field className='body' style={divStyle}>
       <Form.Field className='overlay'>
         <Form.Field className='main-form'>
-          <Form onSubmit={handleSubmit} className='inside-form'>
-            <h4>Welcome to Sign Up</h4>
-            <div style={{ textAlign: 'center', margin: '15px 0px' }}>
-              <div className='customSbar'>
-                <a name='client' id="c" onClick={switchTabs} className='accc ite'>
-                  Client
-                </a>
-                <a name='vendor' id="v" onClick={switchTabs} className='ite'>
-                  Vendor
-                </a>
+          <h1 className='ui block header' style={{ }}>Sign Up!</h1>
+          {
+            userType ? 
+            (
+            <Form onSubmit={handleSubmit} className='inside-form'>
+              <Form.Field>
+                <label>FirstName</label>
+                <Input
+                  name='fname'
+                  onChange={handleChange}
+                  value={state.fname}
+                  placeholder='Enter FirstName'
+                />
+                <div className='valerr'>{state.fnameErr}</div>
+              </Form.Field>
+              <Form.Field>
+                <label>LastName</label>
+                <Input
+                  name='lname'
+                  onChange={handleChange}
+                  value={state.lname}
+                  placeholder='Enter LastName'
+                />
+                <div className='valerr'>{state.lnameErr}</div>
+              </Form.Field>
+              <Form.Field>
+                <label>Email</label>
+                <Input
+                  name='email'
+                  onChange={handleChange}
+                  value={state.email}
+                  placeholder='Enter Email'
+                />
+                <div className='valerr'>{state.emailErr}</div>
+              </Form.Field>
+              <Form.Field>
+                <label>Password</label>
+                <Input
+                  name='pass1'
+                  onChange={handleChange}
+                  value={state.pass1}
+                  type='password'
+                  placeholder='Enter Password'
+                />
+                <div className='valerr'>{state.pass1Err}</div>
+              </Form.Field>
+              <Form.Field>
+                <label>Confirm Password</label>
+                <Input
+                  name='pass2'
+                  onChange={handleChange}
+                  value={state.pass2}
+                  type='password'
+                  placeholder='Enter Password Again'
+                />
+                <div className='valerr'>{state.pass2Err}</div>
+              </Form.Field>
+              <Form.Field style={{marginTop: '30px'}}>
+                <Button fluid color='blue' type='submit'>
+                  SignUp
+                </Button>
+              </Form.Field>
+            </Form>
+            ) :
+            (
+              <div style={{margin: '60px auto 30px auto'}}>
+                <button style={{margin: '25px auto'}} onClick={() => switchTabs('client')} className="fluid primary large ui button">Register As User</button>
+                <button style={{margin: '25px auto'}} onClick={() => switchTabs('vendor')} className="fluid primary large ui button">Register As Vendor</button>
               </div>
-              {/* <div class="ui segment active tab">Tab 1 Content</div> */}
-            </div>
-            <Form.Field>
-              <label>FirstName</label>
-              <Input
-                name='fname'
-                onChange={handleChange}
-                value={state.fname}
-                placeholder='Enter FirstName'
-              />
-              <div className='valerr'>{state.fnameErr}</div>
-            </Form.Field>
-            <Form.Field>
-              <label>LastName</label>
-              <Input
-                name='lname'
-                onChange={handleChange}
-                value={state.lname}
-                placeholder='Enter LastName'
-              />
-              <div className='valerr'>{state.lnameErr}</div>
-            </Form.Field>
-            <Form.Field>
-              <label>Email</label>
-              <Input
-                name='email'
-                onChange={handleChange}
-                value={state.email}
-                placeholder='Enter Email'
-              />
-              <div className='valerr'>{state.emailErr}</div>
-            </Form.Field>
-            <Form.Field>
-              <label>Password</label>
-              <Input
-                name='pass1'
-                onChange={handleChange}
-                value={state.pass1}
-                type='password'
-                placeholder='Enter Password'
-              />
-              <div className='valerr'>{state.pass1Err}</div>
-            </Form.Field>
-            <Form.Field>
-              <label>Confirm Password</label>
-              <Input
-                name='pass2'
-                onChange={handleChange}
-                value={state.pass2}
-                type='password'
-                placeholder='Enter Password Again'
-              />
-              <div className='valerr'>{state.pass2Err}</div>
-            </Form.Field>
-            <Form.Field>
-              <Button fluid color='blue' type='submit'>
-                SignUp
-              </Button>
-            </Form.Field>
-          </Form>
+            )
+          }
         </Form.Field>
       </Form.Field>
       <Footer />

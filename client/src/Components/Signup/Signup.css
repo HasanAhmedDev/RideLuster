@@ -29,14 +29,16 @@ h4 {
   transform: translateX(-50%) translateY(-50%);
 }
 
-.inside-form {
-  margin-top: 4%;
-  width: 80% !important;
-  margin: auto;
-  text-align: center;
-  margin-bottom: 4%;
+.inside-form
+{
+  margin: 30px auto;
 }
 
+.inside-form label
+{
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
 @media(max-width: 800px) {
   .main-form {
     width: 70% !important;

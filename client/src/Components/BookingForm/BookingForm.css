@@ -27,11 +27,7 @@
   }
   .inside-form
   {
-      margin-top: 4%;
-      width: 80% !important;
-      margin: auto;
-      text-align: center;
-      margin-bottom: 4%;
+    margin: 30px auto;
   }
   
 @media(max-width: 800px)

@@ -2,6 +2,7 @@ import React from 'react';
 import Request from "./Request/Request"
 import VendorList from './VendorList/VendorList';
 import UserList from './UserList/UserList';
+import Control from './Control/Control';
 const TabHandler = (prop)=>{
 
         if(prop.name === 'Request')
@@ -15,6 +16,10 @@ const TabHandler = (prop)=>{
         else if(prop.name === 'UserList')
         {
             return <UserList/>
+        }
+        else if(prop.name === 'Control')
+        {
+            return <Control/>
         }
 
 }

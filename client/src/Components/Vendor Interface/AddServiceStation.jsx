@@ -6,6 +6,7 @@ import { addServiceStation, getServiceStation } from '../../actions/servicestati
 import './style.css'
 import { showLoader } from '../../actions/loader';
 import Loader from '../Utility Components/Loader';
+import axios from 'axios';
 
 const divStyle = {
   height: window.screen.height,
@@ -28,22 +29,11 @@ const initialState = {
   render: null
 }
 
-const vehicleOptions = [
-    { key: 'bike', value: 'Bike', text: 'Bike' },
-    { key: 'car', value: 'Car', text: 'Car' },
-]
+let vehicleOptions = []
 
-const serviceOptions = [
-    { key: 'wash', value: 'Wash', text: 'Wash' },
-    { key: 'polish', value: 'Polish', text: 'Polish' },
-    { key: 'oil', value: 'Oil Change', text: 'Oil Change' },
-]
+let serviceOptions = []
 
-const areaOptions = [
-  { key: 'johar', value: 'Johar Town', text: 'Johar Town' },
-  { key: 'wapda', value: 'Wapda Town', text: 'Wapda Town' },
-  { key: 'faisal', value: 'Faisal Town', text: 'Faisal Town' },
-]
+let areaOptions = []
 
 const AddServiceStation = (props) => {
   const [state, setState] = useState(initialState);
@@ -70,6 +60,49 @@ const AddServiceStation = (props) => {
       ...state,
       render: true
     })
+  }
+
+  React.useEffect(() => {
+    getfieldsData();
+  }, [])
+
+  const getfieldsData = async () => {
+    const res = await axios.post(`/api/auth/admin/addControl`);
+    const area = await axios.post(`/api/auth/admin/addArea`);
+    const areas = area.data.payload;
+    const payload = res.data.payload[0];
+    console.log(res);
+    let services = [];
+    let types = []; 
+    if(payload) {
+      payload.services.forEach(service => {
+        services.push({
+          key: service, value: service, text: service
+        })
+      })
+      payload.types.forEach(type => {
+        types.push({
+          key: type, value: type, text: type
+        })
+      })
+      vehicleOptions = types;
+      serviceOptions = services;
+      setState({
+        ...state
+      })
+    }
+    if(area) {
+      let areaArray = []
+      areas.forEach(aaa => {
+        areaArray.push({
+          key: aaa.name, value: aaa.name, text: aaa.name
+        })
+      })
+      areaOptions = areaArray;
+      setState({
+        ...state
+      })
+    }
   }
   const validate = () => {
     let nameErr = '';

@@ -15,6 +15,7 @@ const divStyle = {
 };
 let type = 'client'
 const Login = (props) => {
+  const [userType, setUserType] = useState(false);
   const [state, setState] = useState({
     email: '',
     password: '',
@@ -77,7 +78,7 @@ const Login = (props) => {
           url = 'http://localhost:5000/api/auth/user';
           break;
       }
-      
+      console.log(payload, state, type);
       await props.authenticateUser(url, payload, type);
     }
   };
@@ -91,15 +92,12 @@ const Login = (props) => {
   };
 
   const switchTabs = (evt) => {
-    let menu = document.getElementsByClassName('ite');
-    menu[0].className = 'ite';
-    menu[1].className = 'ite';
-    menu[2].className = 'ite';
-    document.getElementById(evt).className += ' activ ';
+    console.log(evt);
     setState({
       ...state,
       tab: evt,
     });
+    setUserType(true);
     type = evt;
     console.log(state.tab);
   };
@@ -110,54 +108,52 @@ const Login = (props) => {
       <Loader/>
       <div className='overlay'>
         <div className='main-form'>
-          <Form onSubmit={handleSubmit} className='inside-form'>
-            <h4 style={{ paddingBottom: '6%' }}>Welcome to Log in</h4>
-            <div>
-              <div className="" style={{ textAlign: 'center', margin: '20px 0px'}}>
-                <a className="activ ite" id="client" onClick={() => switchTabs('client')}>
-                  Users
-                </a>
-                <a className="ite" id="vendor" onClick={() => switchTabs('vendor')}>
-                  Vendors
-                  {/* <div className="ui label">15</div> */}
-                </a>
-                <a className="ite" id="admin" onClick={() => switchTabs('admin')}>
-                  Admin
-                  {/* <div class="ui label">15</div> */}
-                </a>
-              </div>
-              {/* <div class="ui bottom attached segment active tab"> */}
-              <Form.Field style={{ paddingBottom: '6%' }}>
-              <label>Email</label>
-              <Input
-                name='email'
-                value={state.email}
-                onChange={handleChange}
-                placeholder='Enter Email'
-              />
-              <div className='valerr'>{state.emailErr}</div>
-            </Form.Field>
-            <Form.Field style={{ paddingBottom: '6%' }}>
-              <label>Password</label>
-              <Input
-                name='password'
-                value={state.password}
-                onChange={handleChange}
-                type='password'
-                placeholder='Enter Password'
-              />
-              <div className='valerr'>{state.passErr}</div>
-            </Form.Field>
-            <Form.Field>
-              <Button fluid color='blue' type='submit'>
-                Login
-              </Button>
-            </Form.Field>
+          <h1 className='ui block header' style={{ }}>Sign In!</h1>
+          {
+            userType ? 
+            (
+            <Form size={'large'} onSubmit={handleSubmit} className='inside-form'>
+              <div>
+                {/* <div class="ui bottom attached segment active tab"> */}
+                <Form.Field>
+                  <label>Email</label>
+                  <Input
+                    name='email'
+                    value={state.email}
+                    onChange={handleChange}
+                    placeholder='Enter Email'
+                  />
+                  <div className='valerr'>{state.emailErr}</div>
+                </Form.Field>
+                <Form.Field>
+                  <label>Password</label>
+                  <Input
+                    name='password'
+                    value={state.password}
+                    onChange={handleChange}
+                    type='password'
+                    placeholder='Enter Password'
+                  />
+                  <div className='valerr'>{state.passErr}</div>
+                </Form.Field>
+                <Form.Field style={{marginTop: '30px'}}>
+                  <Button fluid color='blue' type='submit'>
+                    Login
+                  </Button>
+                </Form.Field>
 
-              {/* </div> */}
-            </div>
-            
-          </Form>
+                {/* </div> */}
+              </div>
+            </Form>
+            ) : 
+            (
+              <div style={{margin: '60px auto 30px auto'}}>
+                <button style={{margin: '25px auto'}} onClick={() => switchTabs('client')} class="fluid primary large ui button">Login As User</button>
+                <button style={{margin: '25px auto'}} onClick={() => switchTabs('vendor')} class="fluid primary large ui button">Login As Vendor</button>
+                <button style={{margin: '25px auto'}} onClick={() => switchTabs('admin')} class="fluid primary large ui button">Login As Admin</button>
+              </div>
+            )
+          }
         </div>
       </div>
       <Footer />

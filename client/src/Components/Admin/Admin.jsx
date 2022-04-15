@@ -55,6 +55,9 @@ const AdminPanel = props => {
               <li onClick={() => redirect('UserList')} className='item'>
                 USER LIST
               </li>
+              <li onClick={() => redirect('Control')} className='item'>
+                CONTROLS
+              </li>
             </div>
             <div className='dimmed pusher'>
               <div onClick={slidefun} className='slide-control'>

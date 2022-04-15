@@ -7,6 +7,8 @@ const socketio = require('../socket.io/socket');
 const userSocket = require('../socket.io/user');
 const vendorSocket = require('../socket.io/vendor');
 const notifications = require('../models/Notifications');
+const AdminControl = require('../models/AdminControl');
+const Area = require('../models/Area');
 const sendEmail = require('../utils/sendEmail')
 
 const bcrypt = require('bcryptjs');
@@ -426,6 +428,11 @@ const getCompletedBookings = async (req, res) => {
 const getAuthAdmin = async (req, res) => {
   try {
     const admin = await Admin.findById(req.admin.id).select('-password');
+    const adminControls = await AdminControl.find();
+    if(!adminControls || !adminControls.length) {
+      const adminControl = new AdminControl();
+      await adminControl.save();
+    }
     res.json({
       success: true,
       admin,
@@ -502,6 +509,181 @@ const authenticateAdmin = async (req, res) => {
     });
   }
 };
+
+const addArea = async (req, res) => {
+  try {
+    const {
+      area
+    } = req.body;
+    if(!area) {
+      return res.status(200).json({
+        success: true,
+        payload: await Area.find()
+      })
+    }
+    const areas = await Area.find();
+    const index = areas.findIndex(x => x.name == area);
+    if(index == -1) {
+      const newArea = new Area({
+        name: area
+      });
+      await newArea.save();
+      return res.status(200).json({
+        success: true,
+        payload: await Area.find()
+      })
+    }
+    return res.status(400).json({
+      success: false,
+      errors: [{
+        msg: 'Area already exist',
+      },],
+    })
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
+const removeArea = async (req, res) => {
+  try {
+    const {
+      id
+    } = req.body;
+    if(!id) {
+      return res.status(404).json({
+        success: true,
+        msg: 'Id Not Found'
+      })
+    }
+    await Area.findByIdAndDelete(id);
+    return res.status(200).json({
+      success: true,
+      areas: await Area.find()
+    })
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
+const addControl = async (req, res) => {
+  try {
+    const {
+      service,
+      type
+    } = req.body;
+    const adminControls = await AdminControl.find();
+    if(service) {
+      const services = adminControls[0].services;
+      services.push(service);
+      const updatedControls = {
+        ...adminControls,
+        services: services
+      }
+      await AdminControl.findByIdAndUpdate(adminControls[0].id, updatedControls);
+      return res.status(200).json({
+        success: true,
+        payload: updatedControls
+      })
+    } else if(type) {
+      const types = adminControls[0].types;
+      types.push(type);
+      const updatedControls = {
+        ...adminControls,
+        types: types
+      }
+      await AdminControl.findByIdAndUpdate(adminControls[0].id, updatedControls);
+      return res.status(200).json({
+        success: true,
+        payload: updatedControls
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      payload: adminControls
+    })
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
+
+const removeControl = async (req, res) => {
+  try {
+    const {
+      service,
+      type
+    } = req.body;
+    const adminControls = await AdminControl.find();
+    if(service) {
+      const services = adminControls[0].services;
+      const index = services.findIndex(x => x == service);
+      if(index == -1) {
+        return res.status(404).json({
+          success: true,
+          msg: 'Not Found'
+        })
+      }
+      services.splice(index, 1);
+      const updatedControls = {
+        ...adminControls,
+        services: services
+      }
+      await AdminControl.findByIdAndUpdate(adminControls[0].id, updatedControls);
+      return res.status(200).json({
+        success: true,
+        payload: updatedControls
+      })
+    } else if(type) {
+      const types = adminControls[0].types;
+      const index = types.findIndex(x => x == type);
+      if(index == -1) {
+        return res.status(404).json({
+          success: true,
+          msg: 'Not Found'
+        })
+      }
+      types.splice(index, 1);
+      const updatedControls = {
+        ...adminControls,
+        types: types
+      }
+      await AdminControl.findByIdAndUpdate(adminControls[0].id, updatedControls);
+      return res.status(200).json({
+        success: true,
+        payload: updatedControls
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      payload: adminControls
+    })
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      success: false,
+      errors: [{
+        msg: 'Server Error',
+      }, ],
+    });
+  }
+}
 
 const getAllUsers = async (req, res) => {
   try {
@@ -647,8 +829,9 @@ const getAllRequests = async (req, res) => {
       select: 'name email'
     })
     if (allss.length == 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         success: false,
+        ssRequests: allss,
         errors: [{
           msg: 'No request registered.',
         }, ],
@@ -1108,9 +1291,9 @@ const handleBookingRequest = async (req, res, next) => {
     allActiveProcess.forEach(async (val) => {
       const bk = await Booking.findById(val)
       const dt = new Date()
-      const newdt = dt - new Date(bk.startedAt)
-      if (newdt.getMinutes() < timeForService) {
-        time += newdt.getMinutes()
+      const newdt = dt.getMinutes() - new Date(bk.startedAt).getMinutes()
+      if (newdt < timeForService) {
+        time += newdt
       }
     })
     time += 10;
@@ -1338,6 +1521,10 @@ exports.bookService = BookService;
 exports.searchserviceStation = searchServiceStation
 exports.getCompletedBookings = getCompletedBookings
 
+exports.addArea = addArea;
+exports.removeArea = removeArea;
+exports.addControl = addControl;
+exports.removeControl = removeControl;
 exports.getAuthAdmin = getAuthAdmin;
 exports.authenticateAdmin = authenticateAdmin;
 exports.getAllUsers = getAllUsers

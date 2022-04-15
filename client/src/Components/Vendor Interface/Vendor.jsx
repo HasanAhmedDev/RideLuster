@@ -12,7 +12,7 @@ import { showLoader } from '../../actions/loader';
 const Vendor = props => {
     
     const [state, setState] = useState({
-        processName: '',
+        processName: 'Request',
     });
     const { vendor } = useSelector(st => st);
     let dispatch = useDispatch();
@@ -24,9 +24,10 @@ const Vendor = props => {
 
     
     const switchProcess = (event)=>{
+        console.log(event)
         setState({
             ...state,
-            processName: event.target.name
+            processName: event
         });
     }
    
@@ -36,7 +37,7 @@ const Vendor = props => {
         <div className="main-container">
             <div className="nav-container">
                 <Nav/>
-                <Panel click={switchProcess}/>
+                <Panel process={state.processName} click={(e) => switchProcess(e)}/>
             </div>
             <div className="main-render">
                 <ProcessController name={state.processName}/>

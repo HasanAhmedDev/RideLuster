@@ -20,26 +20,14 @@ const initialState = {
   makeErr:"",
   modelErr:"",
   regErr:"",
-  conErr:""
+  conErr:"",
+  service: [],
+  vehicles: [],
+  doc: {}
 };
 
-const serviceOptions = [
-  {
-    key: 'Wash',
-    text: 'Wash',
-    value: 'Wash',
-  },
-  {
-    key: 'Polish',
-    text: 'Polish',
-    value: 'Polish',
-  },
-  {
-    key: 'Oil Change',
-    text: 'Oil Change',
-    value: 'Oil Change',
-  },
-]
+let vehicles = [];
+let services = [];
 
 const divStyle = {
   height: window.screen.height,
@@ -50,9 +38,41 @@ class BookingForm extends Component {
     super(props)
     if(!props.location.ssID){
       props.history.replace('searchResult');
+    } else {
+      this.state = initialState;
+      this.initOptions(props)
     }
+
   }
-  state = initialState;
+
+  initOptions = (props) => {
+    props.user.docs.forEach((doc) => {
+      if(doc._id == props.location.ssID) {
+        let serviceOptions = []
+        let vehicleOptions = []
+        if(!serviceOptions.length)
+          doc.services.forEach((service) => {
+            serviceOptions.push({
+              key: service,
+              text: service,
+              value: service,
+            })
+          })
+        if(!vehicleOptions.length)
+          doc.vehicles.forEach((vehicle) => {
+            vehicleOptions.push({
+              key: vehicle,
+              text: vehicle,
+              value: vehicle,
+            })
+          })
+
+        vehicles = vehicleOptions
+        services = serviceOptions
+        console.log("COMINg", services, vehicles)
+      }
+    })
+  }
   
   changeService=()=>{
     this.setState({
@@ -182,32 +202,23 @@ class BookingForm extends Component {
         <Form.Field className="overlay">
           <Form.Field className="main-form">
             <Form onSubmit={this.handleSubmit} className="inside-form">
-              <h4>Booking Details</h4>
-              
+              <h1 className='ui block header' style={{ }}>Booking Details</h1>
+                <label>Vehicle Type</label>
                 <Dropdown
                   placeholder='Select Vehicle'
                   fluid
                   selection
                   onChange={this.vehicleType}
-                  options={[{
-                    key: 'Car',
-                    text: 'Car',
-                    value: 'Car',
-                  },
-                  {
-                    key: 'Bike',
-                    text: 'Bike',
-                    value: 'Bike',
-                  }
-                ]}
+                  options={vehicles}
                 />
               <div className="valerr" style={{margin: '10px'}}>{this.state.vhErr}</div>
+                <label>Service Type</label>
                 <Dropdown
                   placeholder='Select Service'
                   fluid
                   selection
                   onChange={this.serviceType}
-                  options={serviceOptions}
+                  options={services}
                 />
               <div style={{margin: '10px'}} className="valerr">{this.state.serErr}</div>
                 <Form.Input
@@ -263,7 +274,11 @@ class BookingForm extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  user: state.user
+})
 const mapDispatchToProps = {
   bookService
  };
-export default connect(null, mapDispatchToProps)(BookingForm);
+export default connect(mapStateToProps, mapDispatchToProps)(BookingForm);
