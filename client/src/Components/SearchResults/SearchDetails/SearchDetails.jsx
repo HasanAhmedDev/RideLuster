@@ -53,6 +53,7 @@ const SearchDetails = (props) => {
               }
             </h3>
             <img
+            style={{ maxHeight: '50vh', objectFit: 'contain'}}
               className='ui fluid image'
               src={`http://localhost:5000/servicestations_photos/${state.serviceStation.photo}`}
               alt='No Image'
@@ -77,30 +78,30 @@ const SearchDetails = (props) => {
                 </div>
               </div>
             </span> */}
-            <div style={{width: '90%', margin: '25px auto'}} class="ui segments">
-              <div class="ui segment" style={{display: 'flex', alignItems: 'center'}}>
-                <i class="location arrow icon"></i>
+            <div style={{width: '90%', margin: '25px auto'}} className="ui segments">
+              <div className="ui segment" style={{display: 'flex', alignItems: 'center'}}>
+                <i className="location arrow icon"></i>
                 <p className='heading'> Location: </p>
                 <p className='info-text' style={{paddingLeft: '12px'}}> {state.serviceStation.area}</p>
               </div>
-              <div class="ui segment" style={{display: 'flex', alignItems: 'center'}}>
-                <i class="cogs icon"></i>
+              <div className="ui segment" style={{display: 'flex', alignItems: 'center'}}>
+                <i className="cogs icon"></i>
                 <p className='heading'> Available Services</p>
               </div>
-              <div class="ui segments">
+              <div className="ui segments">
                 {state.serviceStation.services.map((vehicle, index) => {
-                  return <div key={index} class="ui segment">
+                  return <div key={index} className="ui segment">
                     <p className='info-text'>{vehicle}</p>
                   </div>
                 })}
               </div>
-              <div class="ui segment" style={{display: 'flex', alignItems: 'center'}}>
-                <i class="recycle icon"></i>
+              <div className="ui segment" style={{display: 'flex', alignItems: 'center'}}>
+                <i className="recycle icon"></i>
                 <p className='heading'> Vehicle Types </p>
               </div>
-              <div class="ui horizontal segments">
+              <div className="ui horizontal segments">
                 {state.serviceStation.vehicles.map((vehicle, index) => {
-                  return <div key={index} class="ui segment">
+                  return <div key={index} className="ui segment">
                     <p className='info-text'>{vehicle}</p>
                   </div>
                 })}

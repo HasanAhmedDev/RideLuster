@@ -79,16 +79,16 @@ const Control = (props) => {
             areas ? 
             (
                 <div>
-                    <h2 class="ui header">Areas</h2>
-                    <div class="ui fluid action input">
+                    <h2 className="ui header">Areas</h2>
+                    <div className="ui fluid action input">
                         <input type="text" id='areaInp' placeholder="Add Area..." />
-                        <div class="ui button primary" onClick={() => handleAreaSubmit()}>Submit</div>
+                        <div className="ui button primary" onClick={() => handleAreaSubmit()}>Submit</div>
                     </div>
-                    <div class="ui segments">
+                    <div className="ui segments">
                     {
                         areas.map(service => {
                             return (
-                                <div key={service.name} class="ui segment">
+                                <div key={service.name} className="ui segment">
                                     <p>{service.name}</p>
                                 </div>
                             )
@@ -103,32 +103,32 @@ const Control = (props) => {
             controls ? 
             (
                 <div>
-                    <h2 class="ui header">Services</h2>
-                    <div class="ui fluid action input">
+                    <h2 className="ui header">Services</h2>
+                    <div className="ui fluid action input">
                         <input type="text" id='serviceInp' placeholder="Add Service..." />
-                        <div class="ui button primary" onClick={() => handleSubmit('service')}>Submit</div>
+                        <div className="ui button primary" onClick={() => handleSubmit('service')}>Submit</div>
                     </div>
-                    <div class="ui segments">
+                    <div className="ui segments">
                     {
                         controls.services.map(service => {
                             return (
-                                <div key={service} class="ui segment">
+                                <div key={service} className="ui segment">
                                     <p>{service}</p>
                                 </div>
                             )
                         })
                     }
                     </div>
-                    <h2 style={{margin: '30px 0 15px 0'}} class="ui header">Vehicle Types</h2>
-                    <div class="ui fluid action input">
+                    <h2 style={{margin: '30px 0 15px 0'}} className="ui header">Vehicle Types</h2>
+                    <div className="ui fluid action input">
                         <input type="text" id='vehicleInp' placeholder="Add Vehicle Type..." />
-                        <div class="ui button primary" onClick={() => handleSubmit('type')}>Submit</div>
+                        <div className="ui button primary" onClick={() => handleSubmit('type')}>Submit</div>
                     </div>
-                    <div class="ui segments">
+                    <div className="ui segments">
                     {
                         controls.types.map(service => {
                             return (
-                                <div key={service} class="ui segment">
+                                <div key={service} className="ui segment">
                                     <p>{service}</p>
                                 </div>
                             )

@@ -45,10 +45,18 @@ const WaitingList = props => {
                             <div className="meta">
                                 <b>Contact:</b> {waiting.contactNo}
                                 <br/>
-                                <b>Request Time:</b> {waiting.createdAt}
+                                <b>Requested Time:</b> {new Date(waiting.date).toLocaleString()}
                             </div>
                             <div className="description">
-                                <h5 className="r-h5 green">{waiting.serviceType}</h5>
+                                <h5 className="s-types green">
+                                    <ul>
+                                        {
+                                            waiting.serviceType.map((type, ind)=> {
+                                                return <li key={ind}>{type}</li>
+                                            })
+                                        }
+                                    </ul>
+                                </h5>
                                 <h6 className="r-h5">STATUS: <span className="yellow">{waiting.status}</span></h6>
                                 <ul className="r-ul">
                                     <li> <b>VEHICLE NAME: </b> {waiting.vehicleMake}</li>

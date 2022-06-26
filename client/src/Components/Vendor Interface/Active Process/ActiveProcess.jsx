@@ -46,10 +46,18 @@ const ActiveProcess = props => {
                             <div className="meta">
                                 <b>Contact:</b> {process.contactNo}
                                 <br/>
-                                <b>Request Time:</b> {process.createdAt}
+                                <b>Start Time:</b> {new Date(process.estimatedStartTime).toLocaleTimeString()}
                             </div>
                             <div className="description">
-                                <h5 className="r-h5 green">{process.serviceType}</h5>
+                                <h5 className="s-types green">
+                                    <ul>
+                                        {
+                                            process.serviceType.map((type, ind)=> {
+                                                return <li key={ind}>{type}</li>
+                                            })
+                                        }
+                                    </ul>
+                                </h5>
                                 <h6 className="r-h5">STATUS: <span className="blue">{process.status}</span></h6>
                                 <ul className="r-ul">
                                     <li> <b>VEHICLE NAME: </b> {process.vehicleMake}</li>

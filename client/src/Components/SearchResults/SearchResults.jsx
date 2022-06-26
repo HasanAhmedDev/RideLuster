@@ -12,6 +12,7 @@ import { Pagination } from 'semantic-ui-react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { setAlert } from '../../actions/alert';
+import $ from 'jquery';
 
 const SearchResults = (props) => {
   const [state, setState] = useState({
@@ -40,6 +41,14 @@ const SearchResults = (props) => {
       });
     }
     console.log(user)
+    // This waits for the DOM to load correctly before changing elements
+    if(user && user.docs.length) {
+      $(document).ready(function(){
+        // All your normal JS code goes in here
+        // $(".rating").rating();
+      });
+    }
+
   }, [user]);
   
   const searchSS = async (e, { value }) => {
@@ -98,9 +107,9 @@ const SearchResults = (props) => {
       </div>
       <div className='main'>
         <button onClick={serviceDetails} style={{margin: '20px 0'}} className='ui animated positive button'>
-          <div class="visible content">Services Details</div>
-          <div class="hidden content">
-            <i class="right arrow icon"></i>
+          <div className="visible content">Services Details</div>
+          <div className="hidden content">
+            <i className="right arrow icon"></i>
           </div>
         </button>
         <div className='searchBarUser'>
@@ -176,6 +185,7 @@ const SearchResults = (props) => {
                             </div>
                           </li>
                         </ul>
+                        <div className="ui star rating" data-rating="3"></div>
                         <Button
                           style={{ marginBottom: '1%' }}
                           fluid

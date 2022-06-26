@@ -56,18 +56,18 @@ const Request = (props) => {
     //     </div>
     //   </div>
     // ));
-    showreqs = requests.map((req) => {
+    showreqs = requests.map((req, i) => {
       return (
-        <div class="card">
-          <div class="content">
-            <img class="right floated mini ui image" src={`http://localhost:5000/servicestations_photos/${req.photo}`} alt='No Image Uploaded'/>
-            <div class="header">
+        <div key={i} className="card">
+          <div className="content">
+            <img className="right floated mini ui image" src={`http://localhost:5000/servicestations_photos/${req.photo}`} alt='No Image Uploaded'/>
+            <div className="header">
               {req.name}
             </div>
-            <div class="meta">
+            <div className="meta">
               Area: &nbsp; {req.area}
             </div>
-            <div class="description">
+            <div className="description">
               <b>Services: </b>
               {
                 req.services.map((ser) => {
@@ -82,10 +82,10 @@ const Request = (props) => {
               }
             </div>
           </div>
-          <div class="extra content">
-            <div class="ui two buttons">
-              <div class="ui basic green button" onClick={() => handleapprove(req._id)}>Approve</div>
-              <div class="ui basic red button" onClick={() => handleDelete(req._id)}>Decline</div>
+          <div className="extra content">
+            <div className="ui two buttons">
+              <div className="ui basic green button" onClick={() => handleapprove(req._id)}>Approve</div>
+              <div className="ui basic red button" onClick={() => handleDelete(req._id)}>Decline</div>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ const Request = (props) => {
   return (
     <div className='req'>
       <h3 className='ui block header'>ACTIVE REQUESTS</h3>
-      <div class="ui cards">
+      <div className="ui cards" style={{marginTop: '25px'}}>
         {showreqs}
       </div>
       {/* <div className='m-req'>{showreqs}</div> */}

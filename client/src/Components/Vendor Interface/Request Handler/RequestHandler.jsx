@@ -114,6 +114,10 @@ const RequestHandler = props => {
             return dispatch(handleBookingRequest({approved: bool, bookingId: state.id, timeForService: state.time, id: vendor.ss._id}))
         }
     }
+
+    React.useEffect(() => {
+        console.log(vendor);
+    }, [vendor])
     const selectTime = (e, {value}) => {
         console.log(value);
         setState({
@@ -124,6 +128,19 @@ const RequestHandler = props => {
     const show = (size,  id) => {
         setState({...state, size, open: true, id:id })
     }
+
+    const isExpired = (booking) => {
+        if(new Date(booking.date) > new Date()) {
+            return false;
+        }
+        return true;
+    }
+    React.useEffect(() => {
+        let estimatedstart = new Date();
+        let endBookDate = new Date(estimatedstart);
+        endBookDate.setMinutes(estimatedstart.getMinutes() + 60);
+        console.log("DATE ====== ", endBookDate);
+    })
     const close = () => setState({...state, open: false })
         return(
             <React.Fragment>
@@ -167,11 +184,19 @@ const RequestHandler = props => {
                                 <b>Contact:</b> {booking.contactNo}
                                 <br/>
                                 
-                                <b>Request Time:</b> {booking.createdAt}
+                                <b>Start Time:</b> {booking.startTime}
                             </div>
                             <div className="description">
-                                <h5 className="r-h5 green">{booking.serviceType}</h5>
-                                <h6 className="r-h5">STATUS: <span className="red">{booking.status}</span></h6>
+                                <h5 className="s-types green">
+                                    <ul>
+                                        {
+                                            booking.serviceType.map((type, ind)=> {
+                                                return <li key={ind}>{type}</li>
+                                            })
+                                        }
+                                    </ul>
+                                </h5>
+                                <h6 className="r-h5">STATUS: <span className="red">{isExpired(booking) ? 'Expired' : booking.status}</span></h6>
                                 <ul className="r-ul">
                                     <li> <b>VEHICLE NAME: </b> {booking.vehicleMake}</li>
                                     <li> <b>VEHICLE TYPE: </b> {booking.vehicleType}</li>
@@ -182,7 +207,16 @@ const RequestHandler = props => {
                             </div>
                             <div className="extra content">
                             <div className="ui two buttons">
-                                <div onClick={()=> show('tiny', booking._id)} className="ui basic green button">Approve</div>
+                                {
+                                    isExpired(booking) ?
+                                    null : <div onClick={()=> {
+                                        if(isExpired(booking)) {
+                                            window.location.reload();
+                                            return;
+                                        }
+                                        show('tiny', booking._id)
+                                    }} className="ui basic green button">Approve</div>
+                                }
                                 <div onClick={()=> handleRequest(false, booking._id)} className="ui basic red button">Decline</div>
                             </div>
                             </div>

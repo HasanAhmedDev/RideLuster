@@ -4,13 +4,10 @@ import Footer from "../Footer/Footer";
 import "./BookingForm.css";
 import { connect } from "react-redux";
 import { bookService } from  '../../actions/user';
-import { Redirect } from "react-router";
+import DateTimePicker from 'react-datetime-picker';
 
 const initialState = {
   vhType: "",
-  service: false,
-  polish: false,
-  oil: false,
   make: "",
   model: "",
   reg: "",
@@ -21,6 +18,8 @@ const initialState = {
   modelErr:"",
   regErr:"",
   conErr:"",
+  dateErr: "",
+  date: "",
   service: [],
   vehicles: [],
   doc: {}
@@ -34,6 +33,7 @@ const divStyle = {
 };
 
 class BookingForm extends Component {
+  date = new Date();
   constructor(props){
     super(props)
     if(!props.location.ssID){
@@ -98,6 +98,12 @@ class BookingForm extends Component {
     let modelErr=""
     let regErr=""
     let conErr=""
+    let dateErr=""
+
+    if (!this.validateDate(this.date)) {
+      dateErr = "Please Enter a valid Date and time.";
+    }
+    this.setState({ dateErr });
 
     if (!this.state.vhType) {
       vhErr = "* This field must be non-empty.";
@@ -149,7 +155,7 @@ class BookingForm extends Component {
     }
     this.setState({ conErr })
 
-    if (vhErr || serErr || modelErr || makeErr || regErr || conErr) {
+    if (vhErr || serErr || modelErr || makeErr || regErr || conErr || dateErr) {
       return false;
     }
     return true;
@@ -170,7 +176,8 @@ class BookingForm extends Component {
         serviceType: this.state.service,
         contactNo: this.state.con,
         clientId: this.props.location.cID,
-        serviceStationId: this.props.location.ssID
+        serviceStationId: this.props.location.ssID,
+        date: this.date
       });
       this.props.history.replace('searchResult');
     }
@@ -196,13 +203,28 @@ class BookingForm extends Component {
     })
   }
 
+  dateChange = (event) => {
+    this.date = event;
+  }
+
+  validateDate = (date) => {
+    if(date < new Date()) {
+      return false;
+    }
+    return true;
+  }
+
   render() {
     return (
       <Form.Field className="body" style={divStyle}>
         <Form.Field className="overlay">
           <Form.Field className="main-form">
+            <h1 className='ui block header' style={{ }}>Booking Details</h1>
+            <div style={{ margin: '20px auto', width: 'fit-content'}}>
+              <DateTimePicker onChange={this.dateChange} value={this.date} />
+              <div className="valerr" style={{margin: '10px'}}>{this.state.dateErr}</div>
+            </div>
             <Form onSubmit={this.handleSubmit} className="inside-form">
-              <h1 className='ui block header' style={{ }}>Booking Details</h1>
                 <label>Vehicle Type</label>
                 <Dropdown
                   placeholder='Select Vehicle'
@@ -215,10 +237,10 @@ class BookingForm extends Component {
                 <label>Service Type</label>
                 <Dropdown
                   placeholder='Select Service'
-                  fluid
-                  selection
+                  fluid multiple selection
                   onChange={this.serviceType}
                   options={services}
+                  value={this.state.service}
                 />
               <div style={{margin: '10px'}} className="valerr">{this.state.serErr}</div>
                 <Form.Input

@@ -245,7 +245,8 @@ const BookService = async (req, res, next) => {
     contactNo,
     serviceType,
     serviceStationId,
-    createdAt
+    createdAt,
+    date
   } = req.body;
   try {
     let booking = await Booking.findOne({
@@ -257,7 +258,9 @@ const BookService = async (req, res, next) => {
       serviceType,
       client: req.user.id,
       serviceStation: serviceStationId,
-      isApproved: false
+      isApproved: false,
+      date,
+      startTime: new Date(date).toLocaleTimeString()
     });
     if (booking) {
       return res.status(400).json({
@@ -300,7 +303,9 @@ const BookService = async (req, res, next) => {
       contactNo,
       client: req.user.id,
       serviceStation: serviceStationId,
-      createdAt
+      createdAt,
+      date,
+      startTime: new Date(date).toLocaleTimeString()
     });
     await booking.save();
     let notify = new notifications({
@@ -1279,33 +1284,60 @@ const handleBookingRequest = async (req, res, next) => {
     }
 
     else{
-
-
-    let time = 0
-    let allServiceStationBookings = serviceStation.bookings ? serviceStation.bookings : [];
-    let allActiveProcess = serviceStation.activeProcess ? serviceStation.activeProcess : [];
-    allServiceStationBookings.forEach(async (val) => {
-      const bk = await Booking.findById(val)
-      time += bk.estimatedTime
-    })
-    allActiveProcess.forEach(async (val) => {
-      const bk = await Booking.findById(val)
-      const dt = new Date()
-      const newdt = dt.getMinutes() - new Date(bk.startedAt).getMinutes()
-      if (newdt < timeForService) {
-        time += newdt
+      const waitBookings = await Booking.find({
+        serviceStation: bookingExist.serviceStation,
+        status: 'Waiting'
+      })
+      
+      let estimatedstart = new Date(bookingExist.date);
+      console.log('Start before loop', estimatedstart);
+      console.log("WAITING = ", waitBookings);
+      if(waitBookings.length) {
+        waitBookings.forEach((element) => {
+          const startBookDate = new Date(estimatedstart);
+          let endBookDate = new Date(startBookDate);
+          endBookDate.setMinutes(startBookDate.getMinutes() + Number(timeForService));
+          const startElDate = new Date(element.date);
+          const endElDate = new Date(element.endTime);
+          if((startBookDate >= startElDate && startBookDate <= endElDate) || (endBookDate >= startElDate && endBookDate <= endElDate)) {
+            estimatedstart = new Date(endElDate);
+            estimatedstart.setMinutes(endElDate.getMinutes() + 5);
+            console.log("Insided loop condition");
+            console.log(estimatedstart);
+            console.log(endBookDate);
+          }
+        });
       }
-    })
-    time += 10;
-    estimatedstart = bookingExist.createdAt
-    estimatedstart = estimatedstart.setMinutes(estimatedstart.getMinutes() + time)
+    console.log('Start after loop', estimatedstart);
+    const endBookDate = new Date(estimatedstart);
+    endBookDate.setMinutes(estimatedstart.getMinutes() + Number(timeForService));
+    console.log(endBookDate);
+    // let time = 0
+    let allServiceStationBookings = serviceStation.bookings ? serviceStation.bookings : [];
+    // let allActiveProcess = serviceStation.activeProcess ? serviceStation.activeProcess : [];
+    // allServiceStationBookings.forEach(async (val) => {
+    //   const bk = await Booking.findById(val)
+    //   time += bk.estimatedTime
+    // })
+    // allActiveProcess.forEach(async (val) => {
+    //   const bk = await Booking.findById(val)
+    //   const dt = new Date()
+    //   const newdt = dt.getMinutes() - new Date(bk.startedAt).getMinutes()
+    //   if (newdt < timeForService) {
+    //     time += newdt
+    //   }
+    // })
+    // time += 10;
+    // estimatedstart = bookingExist.createdAt
+    // estimatedstart = estimatedstart.setMinutes(estimatedstart.getMinutes() + time)
 
     let updatedBooking = await Booking.findByIdAndUpdate(bookingId, {
       isApproved: true,
       status: 'Waiting',
       timeForService,
-      estimatedTime: time,
-      estimatedStartTime: estimatedstart
+      estimatedTime: timeForService,
+      estimatedStartTime: estimatedstart,
+      endTime: endBookDate
     })
     allServiceStationBookings.push(bookingId)
     await ServiceStation.findByIdAndUpdate(serviceStation._id, {

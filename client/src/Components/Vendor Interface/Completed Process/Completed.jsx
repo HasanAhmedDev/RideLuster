@@ -42,10 +42,18 @@ const Completed = props => {
                                 <br/>
                                 <b>Contact:</b> {booking.contactNo}
                                 <br/>
-                                <b>Request Time:</b> {booking.createdAt}
+                                <b>Completed Time:</b> {new Date(booking.endTime).toLocaleString()}
                             </div>
                             <div className="description">
-                                <h5 className="r-h5 green">{booking.serviceType}</h5>
+                                <h5 className="s-types green">
+                                    <ul>
+                                        {
+                                            booking.serviceType.map((type, ind)=> {
+                                                return <li key={ind}>{type}</li>
+                                            })
+                                        }
+                                    </ul>
+                                </h5>
                                 <h6 className="r-h5">STATUS: <span className="green">{booking.status}</span></h6>
                                 <ul className="r-ul">
                                     <li> <b>VEHICLE NAME: </b> {booking.vehicleMake}</li>
@@ -59,7 +67,7 @@ const Completed = props => {
                             <div style={{marginTop: '20px'}}>
                                 <h4 className="ui header">Feedback</h4>
                                 <h5 className="ui header">In Progress...</h5>
-                                {/* <div class="ui heart rating" data-rating="1" data-max-rating="3"></div> */}
+                                {/* <div className="ui heart rating" data-rating="1" data-max-rating="3"></div> */}
                             </div>
                             </div>
                             {/* <div className="extra content">

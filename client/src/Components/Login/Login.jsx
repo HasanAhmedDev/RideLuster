@@ -114,7 +114,7 @@ const Login = (props) => {
             (
             <Form size={'large'} onSubmit={handleSubmit} className='inside-form'>
               <div>
-                {/* <div class="ui bottom attached segment active tab"> */}
+                {/* <div className="ui bottom attached segment active tab"> */}
                 <Form.Field>
                   <label>Email</label>
                   <Input
@@ -148,9 +148,9 @@ const Login = (props) => {
             ) : 
             (
               <div style={{margin: '60px auto 30px auto'}}>
-                <button style={{margin: '25px auto'}} onClick={() => switchTabs('client')} class="fluid primary large ui button">Login As User</button>
-                <button style={{margin: '25px auto'}} onClick={() => switchTabs('vendor')} class="fluid primary large ui button">Login As Vendor</button>
-                <button style={{margin: '25px auto'}} onClick={() => switchTabs('admin')} class="fluid primary large ui button">Login As Admin</button>
+                <button style={{margin: '25px auto'}} onClick={() => switchTabs('client')} className="fluid primary large ui button">Login As User</button>
+                <button style={{margin: '25px auto'}} onClick={() => switchTabs('vendor')} className="fluid primary large ui button">Login As Vendor</button>
+                <button style={{margin: '25px auto'}} onClick={() => switchTabs('admin')} className="fluid primary large ui button">Login As Admin</button>
               </div>
             )
           }

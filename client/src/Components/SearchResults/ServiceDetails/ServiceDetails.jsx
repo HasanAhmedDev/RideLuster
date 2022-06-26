@@ -69,9 +69,9 @@ const ServiceDetails = props => {
                                 <li> <b>Vehicle Number:</b> {service.vehicleNo}</li>
                                 <li> <b>Service Station Name:</b> {service.serviceStation.name}</li>
                                 <li> <b>Area:</b> {service.serviceStation.area}</li>
-                                <div style={{marginTop: '20px'}} class="ui fluid action input">
+                                <div style={{marginTop: '20px'}} className="ui fluid action input">
                                     <input type="text" placeholder="Comment here..." />
-                                    <div class="ui success button">Submit</div>
+                                    <div className="ui success button">Submit</div>
                                 </div>
                             </div>
                     })

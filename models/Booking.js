@@ -18,9 +18,8 @@ const BookingSchema = new moongose.Schema({
         required: [true, 'Vehicle Number is required']
     },
     serviceType: {
-        type: String,
-        required: [true, 'Service Type is required'],
-        enum: ['Wash', 'Polish', 'Oil Change']
+        type: [String],
+        required: [true, 'Service Type is required']
     },
     contactNo: {
         type: Number,
@@ -37,6 +36,16 @@ const BookingSchema = new moongose.Schema({
         type: moongose.Schema.ObjectId,
         ref: 'servicestation',
         required: [true, 'Sercive Station is required']
+    },
+    date: {
+        type: Date
+    },
+    startTime: {
+        type: String
+    },
+    endTime: {
+        type: Date,
+        default: null
     },
     isApproved: {
         type: Boolean,
